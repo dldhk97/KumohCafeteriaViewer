@@ -10,19 +10,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
-import com.dldhk97.kumohcafeteriaviewer.model.Menu;
+import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 
 public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecyclerViewHolder> {
     private LayoutInflater inflater;
     private final Context context;
-    private ArrayList<Menu> menus;
+    private DayMenus dayMenus;
 
-    public CafeteriaRecyclerAdapter(final Context context, ArrayList<Menu> menus){
+    public CafeteriaRecyclerAdapter(final Context context, DayMenus dayMenus){
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.menus = menus;
+        this.dayMenus = dayMenus;
     }
 
     public Context getContext(){
@@ -46,7 +47,9 @@ public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecy
     @Override
     public void onBindViewHolder(@NonNull CafeteriaRecyclerViewHolder holder, int position) {
         try{
-            holder.onBind(menus.get(position));
+            if(dayMenus != null)
+                holder.onBind(dayMenus.getMenus().get(position));
+
         }
         catch(Exception e){
             UIHandler.getInstance().showToast("[Adapter.onBindViewHolder]\n" + e.getMessage());
@@ -57,6 +60,8 @@ public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecy
 
     @Override
     public int getItemCount() {
-        return menus.size();
+        if(dayMenus != null)
+            return dayMenus.getMenus().size();
+        return 0;
     }
 }

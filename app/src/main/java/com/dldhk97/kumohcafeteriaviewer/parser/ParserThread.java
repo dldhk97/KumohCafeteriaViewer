@@ -6,6 +6,7 @@ import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
+import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
@@ -17,8 +18,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class ParserThread implements Runnable{
     private static final int TIMEOUT = 2000;
@@ -36,7 +37,7 @@ public class ParserThread implements Runnable{
     //파싱 메소드
     @Override
     public void run() {
-        ArrayList<Menu> resultArr = new ArrayList<>();
+        HashMap<Calendar, DayMenus> weekMenus = new HashMap<Calendar, DayMenus>();
         try{
             Connection connection = Jsoup.connect(url);
             connection.timeout(TIMEOUT);
@@ -53,7 +54,7 @@ public class ParserThread implements Runnable{
                 catch (Exception e){
                     Log.d("[ParseThread.run]\n","connection.get()\n" + e.getMessage());
                     if(tryCnt <= 0){
-                        parseCompleteListener.onParseComplete(ExceptionType.PARSE_FAILED, resultArr);
+                        parseCompleteListener.onParseComplete(ExceptionType.PARSE_FAILED, null);
                         return;
                     }
                 }
@@ -70,7 +71,7 @@ public class ParserThread implements Runnable{
             Elements startDateHtml = doc.select("fieldset > div > div > p");
             String startDateStr = startDateHtml.get(0).text().replace("\t","").replace("\n","").replace("\r","");
             startDateStr = startDateStr.split("~")[0].trim();
-            Calendar startDate = DateUtility.StringToDate(startDateStr);
+            Calendar startDate = DateUtility.stringToDate(startDateStr);
 
             // 이번 주 모든 메뉴 겟
             Elements menuListHtml = doc.select("table > tbody > tr > td");
@@ -122,24 +123,42 @@ public class ParserThread implements Runnable{
                 }
 
                 //전달할 배열에 추가
-                resultArr.add(currentMenu);
+                addMenu(weekMenus, currentMenu);
                 cnt++;
             }
 
             // 파싱 완료 알리고 배열 전달
-            parseCompleteListener.onParseComplete(null, resultArr);
+            parseCompleteListener.onParseComplete(null, weekMenus);
         }
         catch(Exception e){
             Log.d("[ParseThread.run]\n","Parse Failed\n" + e.getMessage());
-            parseCompleteListener.onParseComplete(ExceptionType.PARSE_FAILED, resultArr);
+            parseCompleteListener.onParseComplete(ExceptionType.PARSE_FAILED, null);
         }
 
     }
 
-    // 항목 이름으로 음식/가격/시간/기타 등으로 구별
+    // 항목 이름으로 음식/가격/시간/기타 등으로 항목의 타입 구별
     private ItemType getItemType(String itemName){
 
         return ItemType.FOOD;
+    }
+
+
+    private void addMenu(HashMap<Calendar, DayMenus> weekMenus, Menu menu){
+        Calendar currentMenuDate = menu.getDate();
+        if(weekMenus.containsKey(currentMenuDate)){
+            DayMenus dm = weekMenus.get(currentMenuDate);
+
+            if(dm == null)
+                dm = new DayMenus(currentMenuDate, menu.getCafeteriaType());
+
+            dm.getMenus().add(menu);
+        }
+        else{
+            DayMenus dm = new DayMenus(currentMenuDate, menu.getCafeteriaType());
+            dm.getMenus().add(menu);
+            weekMenus.put(currentMenuDate, dm);
+        }
     }
 
 
@@ -151,6 +170,6 @@ public class ParserThread implements Runnable{
 
     // 데이터 전달을 위한 인터페이스
     public interface IParseCompleteListener {
-        void onParseComplete(ExceptionType exceptionType, ArrayList<Menu> parsedArr);
+        void onParseComplete(ExceptionType exceptionType, HashMap<Calendar, DayMenus> parsedArr);
     }
 }

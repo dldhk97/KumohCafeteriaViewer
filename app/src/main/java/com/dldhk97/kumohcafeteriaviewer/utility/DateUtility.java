@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class DateUtility {
     // 문자열을 Calender로 변환
-    public static Calendar StringToDate(String str) throws Exception{
+    public static Calendar stringToDate(String str) throws Exception{
         DateFormat formmater = new SimpleDateFormat("yyyy.MM.dd");
         Date date = formmater.parse(str);
         Calendar calendar = Calendar.getInstance();
@@ -15,8 +15,12 @@ public class DateUtility {
         return calendar;
     }
 
-    public static String DateToString(Calendar date, char divider) throws Exception{
+    public static String dateToString(Calendar date, char divider) throws Exception{
         SimpleDateFormat format = new SimpleDateFormat("yyyy" + divider + "MM" + divider +"dd");
         return format.format(date.getTime());
+    }
+
+    public static Calendar remainOnlyDate(Calendar date) throws Exception{
+        return stringToDate(dateToString(date, '.'));
     }
 }

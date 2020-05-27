@@ -2,21 +2,20 @@ package com.dldhk97.kumohcafeteriaviewer.parser;
 
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
-import com.dldhk97.kumohcafeteriaviewer.model.Menu;
+import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 
 public class Parser{
-    private ArrayList<Menu> resultArr;
+    private HashMap<Calendar, DayMenus> resultArr;
     private ExceptionType resultException;
 
-    public ArrayList<Menu> parse(CafeteriaType cafeteriaType, Calendar date) throws Exception{
+    // 해당 식당의 해당 날짜가 포함된 일주일치 식단을 파싱
+    public HashMap<Calendar, DayMenus> parse(CafeteriaType cafeteriaType, Calendar date) throws Exception{
         if(cafeteriaType == CafeteriaType.UNKNOWN){
             throw new MyException(ExceptionType.UNKNOWN_CAFETERIA_TYPE, "Unknown current cafeteria type");
         }
@@ -26,7 +25,7 @@ public class Parser{
         String url = cafeteriaType.getURL();
 
         // 해당 날짜로 설정
-        url += "mode=menuList&srDt=" + DateUtility.DateToString(date, '-');
+        url += "mode=menuList&srDt=" + DateUtility.dateToString(date, '-');
 
         // 날짜가 일요일이면 하루 뺀다.
         // 일요일이면 웹페이지에서 하루 넘어가기 때문임.
@@ -54,14 +53,6 @@ public class Parser{
             return null;
         }
 
-        // 날짜 역순으로 정렬
-        Collections.sort(resultArr, new Comparator<Menu>() {
-            @Override
-            public int compare(Menu menu1, Menu menu2) {
-                return menu2.getDate().compareTo(menu1.getDate());
-            }
-        });
-
         return resultArr;
     }
 
@@ -70,7 +61,7 @@ public class Parser{
 
         // 데이터 수신
         @Override
-        public void onParseComplete(ExceptionType exceptionType, ArrayList<Menu> parsedArr) {
+        public void onParseComplete(ExceptionType exceptionType, HashMap<Calendar, DayMenus> parsedArr) {
             if(exceptionType != null){
                 resultArr = null;
                 resultException = exceptionType;

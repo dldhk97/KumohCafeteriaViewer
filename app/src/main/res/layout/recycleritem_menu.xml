@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/breakfast"
-    app:cardCornerRadius="3dp"
-    app:cardElevation="5dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="3dp"
     app:cardUseCompatPadding="true">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +16,7 @@
         <ImageView
             android:id="@+id/recycleritem_menu_background"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="210dp"
             android:contentDescription="@string/recycleritem_menu_background_description"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"

@@ -14,6 +14,7 @@ import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
+import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
@@ -55,22 +56,21 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
 
     public void onBind(Menu menu)throws Exception{
         this.menu = menu;
-        // 아이콘 설정
-//        int imageId = menu.getImageId();
-//        if(imageId == 0){
-//            imageId = R.drawable.unknown;
-//        }
-//        imageView_icon.setImageResource(imageId);
 
         // 날짜 설정
 //        String dateStr = DateUtility.DateToString(menu.getDate(), '.');
 //        recycleritem_menu_mealTime.setText(dateStr);
 
-        // 식사시간 설정
-        recycleritem_menu_mealTime.setText(menu.getMealTimeType().toString());
-
         // 카드뷰 배경 이미지 설정
         recycleritem_menu_background.setImageResource(getCardViewBackground(menu));
+
+        // 식사시간 설정
+        if(!menu.isOpen()){
+            recycleritem_menu_mealTime.setText("식사정보 없음");
+        }
+        else{
+            recycleritem_menu_mealTime.setText(menu.getMealTimeType().toString());
+        }
 
         // 음식 간단히 표시
         StringBuilder foodsStr = new StringBuilder();
