@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 
-import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
-import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -19,9 +17,6 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,18 +34,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                Parser a = new Parser();
-                Calendar test = Calendar.getInstance();
-                try {
-                    ArrayList<com.dldhk97.kumohcafeteriaviewer.model.Menu> x = a.parse(CafeteriaType.STUDENT, test);
-                    for(com.dldhk97.kumohcafeteriaviewer.model.Menu m : x){
-                        Log.d("DEBUG",m.toString());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 

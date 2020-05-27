@@ -5,13 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,27 +37,29 @@ public class InnerFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_home_inner, container, false);
 
-        // 파싱 테스트
-        Parser p = new Parser();
-        Calendar test = Calendar.getInstance();
-        ArrayList<Menu> x = null;
-        try {
-            x = p.parse(cafeteriaType, test);
-            for(Menu m : x){
-                Log.d("DEBUG",m.toString());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(menus == null){
+            Calendar today = Calendar.getInstance();
+            updateMenus(today);
         }
 
         // 리사이클러뷰에 어댑터와 레이아웃매니저 지정
         final RecyclerView menu_inner_recyclerView = root.findViewById(R.id.menu_inner_recyclerView);
         menu_inner_recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
-        CafeteriaRecyclerAdapter cra = new CafeteriaRecyclerAdapter(container.getContext(), x);
+        CafeteriaRecyclerAdapter cra = new CafeteriaRecyclerAdapter(container.getContext(), menus);
         menu_inner_recyclerView.setAdapter(cra);
 
         return root;
+    }
+
+    private void updateMenus(Calendar date){
+        // 파싱 테스트
+        Parser parser = new Parser();
+        try {
+            menus = parser.parse(cafeteriaType, date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
