@@ -1,16 +1,16 @@
-package com.dldhk97.kumohcafeteriaviewer.ui.slideshow;
+package com.dldhk97.kumohcafeteriaviewer.ui.favorite;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class FavoriteViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public FavoriteViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("This is favorite fragment");
     }
 
     public LiveData<String> getText() {

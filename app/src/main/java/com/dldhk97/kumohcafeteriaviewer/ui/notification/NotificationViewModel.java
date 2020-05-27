@@ -1,16 +1,16 @@
-package com.dldhk97.kumohcafeteriaviewer.ui.gallery;
+package com.dldhk97.kumohcafeteriaviewer.ui.notification;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GalleryViewModel extends ViewModel {
+public class NotificationViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public GalleryViewModel() {
+    public NotificationViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is gallery fragment");
+        mText.setValue("This is notification fragment");
     }
 
     public LiveData<String> getText() {

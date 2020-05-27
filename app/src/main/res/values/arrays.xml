@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cafeteriaType">
+        <item>학생식당</item>
+        <item>교직원식당</item>
+        <item>분식당</item>
+        <item>푸름관</item>
+        <item>오름관1동</item>
+        <item>오름관3동</item>
+    </string-array>
+
+    <string-array name="mealTimeType">
+        <item>조식</item>
+        <item>중식</item>
+        <item>석식</item>
+        <item>일품요리</item>
+    </string-array>
+
+    <string-array name="urls">
+        <item>https://kumoh.ac.kr/ko/restaurant01.do?</item>                   <!-- 학생식당 -->
+        <item>https://kumoh.ac.kr/ko/restaurant02.do?</item>                   <!-- 교직원식당 -->
+        <item>https://kumoh.ac.kr/ko/restaurant04.do?</item>                   <!-- 분식당 -->
+        <item>http://dorm.kumoh.ac.kr/dorm/restaurant_menu01.do?</item>        <!-- 푸름관 -->
+        <item>http://dorm.kumoh.ac.kr/dorm/restaurant_menu02.do?</item>        <!-- 오름관1동 -->
+        <item>http://dorm.kumoh.ac.kr/dorm/restaurant_menu03.do?</item>        <!-- 오름관3동 -->
+    </string-array>
+
+</resources>
