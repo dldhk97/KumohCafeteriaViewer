@@ -13,7 +13,10 @@
 
     <string name="home_second">Home Second</string>
 
+    <string name="recycleritem_menu_background_description">카드뷰 배경화면</string>
+
     <string name="textView_date_default">1997.04.28</string>
     <string name="textView_mealTime_default">알수없음</string>
     <string name="textView_menus_default">알 수 없는 메뉴</string>
+
 </resources>

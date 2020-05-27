@@ -33,7 +33,8 @@ public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecy
     @Override
     public CafeteriaRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         try{
-            View itemView = inflater.inflate(R.layout.item_menu, parent, false);
+//            View itemView = inflater.inflate(R.layout.item_menu, parent, false);
+            View itemView = inflater.inflate(R.layout.recycleritem_menu, parent, false);
             return new CafeteriaRecyclerViewHolder(itemView, this);
         }
         catch (Exception e){

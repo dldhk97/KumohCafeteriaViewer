@@ -99,7 +99,7 @@ public class ParserThread implements Runnable{
                 currentMenuDate.add(Calendar.DATE, cnt % 7);        // 윗줄 7개는 중식이고, 아랫줄 7개는 석식이다.
 
                 // 메뉴 객체 생성
-                Menu currentMenu = new Menu(currentMenuDate, cafeteriaType, mealTimeType);
+                Menu currentMenu = new Menu(currentMenuDate, cafeteriaType, mealTimeType, false);
                 if(mealTimeType != MealTimeType.UNKNOWN){
                     // 항목 파싱 후 메뉴에 삽입
                     Elements itemDetailHtml = menuHtml.select("ul > li");
@@ -112,6 +112,13 @@ public class ParserThread implements Runnable{
 
                 if(currentMenu.getItems().size() <= 0){
                     currentMenu.addItem(new Item("등록된 메뉴가 없습니다.", ItemType.NONE));
+                    currentMenu.setIsOpen(false);
+                }
+                else if(currentMenu.getItem(0).getItemName().contains("식당 운영 없음")){
+                    currentMenu.setIsOpen(false);
+                }
+                else{
+                    currentMenu.setIsOpen(true);
                 }
 
                 //전달할 배열에 추가

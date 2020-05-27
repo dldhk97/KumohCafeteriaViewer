@@ -9,4 +9,6 @@
     <color name="textView_mealTime_color">#7f6cd3</color>
     <color name="textView_date_color">#8b44d6</color>
     <color name="textView_menus_color">#705a87</color>
+
+    <color name="recycleritem_menu_title_color">#FFFFFF</color>
 </resources>

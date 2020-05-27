@@ -17,13 +17,15 @@ public class Menu implements Serializable {
     private CafeteriaType cafeteriaType;    // 식당
     private MealTimeType mealTimeType;      // 조식/중식/석식
     private ArrayList<Item> items;        // 음식 리스트
-    private int imageId;
 
-    public Menu(Calendar date, CafeteriaType cafeteriaType, MealTimeType mealTimeType){
+    private boolean isOpen;
+
+    public Menu(Calendar date, CafeteriaType cafeteriaType, MealTimeType mealTimeType, boolean isOpen){
         this.date = date;
         this.cafeteriaType = cafeteriaType;
         this.mealTimeType = mealTimeType;
-        items = new ArrayList<>();
+        this.items = new ArrayList<>();
+        this.isOpen = isOpen;
     }
 
     public Calendar getDate(){
@@ -50,12 +52,12 @@ public class Menu implements Serializable {
         return items;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public boolean isOpen() {
+        return isOpen;
     }
 
-    public int getImageId() {
-        return imageId;
+    public void setIsOpen(boolean isOpen) {
+        this.isOpen = isOpen;
     }
 
     public int getCount(){
