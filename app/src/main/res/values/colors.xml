@@ -11,4 +11,8 @@
     <color name="textView_menus_color">#705a87</color>
 
     <color name="recycleritem_menu_title_color">#FFFFFF</color>
+
+    <color name="bottom_sheet_background">#f5f5f5</color>
+    <color name="bottom_sheet_nowdate_color">#1de9b6</color>
+
 </resources>

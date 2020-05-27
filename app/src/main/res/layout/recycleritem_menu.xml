@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/recycleritem_menu_background"
             android:layout_width="0dp"
-            android:layout_height="210dp"
+            android:layout_height="180dp"
             android:contentDescription="@string/recycleritem_menu_background_description"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
