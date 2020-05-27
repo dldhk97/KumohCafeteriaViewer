@@ -3,4 +3,10 @@
     <color name="colorPrimary">#1abc9c</color>
     <color name="colorPrimaryDark">#008e76</color>
     <color name="colorAccent">#03a9f4</color>
+
+    <color name="tabTitle">#454545</color>
+
+    <color name="textView_mealTime_color">#7f6cd3</color>
+    <color name="textView_date_color">#8b44d6</color>
+    <color name="textView_menus_color">#705a87</color>
 </resources>

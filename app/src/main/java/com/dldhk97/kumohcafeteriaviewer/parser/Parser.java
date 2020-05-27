@@ -23,7 +23,7 @@ public class Parser{
 
         // url 설정
         ResourceUtility ru = new ResourceUtility();
-        String url = ru.getUrlFromCafeteriaType(cafeteriaType);
+        String url = cafeteriaType.getURL();
 
         // 해당 날짜로 설정
         url += "mode=menuList&srDt=" + DateUtility.DateToString(date, '-');
