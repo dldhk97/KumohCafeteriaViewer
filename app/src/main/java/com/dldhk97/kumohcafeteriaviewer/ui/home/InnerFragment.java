@@ -1,5 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,12 +21,20 @@ import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.recyclerView.CafeteriaRecyclerAdapter;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
 public class InnerFragment extends Fragment {
     private HashMap<Calendar, DayMenus> weekMenus;
     private final CafeteriaType cafeteriaType;
+    private Calendar currentDate;
+    private ArrayList<Menu> currentMenus = null;
+
+    private CafeteriaRecyclerAdapter cafeteriaRecyclerAdapter;
+    private RecyclerView menu_inner_recyclerView;
+
+    private Context tempCon;
 
     public InnerFragment(CafeteriaType cafeteriaType){
         this.cafeteriaType = cafeteriaType;
@@ -34,6 +43,7 @@ public class InnerFragment extends Fragment {
     public CafeteriaType getCafeteriaType() {
         return cafeteriaType;
     }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -46,37 +56,53 @@ public class InnerFragment extends Fragment {
         }
 
         // 리사이클러뷰에 어댑터와 레이아웃매니저 지정
-        final RecyclerView menu_inner_recyclerView = root.findViewById(R.id.menu_inner_recyclerView);
+        menu_inner_recyclerView = root.findViewById(R.id.menu_inner_recyclerView);
         menu_inner_recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
-        // 날짜 특정해서 해당 날짜 메뉴 있으면 get
-        Calendar x = Calendar.getInstance();
-        DayMenus dm = null;
-        try {
-            dm = weekMenus.get(DateUtility.remainOnlyDate(x));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if(dm == null){
-            dm = new DayMenus(x, CafeteriaType.UNKNOWN);
-            dm.getMenus().add(new Menu(x, CafeteriaType.UNKNOWN, MealTimeType.UNKNOWN, false));
-        }
-
-        CafeteriaRecyclerAdapter cra = new CafeteriaRecyclerAdapter(container.getContext(), dm);
-        menu_inner_recyclerView.setAdapter(cra);
+        cafeteriaRecyclerAdapter = new CafeteriaRecyclerAdapter(container.getContext(), currentMenus);
+        tempCon = container.getContext();
+        menu_inner_recyclerView.setAdapter(cafeteriaRecyclerAdapter);
 
         return root;
     }
 
-    private void updateMenus(Calendar date){
-        // 파싱 테스트
-        Parser parser = new Parser();
+    public void updateMenus(Calendar date){
         try {
-            weekMenus = parser.parse(cafeteriaType, date);
+            // 날짜만 남긴다. 시간은 제외
+            currentDate = DateUtility.remainOnlyDate(date);
+
+            // 주어진 날짜의 식단이 존재하지 않으면 파싱
+            if(!isMenuExists(currentDate)){
+                weekMenus = new Parser().parse(cafeteriaType, currentDate);
+            }
+            if(currentMenus!= null)
+                currentMenus.clear();
+
+            // 다시 주어진 날짜의 식단이 존재하는지 체크
+            if(isMenuExists(currentDate)){
+                // 있으면 메뉴 넣음.
+                currentMenus = weekMenus.get(currentDate).getMenus();
+            }
+            else{
+                // 없으면 없다는 메뉴를 임시로 만들어 넣음.
+                currentMenus.add(new Menu(currentDate, CafeteriaType.UNKNOWN, MealTimeType.UNKNOWN, false));
+            }
+            cafeteriaRecyclerAdapter = new CafeteriaRecyclerAdapter(tempCon, currentMenus);
+            menu_inner_recyclerView.setAdapter(cafeteriaRecyclerAdapter);
+            cafeteriaRecyclerAdapter.notifyDataSetChanged();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // 주어진 날짜의 식단이 존재하는지 체크
+    private boolean isMenuExists(Calendar date) throws Exception {
+        // 날짜 특정해서 해당 날짜 메뉴 있으면 get
+        if(weekMenus == null)
+            return false;
+        currentDate = DateUtility.remainOnlyDate(date);
+        return weekMenus.containsKey(currentDate);
     }
 
 

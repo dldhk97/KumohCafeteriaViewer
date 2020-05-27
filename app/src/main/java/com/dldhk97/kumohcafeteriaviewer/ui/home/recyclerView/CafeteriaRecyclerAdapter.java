@@ -10,20 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
-import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
+import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecyclerViewHolder> {
     private LayoutInflater inflater;
     private final Context context;
-    private DayMenus dayMenus;
+    private ArrayList<Menu> menus;
 
-    public CafeteriaRecyclerAdapter(final Context context, DayMenus dayMenus){
+    public CafeteriaRecyclerAdapter(final Context context, ArrayList<Menu> menus){
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.dayMenus = dayMenus;
+        this.menus = menus;
     }
 
     public Context getContext(){
@@ -34,7 +33,6 @@ public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecy
     @Override
     public CafeteriaRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         try{
-//            View itemView = inflater.inflate(R.layout.item_menu, parent, false);
             View itemView = inflater.inflate(R.layout.recycleritem_menu, parent, false);
             return new CafeteriaRecyclerViewHolder(itemView, this);
         }
@@ -47,8 +45,8 @@ public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecy
     @Override
     public void onBindViewHolder(@NonNull CafeteriaRecyclerViewHolder holder, int position) {
         try{
-            if(dayMenus != null)
-                holder.onBind(dayMenus.getMenus().get(position));
+            if(menus != null)
+                holder.onBind(menus.get(position));
 
         }
         catch(Exception e){
@@ -60,8 +58,8 @@ public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecy
 
     @Override
     public int getItemCount() {
-        if(dayMenus != null)
-            return dayMenus.getMenus().size();
+        if(menus != null)
+            return menus.size();
         return 0;
     }
 }
