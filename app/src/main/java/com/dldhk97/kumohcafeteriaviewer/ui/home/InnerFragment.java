@@ -78,7 +78,13 @@ public class InnerFragment extends Fragment {
             }
             else{
                 // 없으면 없다는 메뉴를 임시로 만들어 넣음.
-                currentMenus.clear();
+                if(currentMenus != null){
+                    currentMenus.clear();
+                }
+                else{
+                    currentMenus = new ArrayList<>();
+                }
+
                 currentMenus.add(new Menu(currentDate, CafeteriaType.UNKNOWN, MealTimeType.UNKNOWN, false));
             }
 

@@ -25,6 +25,17 @@
             app:srcCompat="@drawable/closed" />
 
         <TextView
+            android:id="@+id/recycleritem_menu_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="@color/recycleritem_menu_title_color"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/recycleritem_menu_mealTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,11 +52,12 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/recycleritem_menu_title_color"
-            android:textSize="32sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/recycleritem_menu_background" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

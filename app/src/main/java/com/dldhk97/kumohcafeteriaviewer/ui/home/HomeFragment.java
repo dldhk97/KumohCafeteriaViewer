@@ -45,9 +45,6 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
-
-
-
         try {
             initializeViewPager(root, container);
             initializeBottomSheet(root);
@@ -135,6 +132,7 @@ public class HomeFragment extends Fragment {
                     e.printStackTrace();
                 }
                 updateCurrentDateView();
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
 
@@ -165,10 +163,7 @@ public class HomeFragment extends Fragment {
         try{
             bottom_sheet_nowdate.setText(DateUtility.dateToString(currentDate, '.'));
             for(InnerFragment frag : pages){
-                if(frag.isVisible()){
-                    frag.updateMenus(currentDate);
-                }
-
+                frag.updateMenus(currentDate);
             }
         }
         catch(Exception e){

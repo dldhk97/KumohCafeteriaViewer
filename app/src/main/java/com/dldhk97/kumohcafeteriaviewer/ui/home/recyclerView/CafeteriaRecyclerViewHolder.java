@@ -21,13 +21,10 @@ import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
 public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-//    private ImageView imageView_icon;
-//    private TextView textView_date;
-//    private TextView textView_mealTime;
-//    private TextView textView_menus;
     private TextView recycleritem_menu_title;
     private ImageView recycleritem_menu_background;
     private TextView recycleritem_menu_mealTime;
+    private TextView recycleritem_menu_time;
 
     private Menu menu;
 
@@ -37,13 +34,10 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         super(itemView);
         context = adapter.getContext();
         try{
-//            this.imageView_icon = itemView.findViewById(R.id.imageView_icon);
-//            this.textView_date = itemView.findViewById(R.id.popup_textView_title);
-//            this.textView_mealTime = itemView.findViewById(R.id.textView_mealTime);
-//            this.textView_menus = itemView.findViewById(R.id.textView_menus);
             this.recycleritem_menu_title = itemView.findViewById(R.id.recycleritem_menu_title);
             this.recycleritem_menu_background = itemView.findViewById(R.id.recycleritem_menu_background);
             this.recycleritem_menu_mealTime = itemView.findViewById(R.id.recycleritem_menu_mealTime);
+            this.recycleritem_menu_time =itemView.findViewById(R.id.recycleritem_menu_time);
 
 
             // 클릭 리스너 설정
@@ -61,6 +55,22 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
 //        String dateStr = DateUtility.DateToString(menu.getDate(), '.');
 //        recycleritem_menu_mealTime.setText(dateStr);
 
+        // 식사 가능 시간 설정
+        String eatableMealTime = "";
+        switch(menu.getMealTimeType()){
+            case BREAKFAST:
+                eatableMealTime = ResourceUtility.getInstance().getResources().getStringArray(R.array.eatableTime)[0];
+                break;
+            case LUNCH:
+                eatableMealTime = ResourceUtility.getInstance().getResources().getStringArray(R.array.eatableTime)[1];
+                break;
+            case DINNER:
+                eatableMealTime = ResourceUtility.getInstance().getResources().getStringArray(R.array.eatableTime)[2];
+                break;
+        }
+
+        recycleritem_menu_time.setText(eatableMealTime);
+
         // 카드뷰 배경 이미지 설정
         recycleritem_menu_background.setImageResource(getCardViewBackground(menu));
 
@@ -74,17 +84,11 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
 
         // 음식 간단히 표시
         StringBuilder foodsStr = new StringBuilder();
+        int cnt = 0;
         for(Item item : menu.getItems()){
-            if(item.getItemName().contains("[") || item.getItemName().contains("*") || item.getItemName().contains("-")
-                    || item.getItemName().contains("]") || item.getItemName().contains("식당 안에서 식사는")
-                    || item.getItemName().contains("금지합니다") || item.getItemName().contains("~")){           // 진짜 음식만 남긴다.
-                continue;
-            }
-            foodsStr.append(item.getItemName() + " ");
-            if(foodsStr.length() > 20){
-                foodsStr.append("...");
+            foodsStr.append(item.getItemName() + "\n");
+            if(cnt++ > 6)
                 break;
-            }
         }
 //        textView_menus.setText(foodsStr.toString());
         recycleritem_menu_title.setText(foodsStr.toString());
