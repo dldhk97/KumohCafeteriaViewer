@@ -25,14 +25,14 @@ public class Parser{
         ResourceUtility ru = new ResourceUtility();
         String url = cafeteriaType.getURL();
 
-        // 해당 날짜로 설정
-        url += "mode=menuList&srDt=" + DateUtility.dateToString(date, '-');
-
         // 날짜가 일요일이면 하루 뺀다.
         // 일요일이면 웹페이지에서 하루 넘어가기 때문임.
         if(date.get(Calendar.DAY_OF_WEEK) == 1){
             date.add(Calendar.DATE, -1);
         };
+
+        // 해당 날짜로 설정
+        url += "mode=menuList&srDt=" + DateUtility.dateToString(date, '-');
 
         // 학교 홈페이지에서 파싱
         ParserThread pt = new ParserThread(url, cafeteriaType);
