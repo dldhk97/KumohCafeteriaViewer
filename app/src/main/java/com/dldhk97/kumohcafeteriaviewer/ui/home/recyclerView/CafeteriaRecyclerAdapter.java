@@ -55,11 +55,15 @@ public class CafeteriaRecyclerAdapter extends RecyclerView.Adapter<CafeteriaRecy
 
     }
 
-
     @Override
     public int getItemCount() {
-        if(menus != null)
+        if(menus != null){
             return menus.size();
+        }
         return 0;
+    }
+
+    public void updateData(final ArrayList<Menu> menus){
+        this.menus = menus;
     }
 }

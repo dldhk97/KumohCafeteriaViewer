@@ -10,6 +10,7 @@ import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
+import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
 import org.jsoup.Connection;
@@ -19,7 +20,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Calendar;
-import java.util.HashMap;
 
 public class ParserThread implements Runnable{
     private static final int TIMEOUT = 2000;
@@ -37,7 +37,6 @@ public class ParserThread implements Runnable{
     //파싱 메소드
     @Override
     public void run() {
-        HashMap<Calendar, DayMenus> weekMenus = new HashMap<Calendar, DayMenus>();
         try{
             Connection connection = Jsoup.connect(url);
             connection.timeout(TIMEOUT);
@@ -72,6 +71,8 @@ public class ParserThread implements Runnable{
             String startDateStr = startDateHtml.get(0).text().replace("\t","").replace("\n","").replace("\r","");
             startDateStr = startDateStr.split("~")[0].trim();
             Calendar startDate = DateUtility.stringToDate(startDateStr);
+
+            WeekMenus weekMenus = new WeekMenus(startDate, cafeteriaType);
 
             // 이번 주 모든 메뉴 겟
             Elements menuListHtml = doc.select("table > tbody > tr > td");
@@ -144,9 +145,9 @@ public class ParserThread implements Runnable{
     }
 
 
-    private void addMenu(HashMap<Calendar, DayMenus> weekMenus, Menu menu){
+    private void addMenu(WeekMenus weekMenus, Menu menu){
         Calendar currentMenuDate = menu.getDate();
-        if(weekMenus.containsKey(currentMenuDate)){
+        if(weekMenus.contains(currentMenuDate)){
             DayMenus dm = weekMenus.get(currentMenuDate);
 
             if(dm == null)
@@ -157,7 +158,7 @@ public class ParserThread implements Runnable{
         else{
             DayMenus dm = new DayMenus(currentMenuDate, menu.getCafeteriaType());
             dm.getMenus().add(menu);
-            weekMenus.put(currentMenuDate, dm);
+            weekMenus.add(dm);
         }
     }
 
@@ -170,6 +171,6 @@ public class ParserThread implements Runnable{
 
     // 데이터 전달을 위한 인터페이스
     public interface IParseCompleteListener {
-        void onParseComplete(ExceptionType exceptionType, HashMap<Calendar, DayMenus> parsedArr);
+        void onParseComplete(ExceptionType exceptionType, WeekMenus parsedArr);
     }
 }

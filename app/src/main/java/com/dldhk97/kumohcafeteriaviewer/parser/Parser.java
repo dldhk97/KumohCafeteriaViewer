@@ -4,6 +4,7 @@ import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
+import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
@@ -11,11 +12,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class Parser{
-    private HashMap<Calendar, DayMenus> resultArr;
+    private WeekMenus resultArr;
     private ExceptionType resultException;
 
     // 해당 식당의 해당 날짜가 포함된 일주일치 식단을 파싱
-    public HashMap<Calendar, DayMenus> parse(CafeteriaType cafeteriaType, Calendar date) throws Exception{
+    public WeekMenus parse(CafeteriaType cafeteriaType, Calendar date) throws Exception{
         if(cafeteriaType == CafeteriaType.UNKNOWN){
             throw new MyException(ExceptionType.UNKNOWN_CAFETERIA_TYPE, "Unknown current cafeteria type");
         }
@@ -61,7 +62,7 @@ public class Parser{
 
         // 데이터 수신
         @Override
-        public void onParseComplete(ExceptionType exceptionType, HashMap<Calendar, DayMenus> parsedArr) {
+        public void onParseComplete(ExceptionType exceptionType, WeekMenus parsedArr) {
             if(exceptionType != null){
                 resultArr = null;
                 resultException = exceptionType;

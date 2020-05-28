@@ -1,6 +1,7 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,13 @@ public class HomeFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        currentDate = Calendar.getInstance();
+        try {
+            currentDate = DateUtility.remainOnlyDate(Calendar.getInstance());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
 
 
@@ -157,9 +164,12 @@ public class HomeFragment extends Fragment {
     private void updateCurrentDateView(){
         try{
             bottom_sheet_nowdate.setText(DateUtility.dateToString(currentDate, '.'));
-//            for(InnerFragment frag : pages){
-//                frag.updateMenus(currentDate);
-//            }
+            for(InnerFragment frag : pages){
+                if(frag.isVisible()){
+                    frag.updateMenus(currentDate);
+                }
+
+            }
         }
         catch(Exception e){
             e.printStackTrace();
