@@ -1,18 +1,20 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
+import com.dldhk97.kumohcafeteriaviewer.model.MyException;
+
 public class UIHandler {
     private static UIHandler _Instance;
     private MainActivity mainActivity;
 
-    private UIHandler() {}
-
-    UIHandler(MainActivity mainActivity){
+    public UIHandler(MainActivity mainActivity){
         this.mainActivity = mainActivity;
         _Instance = this;
     }
@@ -23,6 +25,12 @@ public class UIHandler {
 
     public void showToast(final String msg){
         try{
+            if(mainActivity == null){
+                throw new MyException(ExceptionType.CONTEXT_NOT_INITIALIZED, "UIHandler not initialized");
+            }
+
+
+
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -38,6 +46,10 @@ public class UIHandler {
 
     public void showAlert(final String msg){
         try{
+            if(mainActivity == null){
+                throw new MyException(ExceptionType.CONTEXT_NOT_INITIALIZED, "UIHandler not initialized");
+            }
+
             final AlertDialog.Builder alert = new AlertDialog.Builder(mainActivity);
             alert.setPositiveButton("OK", new DialogInterface.OnClickListener(){
                 @Override
@@ -60,6 +72,10 @@ public class UIHandler {
 
     public void showAlert(final String title, final String msg){
         try{
+            if(mainActivity == null){
+                throw new MyException(ExceptionType.CONTEXT_NOT_INITIALIZED, "UIHandler not initialized");
+            }
+
             final AlertDialog.Builder alert = new AlertDialog.Builder(mainActivity);
             alert.setPositiveButton("OK", new DialogInterface.OnClickListener(){
                 @Override

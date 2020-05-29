@@ -26,6 +26,10 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerViewHo
         this.items = items;
     }
 
+    public Context getContext() {
+        return context;
+    }
+
     @NonNull
     @Override
     public ItemRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

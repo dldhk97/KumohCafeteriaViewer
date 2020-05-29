@@ -2,7 +2,9 @@ package com.dldhk97.kumohcafeteriaviewer;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.Toast;
 
+import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
 import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 import com.google.android.material.navigation.NavigationView;
@@ -41,6 +43,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        // UI핸들러 셋업
+        UIHandler uh = new UIHandler(this);
+
+        // 데이터베이스 매니저 로드
+        DatabaseManager dm = DatabaseManager.getInstance();
+        dm.setContext(this);
+
+        // 이번주 식단표 미리로드
         preloadMenus();
     }
 
