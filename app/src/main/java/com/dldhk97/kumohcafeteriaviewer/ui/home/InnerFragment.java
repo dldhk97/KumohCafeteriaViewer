@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dldhk97.kumohcafeteriaviewer.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
-import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.recyclerView.CafeteriaRecyclerAdapter;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class InnerFragment extends Fragment {
-    private static WeekMenus weekMenus;
+    private WeekMenus weekMenus;
     private final CafeteriaType cafeteriaType;
-    private Calendar currentDate;
+    private Calendar currentDate = Calendar.getInstance();
     private ArrayList<Menu> currentMenus = null;
 
     private CafeteriaRecyclerAdapter cafeteriaRecyclerAdapter;
@@ -46,10 +46,7 @@ public class InnerFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_home_inner, container, false);
 
-        if(weekMenus == null){
-            Calendar today = Calendar.getInstance();
-            updateMenus(today);
-        }
+        updateMenus(currentDate);
 
         // 리사이클러뷰에 어댑터와 레이아웃매니저 지정
         menu_inner_recyclerView = root.findViewById(R.id.menu_inner_recyclerView);
@@ -61,16 +58,29 @@ public class InnerFragment extends Fragment {
         return root;
     }
 
+    // 디스플레이에 보이는 메뉴 업데이트
+    public void newUpdateMenus(Calendar date){
+        try{
+            // 요청한 날짜로 세팅
+            currentDate = DateUtility.remainOnlyDate(date);
+
+            // MenuManager한테 업데이트 요청.
+            MenuManager.getInstance().getMenus(cafeteriaType, currentDate, false);
+        }
+        catch(Exception e){
+
+        }
+
+    }
+
+    // 날짜 변경 요청 시 호출됨. 리사이클러 뷰 내 항목 업데이트함.
     public void updateMenus(Calendar date){
         try {
             // 날짜만 남긴다. 시간은 제외
             currentDate = DateUtility.remainOnlyDate(date);
 
             // 주어진 날짜의 식단이 존재하지 않으면 파싱
-            if(!isMenuExists(currentDate)){
-                weekMenus = new Parser().parse(cafeteriaType, currentDate);
-                Log.d("aaaaa", "parsed");
-            }
+            weekMenus = MenuManager.getInstance().getMenus(cafeteriaType, currentDate, false);
 
             // 다시 주어진 날짜의 식단이 존재하는지 체크
             if(isMenuExists(currentDate)){

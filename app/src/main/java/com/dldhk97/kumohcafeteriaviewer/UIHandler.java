@@ -10,6 +10,8 @@ public class UIHandler {
     private static UIHandler _Instance;
     private MainActivity mainActivity;
 
+    private UIHandler() {}
+
     UIHandler(MainActivity mainActivity){
         this.mainActivity = mainActivity;
         _Instance = this;

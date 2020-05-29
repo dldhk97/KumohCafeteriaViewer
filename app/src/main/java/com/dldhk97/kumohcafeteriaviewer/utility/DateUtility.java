@@ -15,7 +15,7 @@ public class DateUtility {
         return calendar;
     }
 
-    public static String dateToString(Calendar date, char divider) throws Exception{
+    public static String dateToString(Calendar date, char divider){
         SimpleDateFormat format = new SimpleDateFormat("yyyy" + divider + "MM" + divider +"dd");
         return format.format(date.getTime());
     }
