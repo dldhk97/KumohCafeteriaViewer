@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 
 import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
 
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable {
 
     String itemName;
     ItemType itemType;

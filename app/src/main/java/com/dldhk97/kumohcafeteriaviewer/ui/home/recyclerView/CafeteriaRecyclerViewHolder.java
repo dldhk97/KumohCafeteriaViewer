@@ -12,12 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
-import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
-import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
-import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
-import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
+import com.dldhk97.kumohcafeteriaviewer.ui.home.PopupActivity;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
 public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -87,7 +84,7 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         int cnt = 0;
         for(Item item : menu.getItems()){
             foodsStr.append(item.getItemName() + "\n");
-            if(cnt++ > 6)
+            if(cnt++ > 7)
                 break;
         }
 //        textView_menus.setText(foodsStr.toString());
@@ -102,11 +99,10 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         try{
             int pos = getLayoutPosition();
             if(pos != RecyclerView.NO_POSITION){
-//            UIHandler.getInstance().showAlert(menu.toString());
-//                Intent intent = new Intent(context, PopupActivity.class);
-//                intent.putExtra("menu", menu);
-//                Activity activity = (Activity)context;
-//                activity.startActivityForResult(intent, resultCode);
+                Intent intent = new Intent(context, PopupActivity.class);
+                intent.putExtra("menu", menu);
+                Activity activity = (Activity)context;
+                activity.startActivityForResult(intent, resultCode);
             }
         }
         catch(Exception e){
@@ -134,4 +130,6 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
                 return R.drawable.closed;
         }
     }
+
+
 }

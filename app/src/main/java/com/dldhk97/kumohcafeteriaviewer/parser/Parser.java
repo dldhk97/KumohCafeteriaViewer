@@ -2,14 +2,12 @@ package com.dldhk97.kumohcafeteriaviewer.parser;
 
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
-import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
 import java.util.Calendar;
-import java.util.HashMap;
 
 public class Parser{
     private WeekMenus resultArr;

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class InnerFragment extends Fragment {
-    private WeekMenus weekMenus;
+    private static WeekMenus weekMenus;
     private final CafeteriaType cafeteriaType;
     private Calendar currentDate;
     private ArrayList<Menu> currentMenus = null;
@@ -69,6 +69,7 @@ public class InnerFragment extends Fragment {
             // 주어진 날짜의 식단이 존재하지 않으면 파싱
             if(!isMenuExists(currentDate)){
                 weekMenus = new Parser().parse(cafeteriaType, currentDate);
+                Log.d("aaaaa", "parsed");
             }
 
             // 다시 주어진 날짜의 식단이 존재하는지 체크
@@ -85,7 +86,7 @@ public class InnerFragment extends Fragment {
                     currentMenus = new ArrayList<>();
                 }
 
-                currentMenus.add(new Menu(currentDate, CafeteriaType.UNKNOWN, MealTimeType.UNKNOWN, false));
+                currentMenus.add(new Menu(currentDate, cafeteriaType, MealTimeType.UNKNOWN, false));
             }
 
             cafeteriaRecyclerAdapter.updateData(currentMenus);
@@ -102,6 +103,10 @@ public class InnerFragment extends Fragment {
         if(weekMenus == null)
             return false;
         currentDate = DateUtility.remainOnlyDate(date);
+
+        if(weekMenus.getCafeteriaType() != cafeteriaType){
+            return false;
+        }
 
         ArrayList<Menu> menus = null;
         if(weekMenus.contains(currentDate)){

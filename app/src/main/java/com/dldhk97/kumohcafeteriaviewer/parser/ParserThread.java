@@ -20,14 +20,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ParserThread implements Runnable{
     private static final int TIMEOUT = 2000;
     private String url;
     private CafeteriaType cafeteriaType;
-    private final int TRY_CNT = 2;
+    private final int TRY_CNT = 1;
 
     private IParseCompleteListener parseCompleteListener;
 
