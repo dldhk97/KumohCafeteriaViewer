@@ -1,13 +1,9 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.navigation.NavController;
@@ -17,6 +13,8 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        preloadMenus();
     }
 
     @Override
@@ -55,5 +55,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    // 전후 일주일치 미리 파싱?
+    private void preloadMenus(){
+        Calendar today = Calendar.getInstance();
+        MenuManager.getInstance().preload(today);
     }
 }

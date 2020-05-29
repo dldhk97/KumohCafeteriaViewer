@@ -32,7 +32,6 @@ public class MenuManager {
 
     public WeekMenus getMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate){
         // 찾아서 반환
-        Log.d("aaaaa", "targetDate" + DateUtility.dateToString(date,'.') );
         WeekMenus result = find(cafeteriaType, date);
         if(result == null || isForceUpdate){
             // 없으면 업데이트
@@ -47,7 +46,6 @@ public class MenuManager {
         try{
             WeekMenus weekMenus = new Parser().parse(cafeteriaType, date);
             menusTreeMap.get(cafeteriaType).put(weekMenus.getStartDate(), weekMenus);  // 트리의 키값은 시작일(월요일)임
-            Log.d("aaaaa", "updated Date : " + DateUtility.dateToString(weekMenus.getStartDate(),'.') );
             return true;
         }
         catch(Exception e){
@@ -80,7 +78,6 @@ public class MenuManager {
             startDate.add(Calendar.DATE, -1);
         }
         startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);       // 월요일 구하기
-        Log.d("aaaaa", "Monday Date : " + DateUtility.dateToString(startDate,'.') );
 
         for(Calendar c : weekMenusList.keySet()) {
             if(c.compareTo(startDate) == 0){
@@ -89,6 +86,13 @@ public class MenuManager {
         }
         return null;
     }
+
+    public void preload(Calendar date){
+        for(CafeteriaType cafeteriaType : menusTreeMap.keySet()){
+            update(cafeteriaType, date);
+        }
+    }
+
 
 
 }
