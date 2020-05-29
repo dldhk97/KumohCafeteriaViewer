@@ -21,5 +21,7 @@
 
     <string name="popup_imageView_icon">메뉴 이미지</string>
     <string name="popup_button_link_text">웹페이지 바로가기</string>
+    <string name="popup_textView_date_default">20XX.XX.XX</string>
+
 
 </resources>

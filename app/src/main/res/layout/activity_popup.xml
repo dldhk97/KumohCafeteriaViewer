@@ -57,6 +57,15 @@
             android:textSize="18sp" />
     </ScrollView>
 
+    <TextView
+        android:id="@+id/popup_textView_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/popup_textView_date_background"
+        android:text="@string/popup_textView_date_default"
+        android:textAlignment="center"
+        android:textColor="@color/popup_textView_date_text" />
+
     <Button
         android:id="@+id/popup_button_link"
         android:layout_width="match_parent"

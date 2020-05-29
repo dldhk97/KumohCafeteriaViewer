@@ -20,5 +20,8 @@
     <color name="popup_header_text2_color">#ffc101</color>
     <color name="popup_button_background">#03a9f4</color>
     <color name="popup_button_text">#FFFFFF</color>
+    <color name="popup_textView_date_text">#797979</color>
+    <color name="popup_textView_date_background">#DDDDDD</color>
+
 
 </resources>

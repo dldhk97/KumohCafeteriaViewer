@@ -14,8 +14,7 @@ import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.listener.OnHyperLinkListener;
-
-import java.text.SimpleDateFormat;
+import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
 public class PopupActivity extends Activity {
 
@@ -39,11 +38,15 @@ public class PopupActivity extends Activity {
     }
 
     private void setupUiComponents() throws Exception{
+        // 제목 설정
+        TextView popup_textView_title = findViewById(R.id.popup_textView_title);
+        popup_textView_title.setText(menu.getCafeteriaType().toString());
+
         //날짜 설정
-        TextView textView_title = findViewById(R.id.popup_textView_title);
-        SimpleDateFormat format = new SimpleDateFormat("YYYY.MM.dd");
-        String dateStr = format.format(menu.getDate().getTime());
-        textView_title.setText(dateStr);
+        TextView popup_textView_date = findViewById(R.id.popup_textView_date);
+        String dateStr = DateUtility.dateToString(menu.getDate(), '.');
+        popup_textView_date.setText(dateStr);
+
 
         // 식사시간 설정
         TextView popup_textView_mealTime = findViewById(R.id.popup_textView_mealTime);
@@ -64,7 +67,7 @@ public class PopupActivity extends Activity {
         // 하이퍼링크 버튼 설정
         Button popup_button_link = findViewById(R.id.popup_button_link);
         String url = menu.getCafeteriaType().getURL();                          // url 설정
-        url += "mode=menuList&srDt=" + format.format(menu.getDate().getTime()); // 해당 날짜로 설정
+        url += "mode=menuList&srDt=" + dateStr; // 해당 날짜로 설정
         popup_button_link.setOnClickListener(new OnHyperLinkListener(this, url));
     }
 }
