@@ -12,7 +12,7 @@ import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 
-public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
     private Item item;
     private ImageView item_item_favoriteIcon;
@@ -27,7 +27,7 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
 
 
             // 클릭 리스너 설정
-            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
         catch(Exception e){
             UIHandler.getInstance().showAlert("[CafeteriaRecyclerViewHolder.constructor]" + e.getMessage());
@@ -48,7 +48,6 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
             }
         }
 
-
         // 아이템 명 설정
         item_item_name.setText(item.getItemName());
 
@@ -56,8 +55,12 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
 
 
     @Override
-    public void onClick(View view) {
-
+    public boolean onLongClick(View view) {
+        if(item.getItemType() == ItemType.FOOD){
+            boolean isFavorite = false;
+            item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_favorite);
+        }
+        return false;
     }
 }
 

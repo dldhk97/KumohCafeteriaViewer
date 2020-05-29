@@ -3,6 +3,7 @@ package com.dldhk97.kumohcafeteriaviewer;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 import com.google.android.material.navigation.NavigationView;
 

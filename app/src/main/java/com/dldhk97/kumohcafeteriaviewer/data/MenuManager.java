@@ -1,11 +1,8 @@
-package com.dldhk97.kumohcafeteriaviewer;
-
-import android.util.Log;
+package com.dldhk97.kumohcafeteriaviewer.data;
 
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
-import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
 import java.util.Calendar;
 import java.util.TreeMap;
