@@ -68,7 +68,7 @@ public class InnerFragment extends Fragment {
             MenuManager.getInstance().getMenus(cafeteriaType, currentDate, false);
         }
         catch(Exception e){
-
+            e.printStackTrace();
         }
 
     }
@@ -85,6 +85,7 @@ public class InnerFragment extends Fragment {
             // 다시 주어진 날짜의 식단이 존재하는지 체크
             if(isMenuExists(currentDate)){
                 // 있으면 메뉴 넣음.
+
                 currentMenus = weekMenus.get(currentDate).getMenus();
             }
             else{

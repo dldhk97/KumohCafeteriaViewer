@@ -1,8 +1,11 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
+import android.util.Log;
+
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
+import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
 import java.util.Calendar;
 import java.util.TreeMap;
@@ -29,6 +32,7 @@ public class MenuManager {
 
     public WeekMenus getMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate){
         // 찾아서 반환
+        Log.d("aaaaa", "targetDate" + DateUtility.dateToString(date,'.') );
         WeekMenus result = find(cafeteriaType, date);
         if(result == null || isForceUpdate){
             // 없으면 업데이트
@@ -43,6 +47,7 @@ public class MenuManager {
         try{
             WeekMenus weekMenus = new Parser().parse(cafeteriaType, date);
             menusTreeMap.get(cafeteriaType).put(weekMenus.getStartDate(), weekMenus);  // 트리의 키값은 시작일(월요일)임
+            Log.d("aaaaa", "updated Date : " + DateUtility.dateToString(weekMenus.getStartDate(),'.') );
             return true;
         }
         catch(Exception e){
@@ -54,17 +59,34 @@ public class MenuManager {
     private WeekMenus find(CafeteriaType cafeteriaType, Calendar date){
         TreeMap<Calendar, WeekMenus> weekMenusList = menusTreeMap.get(cafeteriaType);
 
-        // 요청한 날짜가 포함된 주의 월요일(=시작일) 구하기
-        Calendar monday = (Calendar)date.clone();
-        monday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-
-        // 그 주가 포함된 항목이 있으면 반환
-        for(Calendar c : weekMenusList.keySet()){
-            if(c.compareTo(monday) == 0){
-                return weekMenusList.get(c);
-            }
+        // 요청한 날짜가 포함된 주의 시작일 찾기
+        Calendar startDate = containsWeek(cafeteriaType, date);
+        if(startDate == null){
+            return null;
         }
 
+        // 그 주가 포함된 항목이 있으면 반환
+        return weekMenusList.get(startDate);
+    }
+
+
+    private Calendar containsWeek(CafeteriaType cafeteriaType, Calendar date){
+        TreeMap<Calendar, WeekMenus> weekMenusList = menusTreeMap.get(cafeteriaType);
+
+        // 요청한 날짜가 포함된 주의 월요일(=시작일) 구하기
+        Calendar startDate = (Calendar)date.clone();
+        if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+            // 일요일이면 하루 빼고 월요일 구해야댐.
+            startDate.add(Calendar.DATE, -1);
+        }
+        startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);       // 월요일 구하기
+        Log.d("aaaaa", "Monday Date : " + DateUtility.dateToString(startDate,'.') );
+
+        for(Calendar c : weekMenusList.keySet()) {
+            if(c.compareTo(startDate) == 0){
+                return c;
+            }
+        }
         return null;
     }
 

@@ -144,7 +144,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 currentDate.add(Calendar.DATE, -1);
-                updateCurrentDateView();
                 bottom_sheet_datepicker.updateDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
             }
         });
@@ -152,7 +151,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 currentDate.add(Calendar.DATE, 1);
-                updateCurrentDateView();
                 bottom_sheet_datepicker.updateDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
             }
         });
@@ -163,7 +161,8 @@ public class HomeFragment extends Fragment {
         try{
             bottom_sheet_nowdate.setText(DateUtility.dateToString(currentDate, '.'));
             for(InnerFragment frag : pages){
-                frag.updateMenus(currentDate);
+                if(!frag.isHidden())
+                    frag.updateMenus(currentDate);
             }
         }
         catch(Exception e){
