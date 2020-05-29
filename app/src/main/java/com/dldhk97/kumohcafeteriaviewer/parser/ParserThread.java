@@ -12,6 +12,7 @@ import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
+import com.dldhk97.kumohcafeteriaviewer.utility.ItemUtility;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -107,7 +108,7 @@ public class ParserThread implements Runnable{
                     Elements itemDetailHtml = menuHtml.select("ul > li");
                     for(Element itemElemHtml : itemDetailHtml){
                         String itemName = itemElemHtml.text();
-                        ItemType itemType = getItemType(itemName);
+                        ItemType itemType = ItemUtility.getItemType(itemName);
                         currentMenu.addItem(new Item(itemName, itemType));
                     }
                 }
@@ -136,22 +137,6 @@ public class ParserThread implements Runnable{
             parseCompleteListener.onParseComplete(ExceptionType.PARSE_FAILED, null);
         }
 
-    }
-
-    // 항목 이름으로 음식/가격/시간/기타 등으로 항목의 타입 구별
-    private ItemType getItemType(String itemName){
-//        Pattern pattern = Pattern.compile("([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])");
-//        Matcher matcher = pattern.matcher(itemName);
-//        if(matcher.find()){
-//            return ItemType.TIME;
-//        }
-//        if(itemName.startsWith("[") && itemName.endsWith("]")){
-//            return ItemType.ETC;
-//        }
-//        if(itemName.matches("-*")){
-//            return ItemType.UNKNOWN;
-//        }
-        return ItemType.FOOD;
     }
 
 

@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
         bottom_sheet_nowdate = root.findViewById(R.id.bottom_sheet_currentDate);
 
         // 선택된 날짜 텍스트뷰 설정
-        bottom_sheet_nowdate.setText(DateUtility.dateToString(currentDate, '.'));
+        setBottomSheetNowDate(currentDate);
         bottom_sheet_nowdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,7 +159,7 @@ public class HomeFragment extends Fragment {
     // 선택한 날짜가 변경되었을 때
     private void updateCurrentDateView(){
         try{
-            bottom_sheet_nowdate.setText(DateUtility.dateToString(currentDate, '.'));
+            setBottomSheetNowDate(currentDate);
             for(InnerFragment frag : pages){
                 if(!frag.isHidden())
                     frag.updateMenus(currentDate);
@@ -168,6 +168,12 @@ public class HomeFragment extends Fragment {
         catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void setBottomSheetNowDate(Calendar date){
+        String dayOfWeek = DateUtility.getDayOfWeek(date);
+        String dateStr = DateUtility.dateToString(date, '.');
+        bottom_sheet_nowdate.setText(dateStr + "(" + dayOfWeek + ")");
     }
 
 

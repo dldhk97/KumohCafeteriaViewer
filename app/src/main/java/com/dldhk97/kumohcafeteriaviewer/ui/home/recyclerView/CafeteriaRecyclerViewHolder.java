@@ -48,10 +48,6 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
     public void onBind(Menu menu)throws Exception{
         this.menu = menu;
 
-        // 날짜 설정
-//        String dateStr = DateUtility.DateToString(menu.getDate(), '.');
-//        recycleritem_menu_mealTime.setText(dateStr);
-
         // 식사 가능 시간 설정
         String eatableMealTime = "";
         switch(menu.getMealTimeType()){
@@ -66,6 +62,7 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
                 break;
         }
 
+        // 조식/중식/석식 표시
         recycleritem_menu_time.setText(eatableMealTime);
 
         // 카드뷰 배경 이미지 설정
@@ -84,8 +81,11 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         int cnt = 0;
         for(Item item : menu.getItems()){
             foodsStr.append(item.getItemName() + "\n");
-            if(cnt++ > 7)
+            if(cnt++ > 7){
+                foodsStr.append("...");
                 break;
+            }
+
         }
 //        textView_menus.setText(foodsStr.toString());
         recycleritem_menu_title.setText(foodsStr.toString());
