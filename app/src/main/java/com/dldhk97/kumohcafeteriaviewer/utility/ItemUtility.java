@@ -19,6 +19,9 @@ public class ItemUtility {
         if(itemName.matches("-*")){
             return ItemType.DIVIDER;
         }
+        if(itemName.contains("식당 운영 없음") || itemName.contains("식사정보 없음")){
+            return ItemType.ETC;
+        }
         return ItemType.FOOD;
     }
 }

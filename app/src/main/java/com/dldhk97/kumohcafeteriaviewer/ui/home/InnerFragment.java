@@ -99,7 +99,7 @@ public class InnerFragment extends Fragment {
                 }
 
                 Menu emptyMenu = new Menu(currentDate, cafeteriaType, MealTimeType.UNKNOWN, false);
-                emptyMenu.addItem(new Item("식사정보 없음", ItemType.FOOD));
+                emptyMenu.addItem(new Item("식사정보 없음", ItemType.ETC));
                 currentMenus.add(emptyMenu);
             }
 
