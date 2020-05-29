@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dldhk97.kumohcafeteriaviewer.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
+import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
+import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.recyclerView.CafeteriaRecyclerAdapter;
@@ -97,7 +99,9 @@ public class InnerFragment extends Fragment {
                     currentMenus = new ArrayList<>();
                 }
 
-                currentMenus.add(new Menu(currentDate, cafeteriaType, MealTimeType.UNKNOWN, false));
+                Menu emptyMenu = new Menu(currentDate, cafeteriaType, MealTimeType.UNKNOWN, false);
+                emptyMenu.addItem(new Item("식사정보 없음", ItemType.FOOD));
+                currentMenus.add(emptyMenu);
             }
 
             cafeteriaRecyclerAdapter.updateData(currentMenus);
