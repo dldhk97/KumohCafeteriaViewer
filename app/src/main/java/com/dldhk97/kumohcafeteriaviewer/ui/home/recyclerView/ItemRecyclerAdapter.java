@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
-import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 
 import java.util.ArrayList;
 

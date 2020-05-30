@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
+import com.dldhk97.kumohcafeteriaviewer.data.FavoriteManager;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.PopupActivity;
@@ -80,14 +81,15 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         StringBuilder foodsStr = new StringBuilder();
         int cnt = 0;
         for(Item item : menu.getItems()){
-            foodsStr.append(item.getItemName() + "\n");
+            Item isFavorite = FavoriteManager.getInstance().findFavorite(item.getItemName());
+            String favoriteEmoji = isFavorite != null ? "♥ " : "";
+            foodsStr.append(favoriteEmoji + item.getItemName() + "\n");
             if(cnt++ > 7){
                 foodsStr.append("...");
                 break;
             }
 
         }
-//        textView_menus.setText(foodsStr.toString());
         recycleritem_menu_title.setText(foodsStr.toString());
 
     }

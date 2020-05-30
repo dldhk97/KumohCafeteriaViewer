@@ -47,6 +47,7 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
 
         // 찜된건지 체크해서 하트모양 표시
         if(item.getItemType() == ItemType.FOOD){
+            item_item_favoriteIcon.setVisibility(View.VISIBLE);
             isFavorite = FavoriteManager.getInstance().findFavorite(item.getItemName()) != null ? true : false;
             if(isFavorite){
                 item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_favorite);
@@ -54,6 +55,9 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
             else{
                 item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_notfavorite);
             }
+        }
+        else{
+            item_item_favoriteIcon.setVisibility(View.GONE);
         }
 
         // 아이템 명 설정
@@ -78,6 +82,7 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
             }
             // 찜에 추가
             UIHandler.getInstance().showToast(toastMsg);
+            adapter.notifyDataSetChanged();
 
         }
         return false;

@@ -10,13 +10,10 @@ import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DatabaseManager {
-    static final String DB_KUMOH = "KumohCafeteriaViewer.db"; //DB이름
-    static final String TABLE_FAVORITES = "Favorites"; //Table 이름
-    static final String KEY_COLUMN = "ItemName";
 
-    static final int DB_VERSION = 1;
 
     private static DatabaseManager _instance;
     private SQLiteDatabase mydatabase = null;
@@ -44,12 +41,26 @@ public class DatabaseManager {
             }
 
             //DB Open
-            mydatabase = context.openOrCreateDatabase(DB_KUMOH, context.MODE_PRIVATE,null);
+            mydatabase = context.openOrCreateDatabase(DatabaseInfo.DB_NAME.toString(), context.MODE_PRIVATE,null);
 
-            //Table 생성
-            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_FAVORITES +
+            // Favorite Table 생성
+            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_FAVORITES +
                     "(" + "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    KEY_COLUMN + " TEXT);");
+                    DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME + " TEXT);");
+
+            // Menus Table 생성
+            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_MENUS +
+                    "(" + "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME + " TEXT);");
+
+            // Alarm Table 생성
+            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_ALARMS +
+                    "(" + "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DatabaseInfo.TABLE_ALARMS_COLUMN_NAME + " TEXT," +
+                    DatabaseInfo.TABLE_ALARMS_COLUMN_MEALTIME + " TEXT," +
+                    DatabaseInfo.TABLE_ALARMS_COLUMN_CAFETERIA + " TEXT," +
+                    DatabaseInfo.TABLE_ALARMS_COLUMN_TIME + " TEXT," +
+                    DatabaseInfo.TABLE_ALARMS_COLUMN_ACTIVATED + " TEXT);");
         }
         catch(Exception e){
             UIHandler.getInstance().showAlert(e.getMessage());
@@ -57,20 +68,26 @@ public class DatabaseManager {
 
     }
 
-    public boolean insert(String itemName){
-        ContentValues addRowValue = new ContentValues();
-        addRowValue.put(KEY_COLUMN, itemName);
+    public boolean insert(String table , ArrayList<String> columns, ArrayList<String> values){
+        if(columns.size() != values.size())
+            return false;
 
-        return mydatabase.insert(TABLE_FAVORITES, null, addRowValue) > 0 ? true : false;
+        ContentValues addRowValue = new ContentValues();
+        for(int i = 0 ; i < columns.size() ; i++){
+            addRowValue.put(columns.get(0), values.get(0));
+        }
+
+        return mydatabase.insert(table, null, addRowValue) > 0 ? true : false;
     }
 
-    public ArrayList<String> getFavorites(){
-        ArrayList<String> result = new ArrayList<>();
+    public ArrayList<ArrayList<String>> select(String table, ArrayList<String> columns, String where){
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
 
-        String[] columns = new String[] {KEY_COLUMN};
-        Cursor cursor = mydatabase.query(TABLE_FAVORITES,
-                columns,
-                null,
+        String[] cols = new String[columns.size()];
+        cols = columns.toArray(cols);
+        Cursor cursor = mydatabase.query(table,
+                cols,
+                where,
                 null,
                 null,
                 null,
@@ -80,43 +97,51 @@ public class DatabaseManager {
         {
             while (cursor.moveToNext())
             {
-                String currentData;
-                currentData = cursor.getString(0);
-                result.add(currentData);
+                ArrayList<String> row = new ArrayList<>();
+                for(int i = 0 ; i < columns.size() ; i++){
+                    row.add(cursor.getString(i));
+                }
+                result.add(row);
             }
         }
         return result.size() > 0 ? result : null;
     }
 
-    public String findFavorite(String itemName){
-        String[] columns = new String[] {KEY_COLUMN};
-        Cursor cursor = null;
-        try{
-            cursor = mydatabase.query(TABLE_FAVORITES,
-                    columns,
-                    KEY_COLUMN + " = '" + itemName + "'",
-                    null,
-                    null,
-                    null,
-                    null);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+//    public ArrayList<String> select(String table, ArrayList<String> columns, String where){
+//        Cursor cursor = null;
+//        String[] cols = new String[columns.size()];
+//        cols = columns.toArray(cols);
+//
+//        ArrayList<String> result = new ArrayList<>();
+//
+//        try{
+//            cursor = mydatabase.query(table,
+//                    cols,
+//                    where,
+//                    null,
+//                    null,
+//                    null,
+//                    null);
+//        }
+//        catch(Exception e){
+//            e.printStackTrace();
+//        }
+//
+//        // TABLE_FAVORITES_COLUMN_ITEMNAME + " = '" + itemName + "'"
+//
+//
+//        if(cursor != null)
+//        {
+//            while (cursor.moveToNext())
+//            {
+//                return cursor.getString(0);
+//            }
+//        }
+//        return null;
+//    }
 
-
-        if(cursor != null)
-        {
-            while (cursor.moveToNext())
-            {
-                return cursor.getString(0);
-            }
-        }
-        return null;
-    }
-
-    public boolean deleteFavorite(String itemName){
-        String sql = "delete from " + TABLE_FAVORITES + " where " + KEY_COLUMN + " = '" + itemName + "';";
+    public boolean deleteRow(String table, String where){
+        String sql = "delete from " + table + " where " + where;
         mydatabase.execSQL(sql);
         return false;
     }

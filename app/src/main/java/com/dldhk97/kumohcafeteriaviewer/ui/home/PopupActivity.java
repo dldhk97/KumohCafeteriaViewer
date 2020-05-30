@@ -50,21 +50,17 @@ public class PopupActivity extends Activity {
         String dayOfWeek = DateUtility.getDayOfWeek(menu.getDate());
         popup_textView_date.setText(dateStr + "(" + dayOfWeek + ")");
 
-
         // 식사시간(조식/중식/석식) 설정
         TextView popup_textView_mealTime = findViewById(R.id.popup_textView_mealTime);
-
         popup_textView_mealTime.setText(menu.getMealTimeType().toString());
 
-        // 즐겨찾기 버튼 아이콘 설정
-//        ImageButton popup_imageView_icon = findViewById(R.id.popup_imgButton_favorite);
-//        popup_imageView_icon.setImageResource(R.drawable.ic_activity_popup_favorite);
 
         // 음식 리사이클러뷰 표시
         RecyclerView popup_recyclerView_items = findViewById(R.id.popup_recyclerView_items);
         popup_recyclerView_items.setLayoutManager(new LinearLayoutManager(this));
 
         ItemRecyclerAdapter itemRecyclerAdapter = new ItemRecyclerAdapter(this, menu.getItems());
+        popup_recyclerView_items.setItemViewCacheSize(menu.getItems().size());
         popup_recyclerView_items.setAdapter(itemRecyclerAdapter);
 
         // 하이퍼링크 버튼 설정

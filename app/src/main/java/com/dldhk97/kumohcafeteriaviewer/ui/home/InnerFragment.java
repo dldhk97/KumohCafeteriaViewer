@@ -83,21 +83,6 @@ public class InnerFragment extends Fragment {
         return root;
     }
 
-//    // 디스플레이에 보이는 메뉴 업데이트
-//    public void newUpdateMenus(Calendar date){
-//        try{
-//            // 요청한 날짜로 세팅
-//            currentDate = DateUtility.remainOnlyDate(date);
-//
-//            // MenuManager한테 업데이트 요청.
-//            MenuManager.getInstance().getMenus(cafeteriaType, currentDate, false);
-//        }
-//        catch(Exception e){
-//            e.printStackTrace();
-//        }
-//
-//    }
-
     // 날짜 변경 요청 시 호출됨. 리사이클러 뷰 내 항목 업데이트함.
     public void updateMenus(Calendar date, boolean isForceUpdate){
         try {

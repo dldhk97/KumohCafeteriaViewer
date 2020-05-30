@@ -16,17 +16,17 @@
             android:id="@+id/popup_textView_mealTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_weight="0"
+            android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="@string/textView_mealTime_default"
             android:textColor="@color/popup_header_text2_color"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/item_item_name"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/item_item_name"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
