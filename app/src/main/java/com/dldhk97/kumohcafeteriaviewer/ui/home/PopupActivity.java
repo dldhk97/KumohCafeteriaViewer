@@ -25,13 +25,13 @@ public class PopupActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_popup);
-
-        Intent intent = getIntent();
-        menu = (Menu)intent.getSerializableExtra("menu");
-
         try{
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.activity_popup);
+
+            Intent intent = getIntent();
+            menu = (Menu)intent.getSerializableExtra("menu");
+
             setupUiComponents();
         }
         catch (Exception e){

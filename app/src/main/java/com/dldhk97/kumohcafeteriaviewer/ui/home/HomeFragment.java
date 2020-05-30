@@ -1,7 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,6 +184,12 @@ public class HomeFragment extends Fragment {
         bottom_sheet_nowdate.setText(dateStr + "(" + dayOfWeek + ")");
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        for(InnerFragment f : pages){
+//            f.setNewCafeteriaRecyclerAdapter(this.getContext());
+        }
+    }
 }
 

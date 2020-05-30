@@ -1,5 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.notification;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
         return root;
     }
 
+    // 알림 추가
     @Override
     public void onClick(View view) {
         try{
@@ -73,6 +75,27 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             UIHandler.getInstance().showToast(e.getMessage());
             e.printStackTrace();
         }
+    }
 
+    private final int NOTIFICATION_POPUP_REQUEST_CODE = 3;
+    private final int NOTIFICATION_POPUP_RESULT_CODE = 4;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try{
+            if (requestCode == NOTIFICATION_POPUP_REQUEST_CODE) {
+                if (resultCode == NOTIFICATION_POPUP_RESULT_CODE) {
+                    NotificationItem notificationItem = (NotificationItem)data.getSerializableExtra("notificationItem");
+
+                    boolean isSucceed = NotificationItemManager.getInstance().updateItem(notificationItem);
+                    notificationRecyclerAdapter.notifyDataSetChanged();
+                }
+            }
+        }
+        catch (Exception e){
+            UIHandler.getInstance().showToast(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

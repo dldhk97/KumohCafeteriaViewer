@@ -111,8 +111,28 @@ public class DatabaseManager {
     }
 
     public boolean deleteRow(String table, String where){
-        String sql = "delete from " + table + " where " + where;
-        mydatabase.execSQL(sql);
-        return false;
+        try{
+            String sql = "delete from " + table + " where " + where;
+            mydatabase.execSQL(sql);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean updateItem(String table, String set,  String where){
+        try{
+            String sql = "update " + table + " set " + set + " where " + where;
+            mydatabase.execSQL(sql);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,10 @@ public class InnerFragment extends Fragment {
     }
 
     public CafeteriaRecyclerAdapter getCafeteriaRecyclerAdapter(){return cafeteriaRecyclerAdapter;}
+
+//    public void setNewCafeteriaRecyclerAdapter(Context context){
+//        cafeteriaRecyclerAdapter = new CafeteriaRecyclerAdapter(context, currentMenus);
+//    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,

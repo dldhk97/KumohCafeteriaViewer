@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".ui.home.PopupActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" />           <!-- 홈 팝업 액티비티를 위함 -->
         <activity android:name=".ui.favorite.PopupActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" />       <!-- 찜 팝업 액티비티를 위함 -->
+        <activity android:name=".ui.notification.PopupActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" />       <!-- 알림 팝업 액티비티를 위함 -->
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />                  <!-- 인터넷 연결을 위함 -->

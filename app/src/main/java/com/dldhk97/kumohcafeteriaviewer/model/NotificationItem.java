@@ -3,7 +3,9 @@ package com.dldhk97.kumohcafeteriaviewer.model;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
 
-public class NotificationItem {
+import java.io.Serializable;
+
+public class NotificationItem implements Serializable {
     private String id;
     private String name;
     private CafeteriaType cafeteriaType;

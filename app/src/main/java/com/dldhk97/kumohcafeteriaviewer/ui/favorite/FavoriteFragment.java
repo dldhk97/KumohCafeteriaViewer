@@ -52,15 +52,15 @@ public class FavoriteFragment extends Fragment implements View.OnClickListener{
         return root;
     }
 
-    private final int POPUP_RESULT_CODE = 1;
-    private final int POPUP_RESULT_CODE_CONFIRMED = 2;
+    private final int FAVORITE_POPUP_REQUEST_CODE = 1;
+    private final int FAVORITE_POPUP_RESULT_CODE = 2;
 
     @Override
     public void onClick(View view) {
         try{
             Intent intent = new Intent(container.getContext(), PopupActivity.class);
             Activity activity = (Activity)container.getContext();
-            activity.startActivityForResult(intent, POPUP_RESULT_CODE);
+            activity.startActivityForResult(intent, FAVORITE_POPUP_REQUEST_CODE);
         }
         catch (Exception e){
             UIHandler.getInstance().showToast(e.getMessage());
@@ -72,8 +72,8 @@ public class FavoriteFragment extends Fragment implements View.OnClickListener{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try{
-            if (requestCode == POPUP_RESULT_CODE) {
-                if (resultCode == POPUP_RESULT_CODE_CONFIRMED) {
+            if (requestCode == FAVORITE_POPUP_REQUEST_CODE) {
+                if (resultCode == FAVORITE_POPUP_RESULT_CODE) {
                     String itemName = data.getStringExtra("ItemName");
                     boolean isSucceed = FavoriteManager.getInstance().addItem(new Item(itemName, ItemType.FOOD));
                     String toastMsg = isSucceed ? itemName + " 이(가) 찜 등록되었습니다." : itemName + " 을(를) 찜 등록하는데 실패했습니다.";

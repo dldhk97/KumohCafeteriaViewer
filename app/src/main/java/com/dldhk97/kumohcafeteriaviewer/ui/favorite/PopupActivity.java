@@ -14,7 +14,7 @@ import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 
 public class PopupActivity extends Activity {
-    private final int POPUP_RESULT_CODE_CONFIRMED = 2;
+    private final int FAVORITE_POPUP_RESULT_CODE = 2;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +30,7 @@ public class PopupActivity extends Activity {
     }
 
     private void setupUiComponents() throws Exception{
-        // 제목 설정
+        // 에딧텍스트 설정
         final EditText favorite_popup_editText = findViewById(R.id.favorite_popup_editText);
 
         // 버튼 설정
@@ -45,7 +45,7 @@ public class PopupActivity extends Activity {
                 }
                 Intent intent = new Intent();
                 intent.putExtra("ItemName", text);
-                setResult(POPUP_RESULT_CODE_CONFIRMED, intent);
+                setResult(FAVORITE_POPUP_RESULT_CODE, intent);
                 finish();
             }
         });

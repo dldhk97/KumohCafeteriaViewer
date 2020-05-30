@@ -61,4 +61,19 @@ public enum MealTimeType {
         }
         return UNKNOWN;
     }
+
+    public static MealTimeType getByIndex(int index){
+        switch (index){
+            case 0:
+                return BREAKFAST;
+            case 1:
+                return LUNCH;
+            case 2:
+                return DINNER;
+            case 3:
+                return ONECOURSE;
+            default:
+                return UNKNOWN;
+        }
+    }
 }

@@ -2,9 +2,7 @@ package com.dldhk97.kumohcafeteriaviewer.data;
 
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
-import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
-import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 import com.dldhk97.kumohcafeteriaviewer.model.NotificationItem;
 
 import java.util.ArrayList;
@@ -34,14 +32,8 @@ public class NotificationItemManager {
 
     public boolean addItem(final NotificationItem notificationItem){
         ArrayList<String> columns = getAllColumnsWithoutID();
-        ArrayList<String> values = new ArrayList<String>() {{
-            add(notificationItem.getName());
-            add(notificationItem.getCafeteriaType().toString());
-            add(notificationItem.getMealTimeType().toString());
-            add(String.valueOf(notificationItem.getHour()));
-            add(String.valueOf(notificationItem.getMin()));
-            add(String.valueOf(notificationItem.isActivated()));
-        }};
+
+        ArrayList<String> values = itemToStringArrayWithOutID(notificationItem);
 
         if(findItem(notificationItem) != null){
             return false;
@@ -62,15 +54,7 @@ public class NotificationItemManager {
         ArrayList<NotificationItem> result = new ArrayList<>();
         for(ArrayList<String> row : received){
             if(row != null && row.size() > 0){
-                String id = row.get(0);
-                String name = row.get(1);
-                CafeteriaType cafeteriaType = CafeteriaType.stringTo(row.get(2));
-                MealTimeType mealTimeType = MealTimeType.stringTo(row.get(3));
-                int hour = Integer.parseInt(row.get(4));
-                int min = Integer.parseInt(row.get(5));
-                boolean activated = Boolean.parseBoolean(row.get(6));
-
-                result.add(new NotificationItem(id, name, cafeteriaType, mealTimeType, hour, min, activated));
+                result.add(stringArrayToItem(row));
             }
         }
 
@@ -91,15 +75,7 @@ public class NotificationItemManager {
 
         for(ArrayList<String> row : received){
             if(row != null && row.size() > 0){
-                String rid = row.get(0);
-                String name = row.get(1);
-                CafeteriaType cafeteriaType = CafeteriaType.stringTo(row.get(2));
-                MealTimeType mealTimeType = MealTimeType.stringTo(row.get(3));
-                int hour = Integer.parseInt(row.get(4));
-                int min = Integer.parseInt(row.get(5));
-                boolean activated = Boolean.parseBoolean(row.get(6));
-
-                return new NotificationItem(rid, name, cafeteriaType, mealTimeType, hour, min, activated);
+                return stringArrayToItem(row);
             }
         }
         return null;
@@ -111,11 +87,35 @@ public class NotificationItemManager {
             UIHandler.getInstance().showToast("NotificationItem delete failed! ID is NULL.");
             return false;
         }
-        String select = DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_ID.toString() + " = '" + id + "'";
+        String where = DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_ID.toString() + " = '" + id + "'";
 
-        DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_NOTIFICATIONITEMS.toString(), select);
+        Boolean isSucceed = DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_NOTIFICATIONITEMS.toString(), where);
         sync();
-        return true;
+        return isSucceed;
+    }
+
+    public boolean updateItem(NotificationItem notificationItem){
+        if(findItem(notificationItem) == null){
+            return false;
+        }
+
+        ArrayList<String> columns = getAllColumnsWithID();
+        ArrayList<String> values =  itemToStringArrayWithID(notificationItem);
+
+        StringBuilder setBuilder = new StringBuilder();
+        for(int i = 0 ; i < columns.size() ; i++){
+            setBuilder.append(columns.get(i) +" = '" + values.get(i).replace("'","''") + "', ");
+        }
+        setBuilder.delete(setBuilder.length()-2, setBuilder.length());
+        String setSQL = setBuilder.toString();
+
+        String id = notificationItem.getId();
+        String where = DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_ID.toString() + " = '" + id + "'";
+
+        Boolean isSucceed = DatabaseManager.getInstance().updateItem(DatabaseInfo.TABLE_NOTIFICATIONITEMS.toString(), setSQL, where);
+        sync();
+
+        return isSucceed;
     }
 
     private ArrayList<String> getAllColumnsWithoutID(){
@@ -142,4 +142,44 @@ public class NotificationItemManager {
         }};
         return columns;
     }
+
+    private NotificationItem stringArrayToItem(final ArrayList<String> array){
+        String id = array.get(0);
+        String name = array.get(1);
+        CafeteriaType cafeteriaType = CafeteriaType.stringTo(array.get(2));
+        MealTimeType mealTimeType = MealTimeType.stringTo(array.get(3));
+        int hour = Integer.parseInt(array.get(4));
+        int min = Integer.parseInt(array.get(5));
+        boolean activated = Boolean.parseBoolean(array.get(6));
+
+        return new NotificationItem(id, name, cafeteriaType, mealTimeType, hour, min, activated);
+    }
+
+    private ArrayList<String> itemToStringArrayWithID(final NotificationItem item){
+        ArrayList<String> array = new ArrayList<String>() {{
+            add(item.getId());
+            add(item.getName());
+            add(item.getCafeteriaType().toString());
+            add(item.getMealTimeType().toString());
+            add(String.valueOf(item.getHour()));
+            add(String.valueOf(item.getMin()));
+            add(String.valueOf(item.isActivated()));
+        }};
+
+        return array;
+    }
+
+    private ArrayList<String> itemToStringArrayWithOutID(final NotificationItem item){
+        ArrayList<String> array = new ArrayList<String>() {{
+            add(item.getName());
+            add(item.getCafeteriaType().toString());
+            add(item.getMealTimeType().toString());
+            add(String.valueOf(item.getHour()));
+            add(String.valueOf(item.getMin()));
+            add(String.valueOf(item.isActivated()));
+        }};
+
+        return array;
+    }
+
 }

@@ -77,4 +77,23 @@ public enum CafeteriaType {
         }
         return UNKNOWN;
     }
+
+    public static CafeteriaType getByIndex(int index){
+        switch (index){
+            case 0:
+                return STUDENT;
+            case 1:
+                return STAFF;
+            case 2:
+                return SNACKBAR;
+            case 3:
+                return PUROOM;
+            case 4:
+                return OREUM1;
+            case 5:
+                return OREUM3;
+            default:
+                return UNKNOWN;
+        }
+    }
 }
