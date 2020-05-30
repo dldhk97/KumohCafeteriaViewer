@@ -40,8 +40,8 @@ public class PopupActivity extends Activity {
     private void setupUiComponents() throws Exception{
         final TimePicker notification_popup_timepicker = findViewById(R.id.notification_popup_timepicker);
 
-        int orgHour = notificationItem.getHour();
-        int orgMin = notificationItem.getMin();
+        final int orgHour = notificationItem.getHour();
+        final int orgMin = notificationItem.getMin();
 
         if(Build.VERSION.SDK_INT < 23)
         {
@@ -71,13 +71,15 @@ public class PopupActivity extends Activity {
                     min = notification_popup_timepicker.getMinute();
                 }
 
-                notificationItem.setHour(hour);
-                notificationItem.setMin(min);
+                if(orgHour != hour || orgMin != min){
+                    notificationItem.setHour(hour);
+                    notificationItem.setMin(min);
 
-                // 결과 반환
-                Intent intent = new Intent();
-                intent.putExtra("notificationItem", notificationItem);
-                setResult(NOTIFICATION_POPUP_RESULT_CODE, intent);
+                    // 결과 반환
+                    Intent intent = new Intent();
+                    intent.putExtra("notificationItem", notificationItem);
+                    setResult(NOTIFICATION_POPUP_RESULT_CODE, intent);
+                }
                 finish();
             }
         });

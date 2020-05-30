@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +44,15 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             // fab 설정
             FloatingActionButton favorite_fab = root.findViewById(R.id.notification_fav);
             favorite_fab.setOnClickListener(this);
+
+            // 뒤로가기 눌렀을 때 반응 없음
+            OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+
+                }
+            };
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         }
         catch (Exception e){
             UIHandler.getInstance().showToast(e.getMessage());
