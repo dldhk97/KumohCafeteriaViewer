@@ -1,7 +1,5 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.favorite.recyclerView;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -28,15 +26,21 @@ public class FavoriteRecyclerViewHolder extends RecyclerView.ViewHolder implemen
         }
         catch(Exception e){
             UIHandler.getInstance().showAlert("[FavoriteRecyclerViewHolder.constructor]" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     public void onBind(Item item)throws Exception{
-        // 음식명 표시
-        recycleritem_favorite_title.setText(item.getItemName());
-
-        // 삭제 버튼 리스너
-        recycleritem_favorite_delete.setOnClickListener(this);
+        try{
+            // 음식명 표시
+            recycleritem_favorite_title.setText(item.getItemName());
+            // 삭제 버튼 리스너
+            recycleritem_favorite_delete.setOnClickListener(this);
+        }
+        catch (Exception e){
+            UIHandler.getInstance().showToast(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private final int resultCode = 1;
@@ -46,15 +50,16 @@ public class FavoriteRecyclerViewHolder extends RecyclerView.ViewHolder implemen
         try{
             int pos = getLayoutPosition();
             if(pos != RecyclerView.NO_POSITION){
-                Item i = FavoriteManager.getInstance().getCurrentFavorites().get(pos);
-                FavoriteManager.getInstance().deleteFavorite(i);
+                Item i = FavoriteManager.getInstance().getCurrentItems().get(pos);
+                FavoriteManager.getInstance().deleteItem(i);
                 String toastMsg = i.getItemName() + "을(를) 찜 해제했습니다.";
                 UIHandler.getInstance().showToast(toastMsg);
                 adapter.notifyDataSetChanged();
             }
         }
         catch(Exception e){
-            UIHandler.getInstance().showAlert("[CafeteriaRecyclerViewHolder.onClick]" + e.getMessage());
+            UIHandler.getInstance().showAlert("[FavoriteRecyclerViewHolder.onClick]" + e.getMessage());
+            e.printStackTrace();
         }
     }
 

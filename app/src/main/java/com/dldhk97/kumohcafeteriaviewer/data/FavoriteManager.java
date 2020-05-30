@@ -8,10 +8,10 @@ import java.util.ArrayList;
 public class FavoriteManager {
     private static FavoriteManager _instance;
 
-    private static ArrayList<Item> currentFavorites = new ArrayList<>();
+    private static ArrayList<Item> currentItems = new ArrayList<>();
 
     private FavoriteManager() {
-        syncFavorites();
+        sync();
     }
 
     public static FavoriteManager getInstance() {
@@ -20,27 +20,31 @@ public class FavoriteManager {
         return _instance;
     }
 
-    public ArrayList<Item> getCurrentFavorites() {
-        return currentFavorites;
+    public ArrayList<Item> getCurrentItems() {
+        return currentItems;
     }
 
-    public boolean addFavorite(final Item item){
-        ArrayList<String> columns = getAllColumns();
+    private void sync(){
+        currentItems = getAllItems();
+    }
+
+    public boolean addItem(final Item item){
+        ArrayList<String> columns = getAllColumnsWithoutID();
         ArrayList<String> values = new ArrayList<String>() {{
             add(item.getItemName());
         }};
 
-        if(findFavorite(item.getItemName()) != null){
+        if(findItem(item.getItemName()) != null){
             return false;
         }
 
         boolean isSucceed = DatabaseManager.getInstance().insert(DatabaseInfo.TABLE_FAVORITES.toString(), columns, values);
-        syncFavorites();
+        sync();
         return isSucceed;
     }
 
-    private ArrayList<Item> getAllFavorites(){
-        ArrayList<String> columns = getAllColumns();
+    private ArrayList<Item> getAllItems(){
+        ArrayList<String> columns = getAllColumnsWithoutID();
         ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_FAVORITES.toString(), columns, null);
         if(received == null)
             return null;
@@ -48,15 +52,16 @@ public class FavoriteManager {
         ArrayList<Item> result = new ArrayList<>();
         for(ArrayList<String> row : received){
             if(row != null && row.size() > 0){
-                result.add(new Item(row.get(0), ItemType.FOOD));
+                String foodName = row.get(0);
+                result.add(new Item(foodName, ItemType.FOOD));
             }
         }
 
         return result.size() > 0 ? result : null;
     }
 
-    public Item findFavorite(String itemName){
-        ArrayList<String> columns = getAllColumns();
+    public Item findItem(String itemName){
+        ArrayList<String> columns = getAllColumnsWithoutID();
         String select = DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString() + " = '" + itemName.replace("'","''") + "'";
 
         ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_FAVORITES.toString(), columns, select);
@@ -66,25 +71,22 @@ public class FavoriteManager {
         ArrayList<Item> result = new ArrayList<>();
         for(ArrayList<String> row : received){
             if(row != null && row.size() > 0){
-                result.add(new Item(row.get(0), ItemType.FOOD));
+                String foodName = row.get(0);
+                return new Item(foodName, ItemType.FOOD);
             }
         }
-        return result.size() > 0 ? result.get(0) : null;
+        return null;
     }
 
-    private void syncFavorites(){
-        currentFavorites = getAllFavorites();
-    }
-
-    public void deleteFavorite(Item item){
+    public void deleteItem(Item item){
         String s = item.getItemName().replace("'","''");
         String select = DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString() + " = '" + s + "'";
 
         DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_FAVORITES.toString(), select);
-        syncFavorites();
+        sync();
     }
 
-    private ArrayList<String> getAllColumns(){
+    private ArrayList<String> getAllColumnsWithoutID(){
         ArrayList<String> columns = new ArrayList<String>() {{
             add(DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString());
         }};

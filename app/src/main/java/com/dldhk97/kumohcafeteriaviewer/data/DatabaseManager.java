@@ -10,7 +10,6 @@ import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DatabaseManager {
 
@@ -56,13 +55,15 @@ public class DatabaseManager {
                     DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME + " TEXT);");
 
             // Alarm Table 생성
-            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_ALARMS +
+            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_NOTIFICATIONITEMS +
                     "(" + "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    DatabaseInfo.TABLE_ALARMS_COLUMN_NAME + " TEXT," +
-                    DatabaseInfo.TABLE_ALARMS_COLUMN_MEALTIME + " TEXT," +
-                    DatabaseInfo.TABLE_ALARMS_COLUMN_CAFETERIA + " TEXT," +
-                    DatabaseInfo.TABLE_ALARMS_COLUMN_TIME + " TEXT," +
-                    DatabaseInfo.TABLE_ALARMS_COLUMN_ACTIVATED + " TEXT);");
+                    DatabaseInfo.TABLE_NOTIFICATIONITEMS + " TEXT," +
+                    DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_NAME + " TEXT," +
+                    DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_CAFETERIA + " TEXT," +
+                    DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_MEALTIME + " TEXT," +
+                    DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_HOUR + " TEXT," +
+                    DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_MIN + " TEXT," +
+                    DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_ACTIVATED + " TEXT);");
         }
         catch(Exception e){
             UIHandler.getInstance().showAlert(e.getMessage());

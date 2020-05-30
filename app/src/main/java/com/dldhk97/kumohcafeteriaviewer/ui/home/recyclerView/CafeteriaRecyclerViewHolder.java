@@ -81,7 +81,7 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         StringBuilder foodsStr = new StringBuilder();
         int cnt = 0;
         for(Item item : menu.getItems()){
-            Item isFavorite = FavoriteManager.getInstance().findFavorite(item.getItemName());
+            Item isFavorite = FavoriteManager.getInstance().findItem(item.getItemName());
             String favoriteEmoji = isFavorite != null ? "♥ " : "";
             foodsStr.append(favoriteEmoji + item.getItemName() + "\n");
             if(cnt++ > 7){

@@ -48,7 +48,7 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
         // 찜된건지 체크해서 하트모양 표시
         if(item.getItemType() == ItemType.FOOD){
             item_item_favoriteIcon.setVisibility(View.VISIBLE);
-            isFavorite = FavoriteManager.getInstance().findFavorite(item.getItemName()) != null ? true : false;
+            isFavorite = FavoriteManager.getInstance().findItem(item.getItemName()) != null ? true : false;
             if(isFavorite){
                 item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_favorite);
             }
@@ -71,12 +71,12 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
         if(item.getItemType() == ItemType.FOOD){
             String toastMsg = null;
             if(isFavorite){
-                FavoriteManager.getInstance().deleteFavorite(item);
+                FavoriteManager.getInstance().deleteItem(item);
                 item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_notfavorite);
                 toastMsg = item.getItemName() + " 을(를) 찜 해제했습니다.";
             }
             else{
-                FavoriteManager.getInstance().addFavorite(item);
+                FavoriteManager.getInstance().addItem(item);
                 item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_favorite);
                 toastMsg = item.getItemName() + " 을(를) 찜하였습니다.";
             }

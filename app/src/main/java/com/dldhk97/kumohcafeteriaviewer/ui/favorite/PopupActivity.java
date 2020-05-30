@@ -18,14 +18,14 @@ public class PopupActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_favorite_popup);
-
         try{
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.activity_favorite_popup);
             setupUiComponents();
         }
         catch (Exception e){
             UIHandler.getInstance().showAlert("[Favorite.PopupActivity.onCreate]\n" + e.getMessage());
+            e.printStackTrace();
         }
     }
 

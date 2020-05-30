@@ -41,4 +41,24 @@ public enum MealTimeType {
                 return super.toString();
         }
     }
+
+    public static MealTimeType stringTo(String s){
+        final String[] mealTimeArr = ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType);
+        if(mealTimeArr[0].equals(s)){
+            return BREAKFAST;
+        }
+        else if(mealTimeArr[1].equals(s)){
+            return LUNCH;
+        }
+        else if(mealTimeArr[2].equals(s)){
+            return DINNER;
+        }
+        else if(mealTimeArr[3].equals(s)){
+            return ONECOURSE;
+        }
+        else if(mealTimeArr[4].equals(s)){
+            return UNKNOWN;
+        }
+        return UNKNOWN;
+    }
 }

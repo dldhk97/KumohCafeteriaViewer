@@ -11,9 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.data.FavoriteManager;
-import com.dldhk97.kumohcafeteriaviewer.model.Item;
-
-import java.util.ArrayList;
 
 public class FavoriteRecyclerAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewHolder> {
     private LayoutInflater inflater;
@@ -36,7 +33,8 @@ public class FavoriteRecyclerAdapter extends RecyclerView.Adapter<FavoriteRecycl
             return new FavoriteRecyclerViewHolder(itemView, this);
         }
         catch (Exception e){
-            UIHandler.getInstance().showAlert("[CafeteriaRecyclerViewHolder.onCreateViewHolder]\n" + e.getMessage());
+            UIHandler.getInstance().showAlert("[FavoriteRecyclerAdapter.onCreateViewHolder]\n" + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
@@ -44,21 +42,29 @@ public class FavoriteRecyclerAdapter extends RecyclerView.Adapter<FavoriteRecycl
     @Override
     public void onBindViewHolder(@NonNull FavoriteRecyclerViewHolder holder, int position) {
         try{
-            if(FavoriteManager.getInstance().getCurrentFavorites() != null)
-                holder.onBind(FavoriteManager.getInstance().getCurrentFavorites().get(position));
+            if(FavoriteManager.getInstance().getCurrentItems() != null)
+                holder.onBind(FavoriteManager.getInstance().getCurrentItems().get(position));
 
         }
         catch(Exception e){
-            UIHandler.getInstance().showToast("[Adapter.onBindViewHolder]\n" + e.getMessage());
+            UIHandler.getInstance().showToast("[FavoriteRecyclerAdapter.onBindViewHolder]\n" + e.getMessage());
+            e.printStackTrace();
         }
 
     }
 
     @Override
     public int getItemCount() {
-        if(FavoriteManager.getInstance().getCurrentFavorites() != null){
-            return FavoriteManager.getInstance().getCurrentFavorites().size();
+        try{
+            if(FavoriteManager.getInstance().getCurrentItems() != null){
+                return FavoriteManager.getInstance().getCurrentItems().size();
+            }
         }
+        catch (Exception e){
+            UIHandler.getInstance().showToast(e.getMessage());
+            e.printStackTrace();
+        }
+
         return 0;
     }
 }

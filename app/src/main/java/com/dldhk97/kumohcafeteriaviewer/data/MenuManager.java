@@ -150,7 +150,7 @@ public class MenuManager {
 
     // 한 음식을 추가함.
     private boolean addItemToDB(final Menu menu, final Item item){
-        ArrayList<String> columns = getAllColumns();
+        ArrayList<String> columns = getAllColumnsWithoutID();
         ArrayList<String> values = new ArrayList<String>() {{
             add(DateUtility.dateToString(menu.getDate(), '.'));
             add(menu.getCafeteriaType().toString());
@@ -165,7 +165,7 @@ public class MenuManager {
     }
 
     private ArrayList<Menu> getAllMenusFromDB(){
-        ArrayList<String> columns = getAllColumns();
+        ArrayList<String> columns = getAllColumnsWithoutID();
         ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_MENUS.toString(), columns, null);
         if(received == null)
             return null;
@@ -190,7 +190,7 @@ public class MenuManager {
         return result.size() > 0 ? result : null;
     }
 
-    private ArrayList<String> getAllColumns(){
+    private ArrayList<String> getAllColumnsWithoutID(){
         ArrayList<String> columns = new ArrayList<String>() {{
             add(DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString());
             add(DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA.toString());

@@ -52,8 +52,29 @@ public enum CafeteriaType {
         }
     }
 
-//
-//   public static String[] getStringArray(){
-//        return MainActivity.getInstance().getResources().getStringArray(R.array.cafeteriaType);
-//    }
+    public static CafeteriaType stringTo(String s){
+        final String[] cafeteriaArr = ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType);
+        if(cafeteriaArr[0].equals(s)){
+            return STUDENT;
+        }
+        else if(cafeteriaArr[1].equals(s)){
+            return STAFF;
+        }
+        else if(cafeteriaArr[2].equals(s)){
+            return SNACKBAR;
+        }
+        else if(cafeteriaArr[3].equals(s)){
+            return PUROOM;
+        }
+        else if(cafeteriaArr[4].equals(s)){
+            return OREUM1;
+        }
+        else if(cafeteriaArr[5].equals(s)){
+            return OREUM3;
+        }
+        else if(cafeteriaArr[6].equals(s)){
+            return UNKNOWN;
+        }
+        return UNKNOWN;
+    }
 }
