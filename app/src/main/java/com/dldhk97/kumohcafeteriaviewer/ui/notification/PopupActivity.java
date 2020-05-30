@@ -72,7 +72,7 @@ public class PopupActivity extends Activity {
                 }
 
                 notificationItem.setHour(hour);
-                notificationItem.setMin(hour);
+                notificationItem.setMin(min);
 
                 // 결과 반환
                 Intent intent = new Intent();

@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.On
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnMealTimeSelectedListener;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnSwitchCheckListener;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
+import com.dldhk97.kumohcafeteriaviewer.utility.TimeUtility;
 
 public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private NotificationRecyclerAdapter adapter;
@@ -31,7 +33,7 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
     private ImageButton recycleritem_notification_delete;
     private Spinner recycleritem_notification_cafeteria;
     private Spinner recycleritem_notification_mealtime;
-    private EditText recycleritem_notification_time;
+    private TextView recycleritem_notification_time;
 
     private NotificationItem currentItem;
     private Context context;
@@ -95,7 +97,7 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
             // 알람시간
             int hour = notificationItem.getHour();
             int min = notificationItem.getMin();
-            String timeStr = hour + ":" + min;
+            String timeStr = TimeUtility.getInstance().hourMinToAMPM(hour, min);
             recycleritem_notification_time.setText(timeStr);
             recycleritem_notification_time.setOnClickListener(new View.OnClickListener() {
                 @Override

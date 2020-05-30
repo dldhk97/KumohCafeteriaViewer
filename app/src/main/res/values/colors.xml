@@ -28,4 +28,8 @@
     <color name="favorite_popup_cancel_background">#797979</color>
     <color name="favorite_popup_confirm_background">#1abc9c</color>
 
+    <color name="recycleritem_notification_time_foreground">#1abc9c</color>
+    <color name="recycleritem_notification_time_background">#EEEEEE</color>
+
+
 </resources>

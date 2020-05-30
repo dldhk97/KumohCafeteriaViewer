@@ -35,6 +35,8 @@
     <string name="notification_popup_textView_title">시간 설정</string>
     <string name="notification_popup_cancel_text">취소</string>
     <string name="notification_popup_confirm_text">설정</string>
+    <string name="recycleritem_notification_time_default">오후 9시 30분</string>
+
 
 
 
