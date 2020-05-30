@@ -7,9 +7,9 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">식단표</string>
-    <string name="menu_notification">식사 알림</string>
-    <string name="menu_favorite">찜목록</string>
+    <string name="menu_home">20161185-지명근(식단표)</string>
+    <string name="menu_notification">20161185-지명근(식사 알림)</string>
+    <string name="menu_favorite">20161185-지명근(찜목록)</string>
 
     <string name="home_second">Home Second</string>
 

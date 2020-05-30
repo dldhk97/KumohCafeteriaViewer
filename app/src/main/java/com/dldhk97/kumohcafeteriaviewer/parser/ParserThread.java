@@ -54,7 +54,7 @@ public class ParserThread implements Runnable{
                 catch (Exception e){
                     Log.d("[ParseThread.run]\n","connection.get()\n" + e.getMessage());
                     if(tryCnt <= 0){
-                        parseCompleteListener.onParseComplete(ExceptionType.PARSE_FAILED, null);
+                        parseCompleteListener.onParseComplete(ExceptionType.NETWORK_DISCONNECTED, null);
                         return;
                     }
                 }

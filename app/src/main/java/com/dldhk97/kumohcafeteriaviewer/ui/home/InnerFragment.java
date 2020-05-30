@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
@@ -41,6 +42,8 @@ public class InnerFragment extends Fragment {
         return cafeteriaType;
     }
 
+    public CafeteriaRecyclerAdapter getCafeteriaRecyclerAdapter(){return cafeteriaRecyclerAdapter;}
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,20 +62,20 @@ public class InnerFragment extends Fragment {
         return root;
     }
 
-    // 디스플레이에 보이는 메뉴 업데이트
-    public void newUpdateMenus(Calendar date){
-        try{
-            // 요청한 날짜로 세팅
-            currentDate = DateUtility.remainOnlyDate(date);
-
-            // MenuManager한테 업데이트 요청.
-            MenuManager.getInstance().getMenus(cafeteriaType, currentDate, false);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-
-    }
+//    // 디스플레이에 보이는 메뉴 업데이트
+//    public void newUpdateMenus(Calendar date){
+//        try{
+//            // 요청한 날짜로 세팅
+//            currentDate = DateUtility.remainOnlyDate(date);
+//
+//            // MenuManager한테 업데이트 요청.
+//            MenuManager.getInstance().getMenus(cafeteriaType, currentDate, false);
+//        }
+//        catch(Exception e){
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     // 날짜 변경 요청 시 호출됨. 리사이클러 뷰 내 항목 업데이트함.
     public void updateMenus(Calendar date){
@@ -86,7 +89,6 @@ public class InnerFragment extends Fragment {
             // 다시 주어진 날짜의 식단이 존재하는지 체크
             if(isMenuExists(currentDate)){
                 // 있으면 메뉴 넣음.
-
                 currentMenus = weekMenus.get(currentDate).getMenus();
             }
             else{
@@ -103,10 +105,15 @@ public class InnerFragment extends Fragment {
                 currentMenus.add(emptyMenu);
             }
 
+            if(cafeteriaRecyclerAdapter == null){
+                return;
+            }
+
             cafeteriaRecyclerAdapter.updateData(currentMenus);
             cafeteriaRecyclerAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
+            UIHandler.getInstance().showToast(e.getMessage());
             e.printStackTrace();
         }
     }

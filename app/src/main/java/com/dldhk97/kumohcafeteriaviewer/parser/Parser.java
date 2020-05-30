@@ -45,7 +45,13 @@ public class Parser{
         }
 
         if(resultException != null){
-            throw new MyException(resultException, "식단표를 파싱하는데 실패했습니다!");
+            switch (resultException){
+                case NETWORK_DISCONNECTED:
+                    throw new MyException(resultException, "금오공과대학교 홈페이지 연결에 실패했습니다!");
+                default:
+                    throw new MyException(resultException, "식단표 파싱에 실패했습니다!");
+            }
+
         }
 
         if(resultArr == null){

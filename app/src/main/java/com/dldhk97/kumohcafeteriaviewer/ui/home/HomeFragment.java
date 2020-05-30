@@ -15,8 +15,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dldhk97.kumohcafeteriaviewer.R;
+import com.dldhk97.kumohcafeteriaviewer.UIHandler;
+import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
+import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
+import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 
@@ -160,9 +164,15 @@ public class HomeFragment extends Fragment {
     private void updateCurrentDateView(){
         try{
             setBottomSheetNowDate(currentDate);
+            // 이번 날짜가 포함되있는지 체크하고, 포함안되있으면 네트워크 테스트
+            if(MenuManager.getInstance().containsWeek(CafeteriaType.STUDENT, currentDate) == null){
+                if(NetworkStatus.checkStatus(this.getContext()) != NetworkStatusType.CONNECTED){
+                    UIHandler.getInstance().showToast("금오공과대학교 홈페이지 연결에 실패했습니다!");
+                    return;
+                }
+            }
             for(InnerFragment frag : pages){
-                if(!frag.isHidden())
-                    frag.updateMenus(currentDate);
+                frag.updateMenus(currentDate);
             }
         }
         catch(Exception e){

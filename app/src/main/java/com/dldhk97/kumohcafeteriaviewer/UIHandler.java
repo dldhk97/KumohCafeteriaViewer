@@ -1,6 +1,5 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,16 +10,17 @@ import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 
 public class UIHandler {
-    private static UIHandler _Instance;
+    private static UIHandler _instance;
     private MainActivity mainActivity;
 
-    public UIHandler(MainActivity mainActivity){
-        this.mainActivity = mainActivity;
-        _Instance = this;
+    public static UIHandler getInstance(){
+        if(_instance == null)
+            _instance = new UIHandler();
+        return _instance;
     }
 
-    public static UIHandler getInstance(){
-        return _Instance;
+    public void setMainActivity(final MainActivity mainActivity){
+        this.mainActivity = mainActivity;
     }
 
     public void showToast(final String msg){

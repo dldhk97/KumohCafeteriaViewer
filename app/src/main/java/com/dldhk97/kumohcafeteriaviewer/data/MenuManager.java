@@ -1,14 +1,21 @@
 package com.dldhk97.kumohcafeteriaviewer.data;
 
+import android.content.Context;
+
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
+import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
+import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
+import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
+import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 
 import java.util.Calendar;
 import java.util.TreeMap;
 
 public class MenuManager {
     private static MenuManager _instance;
+    private static Context context;
     private TreeMap<CafeteriaType, TreeMap<Calendar, WeekMenus>> menusTreeMap;      // <음식점타입<시작일,주메뉴들>>
 
     private MenuManager(){
@@ -27,19 +34,33 @@ public class MenuManager {
         return _instance;
     }
 
-    public WeekMenus getMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate){
+    public void setContext(Context context){
+        this.context = context;
+    }
+
+    public WeekMenus getMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate) throws Exception{
         // 찾아서 반환
         WeekMenus result = find(cafeteriaType, date);
         if(result == null || isForceUpdate){
-            // 없으면 업데이트
-            update(cafeteriaType, date);
+            // 없으면 업데이트하는데, 인터넷 연결안되있으면 걍 null 반환
+            try{
+                if(NetworkStatus.getCurrentStatus() != NetworkStatusType.CONNECTED){
+                    return null;
+                }
+                update(cafeteriaType, date);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                throw e;
+            }
+
             result = find(cafeteriaType, date);
         }
 
         return result;
     }
 
-    public boolean update(CafeteriaType cafeteriaType, Calendar date){
+    public boolean update(CafeteriaType cafeteriaType, Calendar date) throws Exception{
         try{
             WeekMenus weekMenus = new Parser().parse(cafeteriaType, date);
             menusTreeMap.get(cafeteriaType).put(weekMenus.getStartDate(), weekMenus);  // 트리의 키값은 시작일(월요일)임
@@ -47,8 +68,8 @@ public class MenuManager {
         }
         catch(Exception e){
             e.printStackTrace();
+            throw e;
         }
-        return false;
     }
 
     private WeekMenus find(CafeteriaType cafeteriaType, Calendar date){
@@ -65,7 +86,7 @@ public class MenuManager {
     }
 
 
-    private Calendar containsWeek(CafeteriaType cafeteriaType, Calendar date){
+    public Calendar containsWeek(CafeteriaType cafeteriaType, Calendar date){
         TreeMap<Calendar, WeekMenus> weekMenusList = menusTreeMap.get(cafeteriaType);
 
         // 요청한 날짜가 포함된 주의 월요일(=시작일) 구하기
@@ -84,10 +105,21 @@ public class MenuManager {
         return null;
     }
 
-    public void preload(Calendar date){
-        for(CafeteriaType cafeteriaType : menusTreeMap.keySet()){
-            update(cafeteriaType, date);
+    public boolean preload(Calendar date){
+        try{
+            if(NetworkStatus.checkStatus(context) != NetworkStatusType.CONNECTED){
+                return false;
+            }
+
+            for(CafeteriaType cafeteriaType : menusTreeMap.keySet()){
+                update(cafeteriaType, date);
+            }
         }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 

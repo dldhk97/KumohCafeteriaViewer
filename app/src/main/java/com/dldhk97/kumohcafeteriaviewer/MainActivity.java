@@ -44,14 +44,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         // UI핸들러 셋업
-        UIHandler uh = new UIHandler(this);
+        UIHandler uh = UIHandler.getInstance();
+        uh.setMainActivity(this);
 
         // 데이터베이스 매니저 로드
         DatabaseManager dm = DatabaseManager.getInstance();
         dm.setContext(this);
 
         // 이번주 식단표 미리로드
-        preloadMenus();
+        MenuManager mm = MenuManager.getInstance();
+        mm.setContext(this);
+        if(!MenuManager.getInstance().preload(Calendar.getInstance())){
+            UIHandler.getInstance().showToast("금오공과대학교 홈페이지 연결에 실패했습니다!");
+        }
     }
 
     @Override
@@ -66,11 +71,5 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    // 전후 일주일치 미리 파싱?
-    private void preloadMenus(){
-        Calendar today = Calendar.getInstance();
-        MenuManager.getInstance().preload(today);
     }
 }

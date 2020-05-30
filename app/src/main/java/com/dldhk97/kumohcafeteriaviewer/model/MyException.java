@@ -10,6 +10,12 @@ public class MyException extends Exception{
         this.type = type;
     }
 
+    public MyException(ExceptionType type, Exception e){
+        super(e);
+        this.type = type;
+    }
+
+
     @Override
     public String getMessage() {
         return "[" + type.toString() + "]\n" + super.getMessage();
