@@ -63,7 +63,6 @@ public class NetworkStatus {
 
     private static boolean tryConnectToKIT(){
         try{
-            Log.d("aaaaa", "tryConnectToKIT()");
             NetworkCheckTask nct = new NetworkCheckTask();
             Boolean result = (Boolean) nct.execute("").get();
             return result;

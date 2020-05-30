@@ -3,9 +3,7 @@ package com.dldhk97.kumohcafeteriaviewer.data;
 import android.content.Context;
 
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
-import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
-import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
 import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
@@ -16,16 +14,16 @@ import java.util.TreeMap;
 public class MenuManager {
     private static MenuManager _instance;
     private static Context context;
-    private TreeMap<CafeteriaType, TreeMap<Calendar, WeekMenus>> menusTreeMap;      // <음식점타입<시작일,주메뉴들>>
+    private TreeMap<CafeteriaType, TreeMap<Calendar, WeekMenus>> currentMenuMap;      // <음식점타입<시작일,주메뉴들>>
 
     private MenuManager(){
-        menusTreeMap = new TreeMap<>();
-        menusTreeMap.put(CafeteriaType.STUDENT, new TreeMap<Calendar, WeekMenus>());
-        menusTreeMap.put(CafeteriaType.STAFF, new TreeMap<Calendar, WeekMenus>());
-        menusTreeMap.put(CafeteriaType.SNACKBAR, new TreeMap<Calendar, WeekMenus>());
-        menusTreeMap.put(CafeteriaType.PUROOM, new TreeMap<Calendar, WeekMenus>());
-        menusTreeMap.put(CafeteriaType.OREUM1, new TreeMap<Calendar, WeekMenus>());
-        menusTreeMap.put(CafeteriaType.OREUM3, new TreeMap<Calendar, WeekMenus>());
+        currentMenuMap = new TreeMap<>();
+        currentMenuMap.put(CafeteriaType.STUDENT, new TreeMap<Calendar, WeekMenus>());
+        currentMenuMap.put(CafeteriaType.STAFF, new TreeMap<Calendar, WeekMenus>());
+        currentMenuMap.put(CafeteriaType.SNACKBAR, new TreeMap<Calendar, WeekMenus>());
+        currentMenuMap.put(CafeteriaType.PUROOM, new TreeMap<Calendar, WeekMenus>());
+        currentMenuMap.put(CafeteriaType.OREUM1, new TreeMap<Calendar, WeekMenus>());
+        currentMenuMap.put(CafeteriaType.OREUM3, new TreeMap<Calendar, WeekMenus>());
     }
 
     public static MenuManager getInstance() {
@@ -63,7 +61,7 @@ public class MenuManager {
     public boolean update(CafeteriaType cafeteriaType, Calendar date) throws Exception{
         try{
             WeekMenus weekMenus = new Parser().parse(cafeteriaType, date);
-            menusTreeMap.get(cafeteriaType).put(weekMenus.getStartDate(), weekMenus);  // 트리의 키값은 시작일(월요일)임
+            currentMenuMap.get(cafeteriaType).put(weekMenus.getStartDate(), weekMenus);  // 트리의 키값은 시작일(월요일)임
             return true;
         }
         catch(Exception e){
@@ -73,7 +71,7 @@ public class MenuManager {
     }
 
     private WeekMenus find(CafeteriaType cafeteriaType, Calendar date){
-        TreeMap<Calendar, WeekMenus> weekMenusList = menusTreeMap.get(cafeteriaType);
+        TreeMap<Calendar, WeekMenus> weekMenusList = currentMenuMap.get(cafeteriaType);
 
         // 요청한 날짜가 포함된 주의 시작일 찾기
         Calendar startDate = containsWeek(cafeteriaType, date);
@@ -87,7 +85,7 @@ public class MenuManager {
 
 
     public Calendar containsWeek(CafeteriaType cafeteriaType, Calendar date){
-        TreeMap<Calendar, WeekMenus> weekMenusList = menusTreeMap.get(cafeteriaType);
+        TreeMap<Calendar, WeekMenus> weekMenusList = currentMenuMap.get(cafeteriaType);
 
         // 요청한 날짜가 포함된 주의 월요일(=시작일) 구하기
         Calendar startDate = (Calendar)date.clone();
@@ -111,7 +109,7 @@ public class MenuManager {
                 return false;
             }
 
-            for(CafeteriaType cafeteriaType : menusTreeMap.keySet()){
+            for(CafeteriaType cafeteriaType : currentMenuMap.keySet()){
                 update(cafeteriaType, date);
             }
         }

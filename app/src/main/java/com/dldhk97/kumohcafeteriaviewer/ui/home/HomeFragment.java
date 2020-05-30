@@ -62,12 +62,12 @@ public class HomeFragment extends Fragment {
 
     private void initializeInnerFrags(ViewGroup container){
         pages = new ArrayList<>(Arrays.asList(
-                new InnerFragment(CafeteriaType.STUDENT),
-                new InnerFragment(CafeteriaType.STAFF),
-                new InnerFragment(CafeteriaType.SNACKBAR),
-                new InnerFragment(CafeteriaType.PUROOM),
-                new InnerFragment(CafeteriaType.OREUM1),
-                new InnerFragment(CafeteriaType.OREUM3)
+                new InnerFragment(CafeteriaType.STUDENT, this),
+                new InnerFragment(CafeteriaType.STAFF, this),
+                new InnerFragment(CafeteriaType.SNACKBAR, this),
+                new InnerFragment(CafeteriaType.PUROOM, this),
+                new InnerFragment(CafeteriaType.OREUM1, this),
+                new InnerFragment(CafeteriaType.OREUM3, this)
         ));
     }
 
@@ -135,7 +135,7 @@ public class HomeFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                updateCurrentDateView();
+                updateCurrentDateView(false);
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
@@ -161,18 +161,17 @@ public class HomeFragment extends Fragment {
     }
 
     // 선택한 날짜가 변경되었을 때
-    private void updateCurrentDateView(){
+    public void updateCurrentDateView(boolean isForceUpdate){
         try{
             setBottomSheetNowDate(currentDate);
             // 이번 날짜가 포함되있는지 체크하고, 포함안되있으면 네트워크 테스트
             if(MenuManager.getInstance().containsWeek(CafeteriaType.STUDENT, currentDate) == null){
                 if(NetworkStatus.checkStatus(this.getContext()) != NetworkStatusType.CONNECTED){
                     UIHandler.getInstance().showToast("금오공과대학교 홈페이지 연결에 실패했습니다!");
-                    return;
                 }
             }
             for(InnerFragment frag : pages){
-                frag.updateMenus(currentDate);
+                frag.updateMenus(currentDate, isForceUpdate);
             }
         }
         catch(Exception e){
