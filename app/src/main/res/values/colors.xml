@@ -24,4 +24,6 @@
     <color name="popup_textView_date_background">#DDDDDD</color>
     <color name="popup_textView_item_text">#797979</color>
 
+    <color name="recycleritem_favorite_title_color">#008e76</color>
+
 </resources>
