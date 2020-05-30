@@ -25,5 +25,12 @@
     <string name="popup_button_link_text">웹페이지 바로가기</string>
     <string name="popup_textView_date_default">20XX.XX.XX</string>
 
+    <string name="favorite_popup_textView_title">찜 추가</string>
+    <string name="favorite_popup_editText_hint">음식명을 입력해주세요</string>
+
+    <string name="favorite_popup_cancel_text">취소</string>
+    <string name="favorite_popup_confirm_text">추가</string>
+
+
 
 </resources>

@@ -35,7 +35,7 @@ public class PopupActivity extends Activity {
             setupUiComponents();
         }
         catch (Exception e){
-            UIHandler.getInstance().showAlert("[PopupActivity.onCreate]\n" + e.getMessage());
+            UIHandler.getInstance().showAlert("[Home.PopupActivity.onCreate]\n" + e.getMessage());
         }
     }
 

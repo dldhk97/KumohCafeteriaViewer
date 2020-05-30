@@ -1,16 +1,22 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
 import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
+import com.dldhk97.kumohcafeteriaviewer.ui.favorite.FavoriteFragment;
 import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -71,5 +77,20 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Navigation 구조에서 onActivityResult를 받기 위한 똥꼬쑈. Fragment 에서는 onActivityResult가 안되서 Activity에서 받아 호출해야댐.
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().getFragments().get(0);
+        for(Fragment f : navHostFragment.getChildFragmentManager().getFragments()){
+            if(f.getClass() == FavoriteFragment.class){
+                f.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+
+
     }
 }
