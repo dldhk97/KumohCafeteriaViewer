@@ -16,20 +16,10 @@ import com.dldhk97.kumohcafeteriaviewer.R;
 
 public class NotificationFragment extends Fragment {
 
-    private NotificationViewModel notificationViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationViewModel =
-                ViewModelProviders.of(this).get(NotificationViewModel.class);
         View root = inflater.inflate(R.layout.fragment_notification, container, false);
-        final TextView textView = root.findViewById(R.id.text_notification);
-        notificationViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+
         return root;
     }
 }

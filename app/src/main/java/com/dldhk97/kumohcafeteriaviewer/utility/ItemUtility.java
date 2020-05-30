@@ -22,6 +22,9 @@ public class ItemUtility {
         if(itemName.contains("식당 운영 없음") || itemName.contains("식사정보 없음")){
             return ItemType.ETC;
         }
+        if(itemName.startsWith("-")){
+            return ItemType.ETC;
+        }
         return ItemType.FOOD;
     }
 }

@@ -31,6 +31,10 @@
     <string name="favorite_popup_cancel_text">취소</string>
     <string name="favorite_popup_confirm_text">추가</string>
 
+    <string name="recycleritem_notification_time_hint">클릭해서 시간을 정해주세요</string>
+
+
+
 
 
 </resources>

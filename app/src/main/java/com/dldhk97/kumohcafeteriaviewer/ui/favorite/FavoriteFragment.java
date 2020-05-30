@@ -64,11 +64,9 @@ public class FavoriteFragment extends Fragment implements View.OnClickListener{
             if (resultCode == POPUP_RESULT_CODE_CONFIRMED) {
                 String itemName = data.getStringExtra("ItemName");
                 boolean isSucceed = FavoriteManager.getInstance().addFavorite(new Item(itemName, ItemType.FOOD));
-                String toastMsg = isSucceed ? itemName + " 이(가) 찜 등록되었습니다." : " 을(를) 찜 등록하는데 실패했습니다.";
+                String toastMsg = isSucceed ? itemName + " 이(가) 찜 등록되었습니다." : itemName + " 을(를) 찜 등록하는데 실패했습니다.";
                 UIHandler.getInstance().showToast(toastMsg);
                 favoriteRecyclerAdapter.notifyDataSetChanged();
-            } else { // RESULT_CANCEL
-                UIHandler.getInstance().showToast("찜 등록이 취소되었습니다.");
             }
         }
     }

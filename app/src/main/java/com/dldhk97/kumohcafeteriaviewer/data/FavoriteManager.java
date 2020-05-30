@@ -30,6 +30,10 @@ public class FavoriteManager {
             add(item.getItemName());
         }};
 
+        if(findFavorite(item.getItemName()) != null){
+            return false;
+        }
+
         boolean isSucceed = DatabaseManager.getInstance().insert(DatabaseInfo.TABLE_FAVORITES.toString(), columns, values);
         syncFavorites();
         return isSucceed;
@@ -53,7 +57,7 @@ public class FavoriteManager {
 
     public Item findFavorite(String itemName){
         ArrayList<String> columns = getAllColumns();
-        String select = DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString() + " = '" + itemName + "'";
+        String select = DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString() + " = '" + itemName.replace("'","''") + "'";
 
         ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_FAVORITES.toString(), columns, select);
         if(received == null)
@@ -73,7 +77,8 @@ public class FavoriteManager {
     }
 
     public void deleteFavorite(Item item){
-        String select = DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString() + " = '" + item.getItemName() + "'";
+        String s = item.getItemName().replace("'","''");
+        String select = DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString() + " = '" + s + "'";
 
         DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_FAVORITES.toString(), select);
         syncFavorites();

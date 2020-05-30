@@ -76,7 +76,7 @@ public class DatabaseManager {
 
         ContentValues addRowValue = new ContentValues();
         for(int i = 0 ; i < columns.size() ; i++){
-            addRowValue.put(columns.get(0), values.get(0));
+            addRowValue.put(columns.get(i), values.get(i));
         }
 
         return mydatabase.insert(table, null, addRowValue) > 0 ? true : false;
@@ -108,39 +108,6 @@ public class DatabaseManager {
         }
         return result.size() > 0 ? result : null;
     }
-
-//    public ArrayList<String> select(String table, ArrayList<String> columns, String where){
-//        Cursor cursor = null;
-//        String[] cols = new String[columns.size()];
-//        cols = columns.toArray(cols);
-//
-//        ArrayList<String> result = new ArrayList<>();
-//
-//        try{
-//            cursor = mydatabase.query(table,
-//                    cols,
-//                    where,
-//                    null,
-//                    null,
-//                    null,
-//                    null);
-//        }
-//        catch(Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        // TABLE_FAVORITES_COLUMN_ITEMNAME + " = '" + itemName + "'"
-//
-//
-//        if(cursor != null)
-//        {
-//            while (cursor.moveToNext())
-//            {
-//                return cursor.getString(0);
-//            }
-//        }
-//        return null;
-//    }
 
     public boolean deleteRow(String table, String where){
         String sql = "delete from " + table + " where " + where;

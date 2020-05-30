@@ -1,14 +1,11 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home.recyclerView;
 
-import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dldhk97.kumohcafeteriaviewer.R;
@@ -17,9 +14,10 @@ import com.dldhk97.kumohcafeteriaviewer.data.FavoriteManager;
 import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 
-public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
     private Item item;
+    private ConstraintLayout item_constraintlayout;
     private ImageView item_item_favoriteIcon;
     private TextView item_item_name;
     private ItemRecyclerAdapter adapter;
@@ -29,6 +27,7 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
         super(itemView);
 
         try{
+            this.item_constraintlayout = itemView.findViewById(R.id.item_constraintlayout);
             this.item_item_favoriteIcon = itemView.findViewById(R.id.item_item_favorite);
             this.item_item_name = itemView.findViewById(R.id.item_item_name);
             this.adapter = adapter;
@@ -36,6 +35,7 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
 
             // 클릭 리스너 설정
             itemView.setOnLongClickListener(this);
+            itemView.setOnClickListener(this);
         }
         catch(Exception e){
             UIHandler.getInstance().showAlert("[CafeteriaRecyclerViewHolder.constructor]" + e.getMessage());
@@ -73,12 +73,12 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
             if(isFavorite){
                 FavoriteManager.getInstance().deleteFavorite(item);
                 item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_notfavorite);
-                toastMsg = item.getItemName() + "을(를) 찜 해제했습니다.";
+                toastMsg = item.getItemName() + " 을(를) 찜 해제했습니다.";
             }
             else{
                 FavoriteManager.getInstance().addFavorite(item);
                 item_item_favoriteIcon.setImageResource(R.drawable.ic_activity_popup_favorite);
-                toastMsg = item.getItemName() + "을(를) 찜하였습니다.";
+                toastMsg = item.getItemName() + " 을(를) 찜하였습니다.";
             }
             // 찜에 추가
             UIHandler.getInstance().showToast(toastMsg);
@@ -86,6 +86,14 @@ public class ItemRecyclerViewHolder extends RecyclerView.ViewHolder implements V
 
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(item.getItemType() == ItemType.FOOD){
+            UIHandler.getInstance().showToast("길게 눌러 찜 등록/해제 할 수 있습니다.");
+        }
+
     }
 }
 
