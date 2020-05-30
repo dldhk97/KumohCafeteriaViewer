@@ -51,6 +51,8 @@ public class DatabaseManager {
             // Menus Table 생성
             mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_MENUS +
                     "(" + "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DatabaseInfo.TABLE_MENUS_COLUMN_DATE + " TEXT," +
+                    DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA + " TEXT," +
                     DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME + " TEXT);");
 
             // Alarm Table 생성

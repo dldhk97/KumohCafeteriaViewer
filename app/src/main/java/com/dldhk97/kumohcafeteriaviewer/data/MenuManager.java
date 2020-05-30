@@ -3,11 +3,17 @@ package com.dldhk97.kumohcafeteriaviewer.data;
 import android.content.Context;
 
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
+import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
+import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
 import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
+import com.dldhk97.kumohcafeteriaviewer.model.Item;
+import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
+import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TreeMap;
 
@@ -120,6 +126,81 @@ public class MenuManager {
         return true;
     }
 
+    // -----------------------------------------------
+
+    // DB 관련 메소드
+
+    public TreeMap<CafeteriaType, TreeMap<Calendar, WeekMenus>> getCurrentMenuMap() {
+        return currentMenuMap;
+    }
+
+    // 한 식단을 등록함
+    public boolean addMenuToDB(final Menu menu){
+        if(menu == null)
+            return false;
+        int cnt = 0;
+        for(Item i : menu.getItems()){
+            if(addItemToDB(menu, i)){
+                cnt++;
+            }
+
+        }
+        return cnt == menu.getCount() ? true : false;
+    }
+
+    // 한 음식을 추가함.
+    private boolean addItemToDB(final Menu menu, final Item item){
+        ArrayList<String> columns = getAllColumns();
+        ArrayList<String> values = new ArrayList<String>() {{
+            add(DateUtility.dateToString(menu.getDate(), '.'));
+            add(menu.getCafeteriaType().toString());
+            add(menu.getMealTimeType().toString());
+            add(String.valueOf(menu.isOpen()));
+            add(item.getItemName());
+            add(item.getItemType().toString());
+        }};
+
+        boolean isSucceed = DatabaseManager.getInstance().insert(DatabaseInfo.TABLE_MENUS.toString(), columns, values);
+        return isSucceed;
+    }
+
+    private ArrayList<Menu> getAllMenusFromDB(){
+        ArrayList<String> columns = getAllColumns();
+        ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_MENUS.toString(), columns, null);
+        if(received == null)
+            return null;
+
+        ArrayList<Menu> result = new ArrayList<>();
+        for(ArrayList<String> row : received){
+            if(row != null && row.size() > 0){
+                try{
+                    Calendar date = DateUtility.stringToDate(row.get(0));
+                    CafeteriaType cafeteriaType = CafeteriaType.valueOf(row.get(1));
+                    MealTimeType mealTimeType = MealTimeType.valueOf(row.get(2));
+                    boolean isOpen = Boolean.parseBoolean(row.get(3));
+                    Item i = new Item(row.get(4), ItemType.valueOf(row.get(5)));
+
+                    result.add(new Menu(date, cafeteriaType, mealTimeType, isOpen));
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result.size() > 0 ? result : null;
+    }
+
+    private ArrayList<String> getAllColumns(){
+        ArrayList<String> columns = new ArrayList<String>() {{
+            add(DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString());
+            add(DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA.toString());
+            add(DatabaseInfo.TABLE_MENUS_COLUMN_MEALTIMETYPE.toString());
+            add(DatabaseInfo.TABLE_MENUS_COLUMN_ISOPEN.toString());
+            add(DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME.toString());
+            add(DatabaseInfo.TABLE_MENUS_COLUMN_ITEMTYPE.toString());
+        }};
+        return columns;
+    }
 
 
 }

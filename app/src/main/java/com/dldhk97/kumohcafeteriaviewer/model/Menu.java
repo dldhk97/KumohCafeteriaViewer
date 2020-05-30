@@ -40,7 +40,7 @@ public class Menu implements Serializable {
         return this.mealTimeType;
     }
 
-    public void addItem(Item item) throws Exception{
+    public void addItem(Item item) {
         items.add(item);
     }
 

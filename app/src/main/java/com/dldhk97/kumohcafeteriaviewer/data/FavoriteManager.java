@@ -25,9 +25,7 @@ public class FavoriteManager {
     }
 
     public boolean addFavorite(final Item item){
-        ArrayList<String> columns = new ArrayList<String>() {{
-            add(DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString());
-        }};
+        ArrayList<String> columns = getAllColumns();
         ArrayList<String> values = new ArrayList<String>() {{
             add(item.getItemName());
         }};
@@ -38,9 +36,7 @@ public class FavoriteManager {
     }
 
     private ArrayList<Item> getAllFavorites(){
-        ArrayList<String> columns = new ArrayList<String>() {{
-            add(DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString());
-        }};
+        ArrayList<String> columns = getAllColumns();
         ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_FAVORITES.toString(), columns, null);
         if(received == null)
             return null;
@@ -56,9 +52,7 @@ public class FavoriteManager {
     }
 
     public Item findFavorite(String itemName){
-        ArrayList<String> columns = new ArrayList<String>() {{
-            add(DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString());
-        }};
+        ArrayList<String> columns = getAllColumns();
         String select = DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString() + " = '" + itemName + "'";
 
         ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_FAVORITES.toString(), columns, select);
@@ -83,6 +77,13 @@ public class FavoriteManager {
 
         DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_FAVORITES.toString(), select);
         syncFavorites();
+    }
+
+    private ArrayList<String> getAllColumns(){
+        ArrayList<String> columns = new ArrayList<String>() {{
+            add(DatabaseInfo.TABLE_FAVORITES_COLUMN_ITEMNAME.toString());
+        }};
+        return columns;
     }
 
 
