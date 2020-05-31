@@ -32,4 +32,10 @@
     <color name="recycleritem_notification_time_background">#EEEEEE</color>
 
 
+    <color name="widget_white_background">#80FFFFFF</color>
+    <color name="widget_white_text">#000000</color>
+    <color name="widget_black_background">#80000000</color>
+    <color name="widget_black_text">#FFFFFF</color>
+
+
 </resources>

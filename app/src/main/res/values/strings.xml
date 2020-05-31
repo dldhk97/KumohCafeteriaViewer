@@ -38,6 +38,29 @@
     <string name="recycleritem_notification_time_default">오후 9시 30분</string>
 
 
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="widget_configure_title">금오공과대학교 식단표 뷰어 위젯 설정</string>
+    <string name="widget_textView_spinnerTitle">식당</string>
+    <string name="widget_textView_switchTitle">색상</string>
+    <string name="widget_textView_switchWhite">흰색</string>
+    <string name="widget_textView_switchBlack">검은색</string>
+
+    <string name="widget_textView_seekbarTitle_text">투명도</string>
+    <string name="widget_configure_confirm">추가</string>
+
+
+    <string name="widget_big_textView_title_breakfast_text">조식</string>
+    <string name="widget_big_textView_title_lunch_text">중식</string>
+    <string name="widget_big_textView_title_dinner_text">석식</string>
+
+
+    <string name="widget_textView_menus">햄버거\n피자\n햄버햄버거</string>
+    <string name="widget_textView_mealTime_text">조식</string>
+    <string name="widget_textView_cafeteria_text">학생식당</string>
+
+
+    <string name="widget_big_textView_cafeteria">학생식당</string>
+
 
 
 
