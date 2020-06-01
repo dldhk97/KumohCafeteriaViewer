@@ -1,6 +1,5 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +17,11 @@ import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
-import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.recyclerView.CafeteriaRecyclerAdapter;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
-import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,7 +65,7 @@ public class InnerFragment extends Fragment {
             @Override
             public void onRefresh() {
                 try{
-                    parent.updateCurrentDateView(false);     // 모든 페이지 리프레시
+                    parent.updateCurrentDateView(true);     // 모든 페이지 리프레시
                 }
                 catch (Exception e){
                     e.printStackTrace();
@@ -95,7 +92,7 @@ public class InnerFragment extends Fragment {
             currentDate = DateUtility.remainOnlyDate(date);
 
             // 주어진 날짜의 식단이 존재하지 않으면 파싱
-            weekMenus = MenuManager.getInstance().getMenus(cafeteriaType, currentDate, isForceUpdate);
+            weekMenus = MenuManager.getInstance().getWeekMenus(cafeteriaType, currentDate, isForceUpdate);
 
             // 다시 주어진 날짜의 식단이 존재하는지 체크
             if(isMenuExists(currentDate)){

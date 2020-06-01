@@ -58,7 +58,8 @@ public class MenuManager {
         }
     }
 
-    public WeekMenus getMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate) throws Exception{
+
+    public WeekMenus getWeekMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate) throws Exception{
         // 로컬에 있는지 찾아서 반환
         WeekMenus result = find(cafeteriaType, date);
         if(result == null || isForceUpdate){
@@ -86,7 +87,7 @@ public class MenuManager {
             WeekMenus weekMenus = new Parser().parse(cafeteriaType, date);
             Log.d("aaaaa", "parsed");
             currentMenuMap.get(cafeteriaType).put(weekMenus.getStartDate(), weekMenus);  // 트리의 키값은 시작일(월요일)임
-            addWeeksMenuToDB(weekMenus);
+            addWeekMenusToDB(weekMenus);
             sync();
             return true;
         }
@@ -144,7 +145,7 @@ public class MenuManager {
         return currentMenuMap;
     }
 
-    public boolean addWeeksMenuToDB(final WeekMenus weekMenus){
+    public boolean addWeekMenusToDB(final WeekMenus weekMenus){
         try{
             for(DayMenus dayMenus : weekMenus.getDayMenuList()){
                 for(Menu menu : dayMenus.getMenus()){
@@ -178,27 +179,36 @@ public class MenuManager {
     private boolean addItemToDB(final Menu menu, final Item item){
 
         // 중복 체크
+        boolean isExist = false;
         Menu receivedMenu = findMenu(menu);
         if(receivedMenu != null){
             for(Item i : receivedMenu.getItems()){
                 if(i.getItemName().equals(item.getItemName())){
-                    return false;
+                    isExist = true;
+                    break;
                 }
             }
         }
 
+        boolean isSucceed = false;
+        if(isExist){
+            isSucceed = updateItem(menu, item);
+        }
+        else{
+            ArrayList<String> columns = getAllColumnsWithoutID();
+            ArrayList<String> values = new ArrayList<String>() {{
+                add(menu.getDateAsString());
+                add(menu.getCafeteriaType().toString());
+                add(menu.getMealTimeType().toString());
+                add(String.valueOf(menu.isOpen()));
+                add(item.getItemName());
+                add(item.getItemType().toString());
+            }};
 
-        ArrayList<String> columns = getAllColumnsWithoutID();
-        ArrayList<String> values = new ArrayList<String>() {{
-            add(DateUtility.dateToString(menu.getDate(), '.'));
-            add(menu.getCafeteriaType().toString());
-            add(menu.getMealTimeType().toString());
-            add(String.valueOf(menu.isOpen()));
-            add(item.getItemName());
-            add(item.getItemType().toString());
-        }};
+            isSucceed = DatabaseManager.getInstance().insert(DatabaseInfo.TABLE_MENUS.toString(), columns, values);
+        }
 
-        boolean isSucceed = DatabaseManager.getInstance().insert(DatabaseInfo.TABLE_MENUS.toString(), columns, values);
+
         return isSucceed;
     }
 
@@ -279,7 +289,7 @@ public class MenuManager {
 
     public Menu findMenu(Menu menu){
         ArrayList<String> columns = getAllColumnsWithoutID();
-        String select = DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString() + " = '" + menu.getDate().toString() + "' AND " +
+        String select = DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString() + " = '" + menu.getDateAsString() + "' AND " +
                 DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA.toString() + " = '" + menu.getCafeteriaType().toString() + "' AND " +
                 DatabaseInfo.TABLE_MENUS_COLUMN_MEALTIMETYPE.toString() + " = '" + menu.getMealTimeType().toString() + "'";
 
@@ -295,6 +305,50 @@ public class MenuManager {
         }
         return result.getItems().size() > 0 ? result : null;
     }
+
+    public boolean updateItem(final Menu menu, final Item item){
+        ArrayList<String> columns = getAllColumnsWithoutID();
+        ArrayList<String> values = new ArrayList<String>() {{
+            add(menu.getDateAsString());
+            add(menu.getCafeteriaType().toString());
+            add(menu.getMealTimeType().toString());
+            add(String.valueOf(menu.isOpen()));
+            add(item.getItemName());
+            add(item.getItemType().toString());
+        }};
+
+        StringBuilder setBuilder = new StringBuilder();
+        for(int i = 0 ; i < columns.size() ; i++){
+            setBuilder.append(columns.get(i) +" = '" + values.get(i).replace("'","''") + "', ");
+        }
+        setBuilder.delete(setBuilder.length()-2, setBuilder.length());
+        String setSQL = setBuilder.toString();
+
+        String where = DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString() + " = '" + menu.getDateAsString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA.toString() + " = '" + menu.getCafeteriaType().toString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_MEALTIMETYPE.toString() + " = '" + menu.getMealTimeType().toString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME.toString() + " = '" + item.getItemName() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_ITEMTYPE.toString() + " = '" + item.getItemType().toString() + "'";
+
+        Boolean isSucceed = DatabaseManager.getInstance().updateItem(DatabaseInfo.TABLE_MENUS.toString(), setSQL, where);
+        sync();
+
+        return isSucceed;
+    }
+
+    private boolean deleteItem(Menu menu, Item item){
+
+        String where = DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString() + " = '" + menu.getDateAsString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA.toString() + " = '" + menu.getCafeteriaType().toString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_MEALTIMETYPE.toString() + " = '" + menu.getMealTimeType().toString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME.toString() + " = '" + item.getItemName() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_ITEMTYPE.toString() + " = '" + item.getItemType().toString() + "'";
+
+        Boolean isSucceed = DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_MENUS.toString(), where);
+        sync();
+        return isSucceed;
+    }
+
 
     private ArrayList<String> getAllColumnsWithoutID(){
         ArrayList<String> columns = new ArrayList<String>() {{

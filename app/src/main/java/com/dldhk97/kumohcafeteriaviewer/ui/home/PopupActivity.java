@@ -46,7 +46,7 @@ public class PopupActivity extends Activity {
 
         //날짜 설정
         TextView popup_textView_date = findViewById(R.id.popup_textView_date);
-        String dateStr = DateUtility.dateToString(menu.getDate(), '.');
+        String dateStr = menu.getDateAsString();
         String dayOfWeek = DateUtility.getDayOfWeek(menu.getDate());
         popup_textView_date.setText(dateStr + "(" + dayOfWeek + ")");
 

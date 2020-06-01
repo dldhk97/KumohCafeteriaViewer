@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
+import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,6 +32,18 @@ public class Menu implements Serializable {
     public Calendar getDate(){
         return this.date;
     }
+
+    public String getDateAsString(){
+        try{
+            return DateUtility.dateToString(date, '.');
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public CafeteriaType getCafeteriaType(){
         return this.cafeteriaType;

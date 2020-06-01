@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.widget.RemoteViews;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
@@ -72,7 +70,7 @@ public class KCVWidget extends AppWidgetProvider {
         try{
             Calendar today = DateUtility.remainOnlyDate(Calendar.getInstance());
             DatabaseManager.getInstance().setContextIfNotExist(context);
-            WeekMenus weekMenus = MenuManager.getInstance().getMenus(cafeteriaType, today, false);
+            WeekMenus weekMenus = MenuManager.getInstance().getWeekMenus(cafeteriaType, today, false);
             DayMenus dayMenus = weekMenus.get(today);
             if(dayMenus != null)
                 currentMenus = dayMenus.getMenus();
