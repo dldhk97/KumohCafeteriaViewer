@@ -88,7 +88,7 @@ public class ParserThread implements Runnable{
                 else{
                     try{
                         String mealTimeStr = menuHtml.select("p").get(0).text();
-                        mealTimeType = MealTimeType.strToValue(mealTimeStr);
+                        mealTimeType = MealTimeType.stringTo(mealTimeStr);
                     }
                     catch (Exception e){
                         // 등록된 메뉴를 알 수 없거나 없을 때

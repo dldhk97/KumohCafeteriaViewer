@@ -11,15 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
-import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
-import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
-import com.dldhk97.kumohcafeteriaviewer.parser.Parser;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Implementation of App Widget functionality.
@@ -84,10 +78,10 @@ public class KCVWidget extends AppWidgetProvider {
         // 배경색 & 투명도 설정
         String backgroundColor;
         if(isBlack){
-            backgroundColor = ResourceUtility.getInstance().getResources().getString(R.color.widget_black_background);
+            backgroundColor = "#80000000";
         }
         else{
-            backgroundColor = ResourceUtility.getInstance().getResources().getString(R.color.widget_white_background);
+            backgroundColor = "#80FFFFFF";
         }
         backgroundColor = "#" + transparent + backgroundColor.substring(3);
 
@@ -205,7 +199,8 @@ public class KCVWidget extends AppWidgetProvider {
         ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
         String mealTimeTypeStr = loadedPrefs.get(3);
 
-        MealTimeType mealTimeType = MealTimeType.strToValue(mealTimeTypeStr);
+        MealTimeType mealTimeType = MealTimeType.stringTo(mealTimeTypeStr);
+        Log.d("aaaaa", "changeMealTime : " + mealTimeTypeStr + ", mealTimeType : " + mealTimeType.toString() );
         switch (mealTimeType){
             case BREAKFAST:
                 mealTimeType = MealTimeType.LUNCH;

@@ -19,7 +19,6 @@ import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
 import com.dldhk97.kumohcafeteriaviewer.model.NotificationItem;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.NotificationRecyclerAdapter;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -71,8 +70,8 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             int nameOffset = arr != null ? arr.size() : 0;
 
             String name = "내 식사 알림 " + (nameOffset + 1);
-            CafeteriaType cafeteriaType = CafeteriaType.stringTo(ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType)[0]);
-            MealTimeType mealTimeType = MealTimeType.stringTo(ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType)[0]);
+            CafeteriaType cafeteriaType = CafeteriaType.STUDENT;
+            MealTimeType mealTimeType = MealTimeType.BREAKFAST;
             int hour = 7;
             int min = 30;
             boolean activated = false;

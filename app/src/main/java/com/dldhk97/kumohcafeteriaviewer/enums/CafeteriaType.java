@@ -2,9 +2,6 @@ package com.dldhk97.kumohcafeteriaviewer.enums;
 
 import androidx.annotation.NonNull;
 
-import com.dldhk97.kumohcafeteriaviewer.R;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
-
 public enum CafeteriaType {
     STUDENT, STAFF, SNACKBAR, PUROOM, OREUM1, OREUM3, UNKNOWN;
 
@@ -13,19 +10,19 @@ public enum CafeteriaType {
     public String toString() {
         switch (this){
             case STUDENT:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType)[0];
+                return getStringArray()[0];
             case STAFF:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType)[1];
+                return getStringArray()[1];
             case SNACKBAR:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType)[2];
+                return getStringArray()[2];
             case PUROOM:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType)[3];
+                return getStringArray()[3];
             case OREUM1:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType)[4];
+                return getStringArray()[4];
             case OREUM3:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType)[5];
+                return getStringArray()[5];
             case UNKNOWN:
-                return "알 수 없음";
+                return "알수없음";
             default:
                 return super.toString();
         }
@@ -34,46 +31,42 @@ public enum CafeteriaType {
     public String getURL(){
         switch(this){
             case STUDENT:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.urls)[0];
+                return "https://kumoh.ac.kr/ko/restaurant01.do?";
             case STAFF:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.urls)[1];
+                return "https://kumoh.ac.kr/ko/restaurant02.do?";
             case SNACKBAR:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.urls)[2];
+                return "https://kumoh.ac.kr/ko/restaurant04.do?";
             case PUROOM:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.urls)[3];
+                return "http://dorm.kumoh.ac.kr/dorm/restaurant_menu01.do?";
             case OREUM1:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.urls)[4];
+                return "http://dorm.kumoh.ac.kr/dorm/restaurant_menu02.do?";
             case OREUM3:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.urls)[5];
+                return "http://dorm.kumoh.ac.kr/dorm/restaurant_menu03.do?";
             case UNKNOWN:
-                return "알 수 없음";
+                return "알수없음";
             default:
                 return "";
         }
     }
 
     public static CafeteriaType stringTo(String s){
-        final String[] cafeteriaArr = ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType);
-        if(cafeteriaArr[0].equals(s)){
+        if(s.equals(getStringArray()[0])){
             return STUDENT;
         }
-        else if(cafeteriaArr[1].equals(s)){
+        else if(s.equals(getStringArray()[1])){
             return STAFF;
         }
-        else if(cafeteriaArr[2].equals(s)){
+        else if(s.equals(getStringArray()[2])){
             return SNACKBAR;
         }
-        else if(cafeteriaArr[3].equals(s)){
+        else if(s.equals(getStringArray()[3])){
             return PUROOM;
         }
-        else if(cafeteriaArr[4].equals(s)){
+        else if(s.equals(getStringArray()[4])){
             return OREUM1;
         }
-        else if(cafeteriaArr[5].equals(s)){
+        else if(s.equals(getStringArray()[5])){
             return OREUM3;
-        }
-        else if(cafeteriaArr[6].equals(s)){
-            return UNKNOWN;
         }
         return UNKNOWN;
     }
@@ -95,5 +88,9 @@ public enum CafeteriaType {
             default:
                 return UNKNOWN;
         }
+    }
+
+    public static String[] getStringArray(){
+        return new String[]{"학생식당", "교직원식당", "분식당", "푸름관", "오름관1동", "오름관3동"};
     }
 }

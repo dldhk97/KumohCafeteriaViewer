@@ -2,15 +2,10 @@ package com.dldhk97.kumohcafeteriaviewer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.widget.Toast;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
 import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
-import com.dldhk97.kumohcafeteriaviewer.ui.favorite.FavoriteFragment;
-import com.dldhk97.kumohcafeteriaviewer.ui.notification.NotificationFragment;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.Nullable;
@@ -36,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ResourceUtility.getInstance().setContext(this);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);

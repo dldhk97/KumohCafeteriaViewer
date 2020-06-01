@@ -16,13 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dldhk97.kumohcafeteriaviewer.R;
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.data.NotificationItemManager;
+import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
+import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
 import com.dldhk97.kumohcafeteriaviewer.model.NotificationItem;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.PopupActivity;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.NotificationItemTitleWatcher;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnCafeteriaSelectedListener;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnMealTimeSelectedListener;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnSwitchCheckListener;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 import com.dldhk97.kumohcafeteriaviewer.utility.TimeUtility;
 
 public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -72,7 +73,7 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
 
             // 식당 드롭다운, 선택된 식당 찾아 설정
             int cafeteriaPos = 0;
-            String[] cafeteriaArr = ResourceUtility.getInstance().getResources().getStringArray(R.array.cafeteriaType);
+            String[] cafeteriaArr = CafeteriaType.getStringArray();
             for(String s : cafeteriaArr){
                 if(notificationItem.getCafeteriaType().toString().equals(s)){
                     break;
@@ -84,7 +85,7 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
 
             // 식사시간 드롭다운, 선택된 식당 찾아 설정
             int mealTimePos = 0;
-            String[] mealTimeArr = ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType);
+            String[] mealTimeArr = MealTimeType.getStringArray();
             for(String s : mealTimeArr){
                 if(notificationItem.getMealTimeType().toString().equals(s)){
                     break;

@@ -2,39 +2,21 @@ package com.dldhk97.kumohcafeteriaviewer.enums;
 
 import androidx.annotation.NonNull;
 
-import com.dldhk97.kumohcafeteriaviewer.R;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
-
 public enum MealTimeType {
     BREAKFAST, LUNCH, DINNER, ONECOURSE, UNKNOWN;
-
-    public static MealTimeType strToValue(String str){
-        switch(str){
-            case "조식":
-                return BREAKFAST;
-            case "중식":
-                return LUNCH;
-            case "석식":
-                return DINNER;
-            case "일품요리":
-                return ONECOURSE;
-            default:
-                return UNKNOWN;
-        }
-    }
 
     @NonNull
     @Override
     public String toString() {
         switch (this){
             case BREAKFAST:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType)[0];
+                return getStringArray()[0];
             case LUNCH:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType)[1];
+                return getStringArray()[1];
             case DINNER:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType)[2];
+                return getStringArray()[2];
             case ONECOURSE:
-                return ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType)[3];
+                return getStringArray()[3];
             case UNKNOWN:
                 return "알수없음";
             default:
@@ -43,20 +25,19 @@ public enum MealTimeType {
     }
 
     public static MealTimeType stringTo(String s){
-        final String[] mealTimeArr = ResourceUtility.getInstance().getResources().getStringArray(R.array.mealTimeType);
-        if(mealTimeArr[0].equals(s)){
+        if(s.equals(getStringArray()[0])){
             return BREAKFAST;
         }
-        else if(mealTimeArr[1].equals(s)){
+        else if(s.equals(getStringArray()[1])){
             return LUNCH;
         }
-        else if(mealTimeArr[2].equals(s)){
+        else if(s.equals(getStringArray()[2])){
             return DINNER;
         }
-        else if(mealTimeArr[3].equals(s)){
+        else if(s.equals(getStringArray()[3])){
             return ONECOURSE;
         }
-        else if(mealTimeArr[4].equals(s)){
+        else if(s.equals("알수없음")){
             return UNKNOWN;
         }
         return UNKNOWN;
@@ -75,5 +56,22 @@ public enum MealTimeType {
             default:
                 return UNKNOWN;
         }
+    }
+
+    public String getEatableTime(){
+        switch (this){
+            case BREAKFAST:
+                return "08:30~09:30";
+            case LUNCH:
+                return "11:30~14:00";
+            case DINNER:
+                return "17:30~18:30";
+            default:
+                return "";
+        }
+    }
+
+    public static String[] getStringArray(){
+        return new String[]{"조식", "중식", "분식당", "석식", "일품요리"};
     }
 }

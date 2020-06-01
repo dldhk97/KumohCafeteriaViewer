@@ -16,7 +16,6 @@ import com.dldhk97.kumohcafeteriaviewer.data.FavoriteManager;
 import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.PopupActivity;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
 public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView recycleritem_menu_title;
@@ -50,18 +49,7 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         this.menu = menu;
 
         // 식사 가능 시간 설정
-        String eatableMealTime = "";
-        switch(menu.getMealTimeType()){
-            case BREAKFAST:
-                eatableMealTime = ResourceUtility.getInstance().getResources().getStringArray(R.array.eatableTime)[0];
-                break;
-            case LUNCH:
-                eatableMealTime = ResourceUtility.getInstance().getResources().getStringArray(R.array.eatableTime)[1];
-                break;
-            case DINNER:
-                eatableMealTime = ResourceUtility.getInstance().getResources().getStringArray(R.array.eatableTime)[2];
-                break;
-        }
+        String eatableMealTime = menu.getMealTimeType().getEatableTime();
 
         // 조식/중식/석식 표시
         recycleritem_menu_time.setText(eatableMealTime);

@@ -5,7 +5,6 @@ import com.dldhk97.kumohcafeteriaviewer.enums.ExceptionType;
 import com.dldhk97.kumohcafeteriaviewer.model.MyException;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
-import com.dldhk97.kumohcafeteriaviewer.utility.ResourceUtility;
 
 import java.util.Calendar;
 
@@ -20,7 +19,6 @@ public class Parser{
         }
 
         // url 설정
-        ResourceUtility ru = new ResourceUtility();
         String url = cafeteriaType.getURL();
 
         // 날짜가 일요일이면 하루 뺀다.
