@@ -46,10 +46,11 @@ public class DatabaseManager {
             mydatabase = context.openOrCreateDatabase(DatabaseInfo.DB_NAME.toString(), context.MODE_PRIVATE,null);
 
             // 버전 체크
-            String version = loadVersion();
-            if(!version.equals(DatabaseInfo.DB_VERSION)){
+            int savedVersion = Integer.parseInt(loadVersion());
+            int newVersion = Integer.parseInt(DatabaseInfo.DB_VERSION.toString());
+            if(savedVersion < newVersion){
                 deleteTable();
-                Log.d("aaaaa", "Table deleted. Update table " + version + " -> " + DatabaseInfo.DB_VERSION + ".");
+                Log.d("aaaaa", "Table deleted. Update table " + savedVersion + " -> " + newVersion + ".");
             }
 
             // Favorite Table 생성
@@ -162,7 +163,7 @@ public class DatabaseManager {
     private String PREF_PREFIX_KEY = "DB_VERSION";
     private void saveVersion(){
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY, String.valueOf(DatabaseInfo.DB_VERSION));        // 레이아웃 유형 저장(큰놈인지 아닌지)
+        prefs.putString(PREF_PREFIX_KEY, String.valueOf(DatabaseInfo.DB_VERSION.toString()));        // 레이아웃 유형 저장(큰놈인지 아닌지)
         prefs.apply();
     }
 
