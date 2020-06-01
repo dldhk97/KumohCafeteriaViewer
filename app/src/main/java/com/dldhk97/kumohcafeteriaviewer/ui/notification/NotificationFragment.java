@@ -1,5 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.notification;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -44,11 +45,11 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             FloatingActionButton favorite_fab = root.findViewById(R.id.notification_fav);
             favorite_fab.setOnClickListener(this);
 
-            // 뒤로가기 눌렀을 때 반응 없음
+            // 뒤로가기 눌렀을 때 홈으로 가지 않고 꺼지게 하자.
             OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                 @Override
                 public void handleOnBackPressed() {
-
+                    getActivity().finish();
                 }
             };
             requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

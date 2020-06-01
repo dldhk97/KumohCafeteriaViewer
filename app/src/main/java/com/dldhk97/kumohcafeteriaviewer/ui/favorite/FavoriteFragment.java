@@ -49,7 +49,7 @@ public class FavoriteFragment extends Fragment implements View.OnClickListener{
             OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                 @Override
                 public void handleOnBackPressed() {
-
+                    getActivity().finish();         // 뒤로가기 누르면 꺼지게
                 }
             };
             requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

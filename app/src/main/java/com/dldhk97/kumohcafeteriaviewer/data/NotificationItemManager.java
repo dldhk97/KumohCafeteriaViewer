@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
@@ -44,7 +45,7 @@ public class NotificationItemManager {
     // 현재 등록된 알림 중 activated된 것만 알림 설정한다.
     public boolean updateNotification(NotificationItem notificationItem, Context context){
         try{
-//            cancelNotification(context);            //일단 다 취소때린다.
+            cancelNotification(context);            //일단 다 취소때린다.
 
             // 알림 activated된것만 설정
             for(NotificationItem ni : currentItems){
@@ -70,15 +71,16 @@ public class NotificationItemManager {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        Log.d("aaaaa", "알림 예약됨 : " +  DateUtility.dateToString(calendar, '.') + ", " + notificationItem.getHour() + " : " + notificationItem.getMin());
+        Log.d("aaaaa", "알림 예약됨 : " +  DateUtility.dateToString(calendar, '.') + ", " + notificationItem.getHour() + " : " + notificationItem.getMin() +
+                ", id : " + notificationItem.getId());
 
         //알람 예약
         AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, BroadcastReceiver.class);
+        Intent intent = new Intent(null, Uri.parse(notificationItem.getId()), context, BroadcastReceiver.class);
+//        Intent intent1 = new Intent(BroadcastReceiver.ACTION_ALARM, Uri.parse(notificationItem.getId()));
         intent.putExtra("notificationItemID", notificationItem.getId());
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
-        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);                                        //이건되는데
-//        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sender);  //이건왜안됨;
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sender);
         return false;
     }
 
@@ -88,6 +90,7 @@ public class NotificationItemManager {
         Intent intent = new Intent(context, BroadcastReceiver.class);
         PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         am.cancel(pIntent);
+        Log.d("aaaaa", "알림 취소됨!");
         return false;
     }
 
