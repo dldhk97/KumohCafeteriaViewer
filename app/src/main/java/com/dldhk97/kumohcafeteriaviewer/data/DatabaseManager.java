@@ -2,6 +2,7 @@ package com.dldhk97.kumohcafeteriaviewer.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -44,6 +45,13 @@ public class DatabaseManager {
             //DB Open
             mydatabase = context.openOrCreateDatabase(DatabaseInfo.DB_NAME.toString(), context.MODE_PRIVATE,null);
 
+            // 버전 체크
+            String version = loadVersion();
+            if(!version.equals(DatabaseInfo.DB_VERSION)){
+                deleteTable();
+                Log.d("aaaaa", "Table deleted. Update table " + version + " -> " + DatabaseInfo.DB_VERSION + ".");
+            }
+
             // Favorite Table 생성
             mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_FAVORITES +
                     "(" + "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -69,11 +77,19 @@ public class DatabaseManager {
                     DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_HOUR + " TEXT," +
                     DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_MIN + " TEXT," +
                     DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_ACTIVATED + " TEXT);");
+
+            saveVersion();
         }
         catch(Exception e){
             UIHandler.getInstance().showAlert(e.getMessage());
         }
 
+    }
+
+    private void deleteTable(){
+        mydatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseInfo.TABLE_FAVORITES);
+        mydatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseInfo.TABLE_MENUS);
+        mydatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseInfo.TABLE_NOTIFICATIONITEMS);
     }
 
     public boolean insert(String table , ArrayList<String> columns, ArrayList<String> values){
@@ -139,5 +155,20 @@ public class DatabaseManager {
         }
 
         return true;
+    }
+
+
+    private String PREFS_NAME = DatabaseInfo.DB_NAME + "_DB_VERSION";
+    private String PREF_PREFIX_KEY = "DB_VERSION";
+    private void saveVersion(){
+        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+        prefs.putString(PREF_PREFIX_KEY, String.valueOf(DatabaseInfo.DB_VERSION));        // 레이아웃 유형 저장(큰놈인지 아닌지)
+        prefs.apply();
+    }
+
+    private String loadVersion(){
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        final String version = prefs.getString(PREF_PREFIX_KEY, "0");
+        return version;
     }
 }
