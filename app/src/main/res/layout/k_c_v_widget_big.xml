@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/widget_big_textView_cafeteria"
-            android:textAlignment="viewEnd"
+            android:textAlignment="viewStart"
             android:textColor="#ffffff"
             android:textStyle="bold" />
 
@@ -27,31 +27,31 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/widget_big_textView_title_breakfast"
+                android:id="@+id/widget_big_textView_title_menu1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/widget_big_textView_title_breakfast_text"
+                android:text="@string/widget_big_textView_title"
                 android:textAlignment="center"
                 android:textColor="@color/widget_black_text"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/widget_big_textView_title_lunch"
+                android:id="@+id/widget_big_textView_title_menu2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/widget_big_textView_title_lunch_text"
+                android:text="@string/widget_big_textView_title"
                 android:textAlignment="center"
                 android:textColor="@color/widget_black_text"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/widget_big_textView_title_dinner"
+                android:id="@+id/widget_big_textView_title_menu3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/widget_big_textView_title_dinner_text"
+                android:text="@string/widget_big_textView_title"
                 android:textAlignment="center"
                 android:textColor="@color/widget_black_text"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/widget_big_textView_menus_breakfast"
+                android:id="@+id/widget_big_textView_menus_menu1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -79,7 +79,7 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/widget_big_textView_menus_lunch"
+                android:id="@+id/widget_big_textView_menus_menu2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -94,7 +94,7 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/widget_big_textView_menus_dinner"
+                android:id="@+id/widget_big_textView_menus_menu3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

@@ -73,8 +73,6 @@ public class KCVWidgetConfigureActivity extends Activity {
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "transparent", String.valueOf(transparent));  // 투명도 저장
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "mealTimeType", mealTimeType);                // 식사시간 설정
         prefs.apply();
-
-        Log.d("aaaaa", "appWidgetId : " + String.valueOf(appWidgetId) + ", mealTimeType : " + mealTimeType + " saved on configActivity");
     }
 
     // Read the prefix from the SharedPreferences object for this widget.
@@ -92,8 +90,6 @@ public class KCVWidgetConfigureActivity extends Activity {
             add(transparent);
             add(mealTimeType);
         }};
-
-        Log.d("aaaaa", "appWidgetId : " + String.valueOf(appWidgetId) + ", mealTimeType : " + mealTimeType + " loaded on configActivity");
 
         return loadedPrefs;
     }

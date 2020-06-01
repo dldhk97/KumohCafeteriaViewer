@@ -70,10 +70,9 @@ public class Menu implements Serializable {
         try{
             StringBuilder sb = new StringBuilder();
             for(Item i : items){
-                sb.append(i.toString() + " ");
+                sb.append(i.toString() + "\n");
             }
 
-            //ETC 추가할것
             return sb.toString();
         }
         catch(Exception e){

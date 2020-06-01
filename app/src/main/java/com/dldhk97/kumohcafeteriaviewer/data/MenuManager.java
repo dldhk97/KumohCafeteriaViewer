@@ -44,6 +44,7 @@ public class MenuManager {
     public static MenuManager getInstance() {
         if(_instance == null)
             _instance = new MenuManager();
+
         return _instance;
     }
 
@@ -58,7 +59,7 @@ public class MenuManager {
     }
 
     public WeekMenus getMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate) throws Exception{
-        // 메모리에 있는지 찾아서 반환
+        // 로컬에 있는지 찾아서 반환
         WeekMenus result = find(cafeteriaType, date);
         if(result == null || isForceUpdate){
             // 없으면 업데이트하는데, 인터넷 연결안되있으면 걍 null 반환
@@ -112,19 +113,27 @@ public class MenuManager {
     public Calendar containsWeek(CafeteriaType cafeteriaType, Calendar date){
         TreeMap<Calendar, WeekMenus> weekMenusList = currentMenuMap.get(cafeteriaType);
 
-        // 요청한 날짜가 포함된 주의 월요일(=시작일) 구하기
-        Calendar startDate = (Calendar)date.clone();
-        if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
-            // 일요일이면 하루 빼고 월요일 구해야댐.
-            startDate.add(Calendar.DATE, -1);
-        }
-        startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);       // 월요일 구하기
+        try{
+            // 요청한 날짜가 포함된 주의 월요일(=시작일) 구하기
+            Calendar startDate = (Calendar)date.clone();
+            startDate = DateUtility.remainOnlyDate(startDate);
+            if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+                // 일요일이면 하루 빼고 월요일 구해야댐.
+                startDate.add(Calendar.DATE, -1);
+            }
+            startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);       // 월요일 구하기
 
-        for(Calendar c : weekMenusList.keySet()) {
-            if(c.compareTo(startDate) == 0){
-                return c;
+            for(Calendar c : weekMenusList.keySet()) {
+                if(c.compareTo(startDate) == 0){
+                    return c;
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
         return null;
     }
 

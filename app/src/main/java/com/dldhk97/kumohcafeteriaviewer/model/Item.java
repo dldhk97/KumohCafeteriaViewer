@@ -35,6 +35,6 @@ public class Item implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return itemName + "." + itemType.toString();
+        return itemName;
     }
 }

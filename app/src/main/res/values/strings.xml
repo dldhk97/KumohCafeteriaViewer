@@ -49,12 +49,10 @@
     <string name="widget_configure_confirm">추가</string>
 
 
-    <string name="widget_big_textView_title_breakfast_text">조식</string>
-    <string name="widget_big_textView_title_lunch_text">중식</string>
-    <string name="widget_big_textView_title_dinner_text">석식</string>
+    <string name="widget_big_textView_title">메뉴</string>
 
 
-    <string name="widget_textView_menus">햄버거\n피자\n햄버햄버거</string>
+    <string name="widget_textView_menus">정보 없음</string>
     <string name="widget_textView_mealTime_text">조식</string>
     <string name="widget_textView_cafeteria_text">학생식당</string>
 

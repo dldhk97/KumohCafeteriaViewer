@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
-import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
 import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 import com.google.android.material.navigation.NavigationView;
@@ -20,8 +19,6 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             // 데이터베이스 매니저 로드
             DatabaseManager dm = DatabaseManager.getInstance();
-            dm.setContext(this);
+            dm.setContextIfNotExist(this);
         }
         catch (Exception e){
             UIHandler.getInstance().showToast(e.getMessage());

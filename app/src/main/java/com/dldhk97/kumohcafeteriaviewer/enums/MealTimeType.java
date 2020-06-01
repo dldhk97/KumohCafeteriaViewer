@@ -72,6 +72,6 @@ public enum MealTimeType {
     }
 
     public static String[] getStringArray(){
-        return new String[]{"조식", "중식", "분식당", "석식", "일품요리"};
+        return new String[]{"조식", "중식", "석식", "일품요리"};
     }
 }

@@ -9,11 +9,20 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.RemoteViews;
 
+import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
+import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
+import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
+import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
+import com.dldhk97.kumohcafeteriaviewer.model.Menu;
+import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
+import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Implementation of App Widget functionality.
@@ -33,12 +42,10 @@ public class KCVWidget extends AppWidgetProvider {
 
         // ConfigureActivity에서 저장한 정보들 빼온다.
         ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
-        String cafeteriaType = loadedPrefs.get(0);
+        CafeteriaType cafeteriaType = CafeteriaType.stringTo(loadedPrefs.get(0));
         boolean isBlack = Boolean.parseBoolean(loadedPrefs.get(1));
         String transparent = loadedPrefs.get(2);
-        String mealTimeType = loadedPrefs.get(3);
-
-        Log.d("aaaaa", "appWidgetId : " + String.valueOf(appWidgetId) + ", mealTimeType : " + mealTimeType + " get");
+        MealTimeType mealTimeType = MealTimeType.stringTo(loadedPrefs.get(3));
 
         // 배경색 설정
         if(transparent.equals("100")){
@@ -48,20 +55,26 @@ public class KCVWidget extends AppWidgetProvider {
             transparent = "0" + transparent;
         }
 
-        // 메뉴 가져오기. DB에서 찾아보고 없으면 파싱하는게 맞겠다.
-        try{
-//            WeekMenus weekMenus = MenuManager.getInstance().getMenus(CafeteriaType.stringTo(cafeteriaType), Calendar.getInstance(), false);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
         RemoteViews views;
 
         // isBig인지 Sharedpreference에서 가져온다.
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String isBigStr = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "isBig", "false");
         boolean isBig = Boolean.parseBoolean(isBigStr);
+
+        // 현재 오늘 메뉴목록 가져오기
+        ArrayList<Menu> currentMenus = null;
+        try{
+            Calendar today = DateUtility.remainOnlyDate(Calendar.getInstance());
+            DatabaseManager.getInstance().setContextIfNotExist(context);
+            WeekMenus weekMenus = MenuManager.getInstance().getMenus(cafeteriaType, today, false);
+            DayMenus dayMenus = weekMenus.get(today);
+            if(dayMenus != null)
+                currentMenus = dayMenus.getMenus();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
         // 위젯 식사시간 변경 이벤트
         Intent mealTimeChangeIntent = new Intent(context, KCVWidget.class);
@@ -87,23 +100,54 @@ public class KCVWidget extends AppWidgetProvider {
 
         // 크기 알아내서 알맞는 레이아웃 적용
         if(isBig){
-            // Big
             views = new RemoteViews(context.getPackageName(), R.layout.k_c_v_widget_big);
 
-            views.setTextViewText(R.id.widget_big_textView_cafeteria, cafeteriaType);       // 식당 설정
+            int cnt = 0;
+            if(currentMenus != null){
+                for(Menu m : currentMenus){
+                    if(cnt < 3){
+                        String title = m.getMealTimeType().toString();
+                        String menuStr = m.toString();
+                        if(cnt == 0){
+                            views.setTextViewText(R.id.widget_big_textView_title_menu1, title);
+                            views.setTextViewText(R.id.widget_big_textView_menus_menu1, menuStr);
+                        }
+                        else if(cnt == 1){
+                            views.setTextViewText(R.id.widget_big_textView_title_menu2, title);
+                            views.setTextViewText(R.id.widget_big_textView_menus_menu2, menuStr);
+                        }
+                        else if(cnt == 2){
+                            views.setTextViewText(R.id.widget_big_textView_title_menu3, title);
+                            views.setTextViewText(R.id.widget_big_textView_menus_menu3, menuStr);
+                        }
+                    }
+                    cnt++;
+                }
+            }
+
+            views.setTextViewText(R.id.widget_big_textView_cafeteria, cafeteriaType.toString());       // 식당 설정
             views.setInt(R.id.widget_big_background, "setBackgroundColor", Color.parseColor(backgroundColor));
             views.setOnClickPendingIntent(R.id.widget_big_textView_menus_layout, refreshPending);      // 새로고침 이벤트 등록
         }
         else{
-            // Normal
-            // Construct the RemoteViews object
             views = new RemoteViews(context.getPackageName(), R.layout.k_c_v_widget);
-            views.setTextViewText(R.id.widget_textView_cafeteria, cafeteriaType);           // 식당 설정
+
+            // 위젯에 설정된 시간의 메뉴만 가져온다.
+
+            if(currentMenus != null){
+                for(Menu m : currentMenus){
+                    if(m.getMealTimeType() == mealTimeType){
+                        views.setTextViewText(R.id.widget_textView_menus, m.toString());
+                        break;
+                    }
+                }
+            }
+
+            views.setTextViewText(R.id.widget_textView_cafeteria, cafeteriaType.toString());           // 식당 설정
             views.setInt(R.id.widget_background, "setBackgroundColor", Color.parseColor(backgroundColor));
             views.setOnClickPendingIntent(R.id.widget_textView_mealTime, mealTimeChangePending);      // 식사시간 변경 클릭 시 이벤트 등록
-            views.setTextViewText(R.id.widget_textView_menus, "메뉴들");
             views.setOnClickPendingIntent(R.id.widget_textView_menus, refreshPending);      // 새로고침 이벤트 등록
-            views.setTextViewText(R.id.widget_textView_mealTime, mealTimeType);
+            views.setTextViewText(R.id.widget_textView_mealTime, mealTimeType.toString());
 
 
         }
@@ -200,7 +244,6 @@ public class KCVWidget extends AppWidgetProvider {
         String mealTimeTypeStr = loadedPrefs.get(3);
 
         MealTimeType mealTimeType = MealTimeType.stringTo(mealTimeTypeStr);
-        Log.d("aaaaa", "changeMealTime : " + mealTimeTypeStr + ", mealTimeType : " + mealTimeType.toString() );
         switch (mealTimeType){
             case BREAKFAST:
                 mealTimeType = MealTimeType.LUNCH;
@@ -223,8 +266,6 @@ public class KCVWidget extends AppWidgetProvider {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "mealTimeType", mealTimeType.toString());                // 식사시간 설정
         prefs.apply();
-
-        Log.d("aaaaa", "appWidgetId : " + String.valueOf(appWidgetId) + "mealTimeType" + ", mealTimeType : " + mealTimeType + " changed");
     }
 }
 
