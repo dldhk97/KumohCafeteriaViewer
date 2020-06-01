@@ -61,22 +61,28 @@ public class MenuManager {
 
     public WeekMenus getWeekMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate) throws Exception{
         // 로컬에 있는지 찾아서 반환
-        WeekMenus result = find(cafeteriaType, date);
-        if(result == null || isForceUpdate){
-            // 없으면 업데이트하는데, 인터넷 연결안되있으면 걍 null 반환
-            try{
-                if(NetworkStatus.getCurrentStatus() != NetworkStatusType.CONNECTED){
-                    return null;
-                }
-                parseAndUpdate(cafeteriaType, date);
-            }
-            catch (Exception e){
-                e.printStackTrace();
-                throw e;
-            }
-
+        WeekMenus result = null;
+        try{
             result = find(cafeteriaType, date);
+            if(result == null || isForceUpdate){
+                // 없으면 업데이트하는데, 인터넷 연결안되있으면 걍 null 반환
+                try{
+                    if(NetworkStatus.getCurrentStatus() != NetworkStatusType.CONNECTED){
+                        return null;
+                    }
+                    parseAndUpdate(cafeteriaType, date);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    throw e;
+                }
+
+                result = find(cafeteriaType, date);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
         return result;
     }

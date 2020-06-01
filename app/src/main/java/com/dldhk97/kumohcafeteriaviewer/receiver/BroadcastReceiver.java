@@ -47,6 +47,19 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
             Log.d("aaaaa", "notificationItem is deactivated");
             return;
         }
+
+        // 알림이 10분 지나서 동작하면 그냥 무시함.
+        Calendar targetTime = Calendar.getInstance();
+        targetTime.set(Calendar.HOUR_OF_DAY, notificationItem.getHour());
+        targetTime.set(Calendar.MINUTE, notificationItem.getMin());
+        targetTime.set(Calendar.SECOND, 0);
+        targetTime.set(Calendar.MILLISECOND, 0);
+        long diffMil = Calendar.getInstance().getTimeInMillis() - targetTime.getTimeInMillis();
+        if(diffMil >= 600000){
+            Log.d("aaaaa", "notificationItem is not exact time : " + diffMil);
+            return;
+        }
+
         String pushTitle = notificationItem.getCafeteriaType().toString() + " - " + notificationItem.getMealTimeType() + " [" + notificationItem.getHour() + ":" + notificationItem.getMin() + "]";
         String pushContent = null;
         try {

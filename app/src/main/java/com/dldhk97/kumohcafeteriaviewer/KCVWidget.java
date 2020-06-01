@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
@@ -47,16 +48,8 @@ public class KCVWidget extends AppWidgetProvider {
         ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
         CafeteriaType cafeteriaType = CafeteriaType.stringTo(loadedPrefs.get(0));
         boolean isBlack = Boolean.parseBoolean(loadedPrefs.get(1));
-        String transparent = loadedPrefs.get(2);
+        int transparent = Integer.parseInt(loadedPrefs.get(2));
         MealTimeType mealTimeType = MealTimeType.stringTo(loadedPrefs.get(3));
-
-        // 배경색 설정
-        if(transparent.equals("100")){
-            transparent = "FF";
-        }
-        else if(transparent.length() < 2){
-            transparent = "0" + transparent;
-        }
 
         RemoteViews views;
 
@@ -71,9 +64,14 @@ public class KCVWidget extends AppWidgetProvider {
             Calendar today = DateUtility.remainOnlyDate(Calendar.getInstance());
             DatabaseManager.getInstance().setContextIfNotExist(context);
             WeekMenus weekMenus = MenuManager.getInstance().getWeekMenus(cafeteriaType, today, false);
-            DayMenus dayMenus = weekMenus.get(today);
-            if(dayMenus != null)
-                currentMenus = dayMenus.getMenus();
+            if(weekMenus != null){
+                DayMenus dayMenus = weekMenus.get(today);
+                if(dayMenus != null)
+                    currentMenus = dayMenus.getMenus();
+            }
+            else{
+                Log.d("aaaaa", "weekMenus = null");
+            }
         }
         catch (Exception e){
             e.printStackTrace();
@@ -97,20 +95,11 @@ public class KCVWidget extends AppWidgetProvider {
         appStartIntent.setComponent(new ComponentName(context, MainActivity.class));
         PendingIntent appStartPending = PendingIntent.getActivity(context, 0, appStartIntent, 0);
 
-        // 배경색 & 투명도 설정
-        String backgroundColor;
-        if(isBlack){
-            backgroundColor = "#80000000";
-        }
-        else{
-            backgroundColor = "#80FFFFFF";
-        }
-        backgroundColor = "#" + transparent + backgroundColor.substring(3);
-
         // 크기 알아내서 알맞는 레이아웃 적용
         if(isBig){
             views = new RemoteViews(context.getPackageName(), R.layout.k_c_v_widget_big);
 
+            // 더러운 식단 설정
             int cnt = 0;
             if(currentMenus != null){
                 for(Menu m : currentMenus){
@@ -146,10 +135,11 @@ public class KCVWidget extends AppWidgetProvider {
                 }
             }
 
-            views.setTextViewText(R.id.widget_big_textView_cafeteria, cafeteriaType.toString());       // 식당 설정
-            views.setInt(R.id.widget_big_background, "setBackgroundColor", Color.parseColor(backgroundColor));
-            views.setOnClickPendingIntent(R.id.widget_big_textView_menus_layout, refreshPending);      // 새로고침 이벤트 등록
-            views.setOnClickPendingIntent(R.id.widget_big_textView_cafeteria, appStartPending);        // 앱 실행 이벤트 등록
+            views.setTextViewText(R.id.widget_big_textView_cafeteria, cafeteriaType.toString());           // 식당 설정
+            views.setOnClickPendingIntent(R.id.widget_big_textView_cafeteria, refreshPending);             // 새로고침 이벤트 등록
+            views.setOnClickPendingIntent(R.id.widget_big_textView_menus_layout, appStartPending);        // 앱 실행 이벤트 등록
+            setBackgroundColor(true,isBlack,views,transparent);
+            setForegroundColors(true, isBlack, views, transparent);
         }
         else{
             // 노멀 뷰
@@ -165,18 +155,85 @@ public class KCVWidget extends AppWidgetProvider {
                     }
                 }
             }
-            views.setTextViewText(R.id.widget_textView_menus, menuStr);
-
-            views.setTextViewText(R.id.widget_textView_cafeteria, cafeteriaType.toString());           // 식당 설정
-            views.setInt(R.id.widget_background, "setBackgroundColor", Color.parseColor(backgroundColor));
+            views.setTextViewText(R.id.widget_textView_menus, menuStr);                               // 식단 설정
+            views.setTextViewText(R.id.widget_textView_cafeteria, cafeteriaType.toString());          // 식당 텍스트 설정
             views.setOnClickPendingIntent(R.id.widget_textView_mealTime, mealTimeChangePending);      // 식사시간 변경 클릭 시 이벤트 등록
-            views.setOnClickPendingIntent(R.id.widget_textView_menus, refreshPending);      // 새로고침 이벤트 등록
-            views.setTextViewText(R.id.widget_textView_mealTime, mealTimeType.toString());
-            views.setOnClickPendingIntent(R.id.widget_textView_cafeteria, appStartPending);      // 앱 실행 이벤트 등록
+            views.setTextViewText(R.id.widget_textView_mealTime, mealTimeType.toString());            // 식사시간 텍스트 설정
+            views.setOnClickPendingIntent(R.id.widget_textView_cafeteria, refreshPending);            // 새로고침 이벤트 등록
+            views.setOnClickPendingIntent(R.id.widget_textView_menus, appStartPending);               // 앱 실행 이벤트 등록
+            setBackgroundColor(false,isBlack,views,transparent);
+            setForegroundColors(false, isBlack, views, transparent);
         }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    // --------------------------------------------------------------
+
+    private static void setForegroundColors(boolean isBig, boolean isBlack, RemoteViews views, int transparent){
+        String foregroundColor = null;
+        if(transparent >= 50){
+            if(isBlack){
+                foregroundColor = "#FFFFFFFF";
+            }
+            else{
+                foregroundColor = "#FF000000";
+            }
+        }
+        else{
+            if(isBlack){
+                foregroundColor = "#FF000000";
+            }
+            else{
+                foregroundColor = "#FFFFFFFF";
+            }
+        }
+
+        if(isBig){
+            views.setInt(R.id.widget_big_textView_cafeteria, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_big_textView_title_menu1, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_big_textView_title_menu2, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_big_textView_title_menu3, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_big_textView_menus_menu1, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_big_textView_menus_menu2, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_big_textView_menus_menu3, "setTextColor", Color.parseColor(foregroundColor));
+        }
+        else{
+            views.setInt(R.id.widget_textView_cafeteria, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_textView_mealTime, "setTextColor", Color.parseColor(foregroundColor));
+            views.setInt(R.id.widget_textView_menus, "setTextColor", Color.parseColor(foregroundColor));
+        }
+    }
+
+    private static void setBackgroundColor(boolean isBig, boolean isBlack, RemoteViews views, int transparent){
+        String transparentStr = String.valueOf(transparent);
+        // 투명도를 int에서 FF or 두자리수로 수정
+        if(transparentStr.equals("100")){
+            transparentStr = "FF";
+        }
+        else if(transparentStr.length() < 2){
+            transparentStr = "0" + transparentStr;
+        }
+
+        // 배경색 & 투명도 설정
+        String backgroundColor = null;
+        if(isBlack){
+            backgroundColor = "000000";
+        }
+        else{
+            backgroundColor = "FFFFFF";
+        }
+        backgroundColor = "#" + transparentStr + backgroundColor;
+
+        if(isBig){
+            views.setInt(R.id.widget_big_background, "setBackgroundColor", Color.parseColor(backgroundColor));
+        }
+        else{
+            views.setInt(R.id.widget_background, "setBackgroundColor", Color.parseColor(backgroundColor));
+        }
+
+
     }
 
     @Override

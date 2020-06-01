@@ -1,8 +1,10 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -160,11 +162,20 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
         adapter.notifyDataSetChanged();
     }
 
+    @SuppressLint("ResourceAsColor")
     private void toggleViewEnabled(boolean isEnabled){
         recycleritem_notification_title.setEnabled(isEnabled);
         recycleritem_notification_cafeteria.setEnabled(isEnabled);
         recycleritem_notification_mealtime.setEnabled(isEnabled);
         recycleritem_notification_time.setEnabled(isEnabled);
         recycleritem_notification_delete.setEnabled(isEnabled);
+        if(isEnabled){
+            recycleritem_notification_delete.setImageResource(R.drawable.ic_delete);
+            recycleritem_notification_time.setTextColor(Color.parseColor("#1abc9c"));
+        }
+        else{
+            recycleritem_notification_delete.setImageResource(R.drawable.ic_delete_disabled);
+            recycleritem_notification_time.setTextColor(Color.parseColor("#C9C9C9"));
+        }
     }
 }
