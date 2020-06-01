@@ -28,19 +28,19 @@ public class DateUtility {
         if(date == null)
             return "알 수 없음";
         switch(date.get(Calendar.DAY_OF_WEEK)){
-            case 1:
+            case Calendar.SUNDAY:
                 return "일";
-            case 2:
+            case Calendar.MONDAY:
                 return "월";
-            case 3:
+            case Calendar.TUESDAY:
                 return "화";
-            case 4:
+            case Calendar.WEDNESDAY:
                 return "수";
-            case 5:
+            case Calendar.THURSDAY:
                 return "목";
-            case 6:
+            case Calendar.FRIDAY:
                 return "금";
-            case 7:
+            case Calendar.SATURDAY:
                 return "토";
             default:
                 return "알 수 없음";

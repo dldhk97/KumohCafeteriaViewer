@@ -28,6 +28,10 @@ public class WeekMenus implements Serializable {
         this.dayMenuList.add(dayMenus);
     }
 
+    public ArrayList<DayMenus> getDayMenuList() {
+        return dayMenuList;
+    }
+
     public DayMenus get(Calendar date){
         for(DayMenus dm : dayMenuList){
             if(dm.getDate().compareTo(date) == 0){

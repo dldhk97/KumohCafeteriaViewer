@@ -6,6 +6,8 @@ import android.view.Menu;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
 import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
+import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
+import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.Nullable;
@@ -66,10 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         try{
-            // 이번주 식단표 미리로드
-            MenuManager mm = MenuManager.getInstance();
-            mm.setContext(this);
-            if(!MenuManager.getInstance().preload(Calendar.getInstance())){
+            // 네트워크 체크
+            if(NetworkStatus.checkStatus(this) != NetworkStatusType.CONNECTED){
                 UIHandler.getInstance().showToast("금오공과대학교 홈페이지 연결에 실패했습니다!");
             }
         }

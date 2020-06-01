@@ -52,7 +52,10 @@ public class DatabaseManager {
                     "(" + "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     DatabaseInfo.TABLE_MENUS_COLUMN_DATE + " TEXT," +
                     DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA + " TEXT," +
-                    DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME + " TEXT);");
+                    DatabaseInfo.TABLE_MENUS_COLUMN_MEALTIMETYPE + " TEXT," +
+                    DatabaseInfo.TABLE_MENUS_COLUMN_ISOPEN + " TEXT," +
+                    DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME + " TEXT," +
+                    DatabaseInfo.TABLE_MENUS_COLUMN_ITEMTYPE + " TEXT);");
 
             // Alarm Table 생성
             mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + DatabaseInfo.TABLE_NOTIFICATIONITEMS +
