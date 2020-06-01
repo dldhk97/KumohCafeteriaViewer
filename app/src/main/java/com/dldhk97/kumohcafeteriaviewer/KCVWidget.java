@@ -3,6 +3,7 @@ package com.dldhk97.kumohcafeteriaviewer;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,8 +16,10 @@ import android.widget.RemoteViews;
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
 import com.dldhk97.kumohcafeteriaviewer.data.MenuManager;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
+import com.dldhk97.kumohcafeteriaviewer.enums.ItemType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
 import com.dldhk97.kumohcafeteriaviewer.model.DayMenus;
+import com.dldhk97.kumohcafeteriaviewer.model.Item;
 import com.dldhk97.kumohcafeteriaviewer.model.Menu;
 import com.dldhk97.kumohcafeteriaviewer.model.WeekMenus;
 import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
@@ -35,6 +38,8 @@ public class KCVWidget extends AppWidgetProvider {
 
     private static final String ACTION_MEALTIME_CHANGE = "ACTION_MEALTIME_CHANGE";
     private static final String ACTION_REFRESH = "ACTION_REFRESH";
+
+    private static final int ITEM_NAME_MAX_LENGTH = 10;     // 아이템이름이 n자리 이상이면 줄바꿈.
 
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -88,6 +93,12 @@ public class KCVWidget extends AppWidgetProvider {
         refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         PendingIntent refreshPending = PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, 0);
 
+        // 어플 실행 이벤트
+        Intent appStartIntent = new Intent(Intent.ACTION_MAIN);
+        appStartIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        appStartIntent.setComponent(new ComponentName(context, MainActivity.class));
+        PendingIntent appStartPending = PendingIntent.getActivity(context, 0, appStartIntent, 0);
+
         // 배경색 & 투명도 설정
         String backgroundColor;
         if(isBlack){
@@ -107,7 +118,19 @@ public class KCVWidget extends AppWidgetProvider {
                 for(Menu m : currentMenus){
                     if(cnt < 3){
                         String title = m.getMealTimeType().toString();
-                        String menuStr = m.toString();
+                        String menuStr = "";
+                        for(Item i : m.getItems()){
+                            String itemName = i.getItemName();
+                            if(i.getItemType() == ItemType.DIVIDER){
+                                itemName = "------------";
+                            }
+                            else{
+                                if(itemName.length() > ITEM_NAME_MAX_LENGTH)
+                                    itemName = itemName.substring(0, ITEM_NAME_MAX_LENGTH) + "\n" + itemName.substring(ITEM_NAME_MAX_LENGTH);
+                            }
+                            menuStr += itemName + "\n";
+                        }
+
                         if(cnt == 0){
                             views.setTextViewText(R.id.widget_big_textView_title_menu1, title);
                             views.setTextViewText(R.id.widget_big_textView_menus_menu1, menuStr);
@@ -128,31 +151,31 @@ public class KCVWidget extends AppWidgetProvider {
             views.setTextViewText(R.id.widget_big_textView_cafeteria, cafeteriaType.toString());       // 식당 설정
             views.setInt(R.id.widget_big_background, "setBackgroundColor", Color.parseColor(backgroundColor));
             views.setOnClickPendingIntent(R.id.widget_big_textView_menus_layout, refreshPending);      // 새로고침 이벤트 등록
+            views.setOnClickPendingIntent(R.id.widget_big_textView_cafeteria, appStartPending);        // 앱 실행 이벤트 등록
         }
         else{
+            // 노멀 뷰
             views = new RemoteViews(context.getPackageName(), R.layout.k_c_v_widget);
 
             // 위젯에 설정된 시간의 메뉴만 가져온다.
-
+            String menuStr = "정보 없음";
             if(currentMenus != null){
                 for(Menu m : currentMenus){
                     if(m.getMealTimeType() == mealTimeType){
-                        views.setTextViewText(R.id.widget_textView_menus, m.toString());
+                        menuStr = m.toString();
                         break;
                     }
                 }
             }
+            views.setTextViewText(R.id.widget_textView_menus, menuStr);
 
             views.setTextViewText(R.id.widget_textView_cafeteria, cafeteriaType.toString());           // 식당 설정
             views.setInt(R.id.widget_background, "setBackgroundColor", Color.parseColor(backgroundColor));
             views.setOnClickPendingIntent(R.id.widget_textView_mealTime, mealTimeChangePending);      // 식사시간 변경 클릭 시 이벤트 등록
             views.setOnClickPendingIntent(R.id.widget_textView_menus, refreshPending);      // 새로고침 이벤트 등록
             views.setTextViewText(R.id.widget_textView_mealTime, mealTimeType.toString());
-
-
+            views.setOnClickPendingIntent(R.id.widget_textView_cafeteria, appStartPending);      // 앱 실행 이벤트 등록
         }
-
-
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -217,19 +240,15 @@ public class KCVWidget extends AppWidgetProvider {
         String action = intent.getAction();
         // 식사시간 클릭되었을 때 식사시간 변경한다!
         if (action != null) {
+            int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
             if(action.equals(ACTION_MEALTIME_CHANGE)){
-                int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                        AppWidgetManager.INVALID_APPWIDGET_ID);
-
                 changeMealTime(context, id);
-
                 updateAppWidget(context, AppWidgetManager.getInstance(context), id); // 버튼이 클릭되면 새로고침 수행
 
                 return;
             }
             else if(action.equals(ACTION_REFRESH)){
-                int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                        AppWidgetManager.INVALID_APPWIDGET_ID);
                 updateAppWidget(context, AppWidgetManager.getInstance(context), id); // 버튼이 클릭되면 새로고침 수행
                 return;
             }
@@ -237,6 +256,8 @@ public class KCVWidget extends AppWidgetProvider {
 
         super.onReceive(context, intent);
     }
+
+    // ----------------------------------------------
 
     private void changeMealTime(Context context, int appWidgetId){
         // 현재 mealTimeType 가져오기

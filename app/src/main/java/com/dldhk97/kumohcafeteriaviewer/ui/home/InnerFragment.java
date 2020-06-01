@@ -68,7 +68,7 @@ public class InnerFragment extends Fragment {
             @Override
             public void onRefresh() {
                 try{
-                    parent.updateCurrentDateView(true);     // 모든 페이지 리프레시
+                    parent.updateCurrentDateView(false);     // 모든 페이지 리프레시
                 }
                 catch (Exception e){
                     e.printStackTrace();

@@ -98,12 +98,6 @@ public class MainActivity extends AppCompatActivity {
             // Navigation 구조에서 onActivityResult를 받기 위한 똥꼬쑈. Fragment 에서는 onActivityResult가 안되서 Activity에서 받아 호출해야댐.
             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().getFragments().get(0);
             for(Fragment f : navHostFragment.getChildFragmentManager().getFragments()){
-//                if(f.getClass() == FavoriteFragment.class){
-//                    f.onActivityResult(requestCode, resultCode, data);
-//                }
-//                else if(f.getClass() == NotificationFragment.class){
-//                    f.onActivityResult(requestCode, resultCode, data);
-//                }
                 f.onActivityResult(requestCode, resultCode, data);
             }
         }
