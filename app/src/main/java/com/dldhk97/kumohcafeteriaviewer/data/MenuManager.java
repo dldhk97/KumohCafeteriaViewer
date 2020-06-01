@@ -48,7 +48,7 @@ public class MenuManager {
         return _instance;
     }
 
-    private void sync(){
+    public void sync(){
         if(currentMenuMap != null){
             currentMenuMap.clear();
         }

@@ -24,7 +24,7 @@ public class FavoriteManager {
         return currentItems;
     }
 
-    private void sync(){
+    public void sync(){
         currentItems = getAllItems();
     }
 
@@ -92,6 +92,7 @@ public class FavoriteManager {
         }};
         return columns;
     }
+
 
 
 }

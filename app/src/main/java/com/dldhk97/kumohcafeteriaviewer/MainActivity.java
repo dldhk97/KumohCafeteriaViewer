@@ -1,14 +1,17 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
 import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
 import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -77,11 +80,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // 메뉴 생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    // 메뉴 클릭 시 동작
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_settings){
+            Intent intent = new Intent(this, SettingsActivity.class);
+            this.startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -98,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             // Navigation 구조에서 onActivityResult를 받기 위한 똥꼬쑈. Fragment 에서는 onActivityResult가 안되서 Activity에서 받아 호출해야댐.
             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().getFragments().get(0);
             for(Fragment f : navHostFragment.getChildFragmentManager().getFragments()){
-                f.onActivityResult(requestCode, resultCode, data);
+                f.onActivityResult(requestCode, resultCode, data);      // 프래그먼트 모두에게 알려주는데, 어짜피 받는놈은 Code로 자기껀지 아닌지 분별함.
             }
         }
         catch (Exception e){

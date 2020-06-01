@@ -36,7 +36,7 @@ public class NotificationItemManager {
         return currentItems;
     }
 
-    private void sync(){
+    public void sync(){
         currentItems = getAllItems();
     }
 

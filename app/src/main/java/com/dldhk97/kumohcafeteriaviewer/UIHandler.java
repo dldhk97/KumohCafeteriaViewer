@@ -29,8 +29,6 @@ public class UIHandler {
                 throw new MyException(ExceptionType.CONTEXT_NOT_INITIALIZED, "UIHandler not initialized");
             }
 
-
-
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

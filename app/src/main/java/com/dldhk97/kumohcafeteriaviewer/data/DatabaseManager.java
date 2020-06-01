@@ -36,7 +36,7 @@ public class DatabaseManager {
         return _instance;
     }
 
-    private void createTable(){
+    public void createTable(){
         try{
             if(context == null){
                 throw new MyException(ExceptionType.CONTEXT_NOT_INITIALIZED, "DatabaseManager not initialized");
@@ -49,7 +49,7 @@ public class DatabaseManager {
             int savedVersion = Integer.parseInt(loadVersion());
             int newVersion = Integer.parseInt(DatabaseInfo.DB_VERSION.toString());
             if(savedVersion < newVersion){
-                deleteTable();
+                dropTables();
                 Log.d("aaaaa", "Table deleted. Update table " + savedVersion + " -> " + newVersion + ".");
             }
 
@@ -87,9 +87,21 @@ public class DatabaseManager {
 
     }
 
-    private void deleteTable(){
-        mydatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseInfo.TABLE_FAVORITES);
+    public void dropTables(){
+        dropMenusTable();
+        dropFavoritesTable();
+        dropNotificationItemsTable();
+    }
+
+    public void dropMenusTable(){
         mydatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseInfo.TABLE_MENUS);
+    }
+
+    public void dropFavoritesTable(){
+        mydatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseInfo.TABLE_FAVORITES);
+    }
+
+    public void dropNotificationItemsTable(){
         mydatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseInfo.TABLE_NOTIFICATIONITEMS);
     }
 
