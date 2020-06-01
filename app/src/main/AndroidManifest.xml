@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 인터넷 연결을 위함 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>   <!-- 진동 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/> <!-- 화면 꺼져있을 때 깨울수 있음 -->
 
     <application
         android:allowBackup="true"
@@ -22,6 +24,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/k_c_v_widget_info" />
         </receiver>
+        <receiver android:name=".receiver.BroadcastReceiver"></receiver>
 
         <activity android:name=".KCVWidgetConfigureActivity">
             <intent-filter>

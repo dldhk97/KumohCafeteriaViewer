@@ -1,11 +1,20 @@
 package com.dldhk97.kumohcafeteriaviewer.data;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
 import com.dldhk97.kumohcafeteriaviewer.enums.MealTimeType;
 import com.dldhk97.kumohcafeteriaviewer.model.NotificationItem;
+import com.dldhk97.kumohcafeteriaviewer.receiver.BroadcastReceiver;
+import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class NotificationItemManager {
     private static NotificationItemManager _instance;
@@ -30,12 +39,67 @@ public class NotificationItemManager {
         currentItems = getAllItems();
     }
 
+    // -----------------------------------------------------------------------
+
+    // 현재 등록된 알림 중 activated된 것만 알림 설정한다.
+    public boolean updateNotification(NotificationItem notificationItem, Context context){
+        try{
+//            cancelNotification(context);            //일단 다 취소때린다.
+
+            // 알림 activated된것만 설정
+            for(NotificationItem ni : currentItems){
+                if(ni.isActivated()){
+                    setNotification(ni, context);
+                }
+            }
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // 하나의 알림을 설정한다.
+    private boolean setNotification(NotificationItem notificationItem, Context context){
+        // 시간 설정
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, notificationItem.getHour());
+        calendar.set(Calendar.MINUTE, notificationItem.getMin());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        Log.d("aaaaa", "알림 예약됨 : " +  DateUtility.dateToString(calendar, '.') + ", " + notificationItem.getHour() + " : " + notificationItem.getMin());
+
+        //알람 예약
+        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, BroadcastReceiver.class);
+        intent.putExtra("notificationItemID", notificationItem.getId());
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
+        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);                                        //이건되는데
+//        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sender);  //이건왜안됨;
+        return false;
+    }
+
+    // 모든 알림을 끈다.
+    private boolean cancelNotification(Context context){
+        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, BroadcastReceiver.class);
+        PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        am.cancel(pIntent);
+        return false;
+    }
+
+
+    // -----------------------------------------------------------------------
+
     public boolean addItem(final NotificationItem notificationItem){
         ArrayList<String> columns = getAllColumnsWithoutID();
 
         ArrayList<String> values = itemToStringArrayWithOutID(notificationItem);
 
-        if(findItem(notificationItem) != null){
+        if(findItem(notificationItem.getId()) != null){
             return false;
         }
 
@@ -62,12 +126,12 @@ public class NotificationItemManager {
     }
 
     // 식사 알람은 id로 찾는다.
-    public NotificationItem findItem(NotificationItem notificationItem){
-        if(notificationItem.getId() == null){
+    public NotificationItem findItem(String notificationID){
+        if(notificationID == null){
             return null;
         }
         ArrayList<String> columns = getAllColumnsWithID();
-        String select = DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_ID.toString() + " = '" + notificationItem.getId() + "'";
+        String select = DatabaseInfo.TABLE_NOTIFICATIONITEMS_COLUMN_ID.toString() + " = '" + notificationID + "'";
 
         ArrayList<ArrayList<String>> received = DatabaseManager.getInstance().select(DatabaseInfo.TABLE_NOTIFICATIONITEMS.toString(), columns, select);
         if(received == null)
@@ -95,7 +159,7 @@ public class NotificationItemManager {
     }
 
     public boolean updateItem(NotificationItem notificationItem){
-        if(findItem(notificationItem) == null){
+        if(findItem(notificationItem.getId()) == null){
             return false;
         }
 

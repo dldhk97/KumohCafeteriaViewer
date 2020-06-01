@@ -2,7 +2,9 @@ package com.dldhk97.kumohcafeteriaviewer.enums;
 
 import androidx.annotation.NonNull;
 
-public enum CafeteriaType {
+import java.io.Serializable;
+
+public enum CafeteriaType implements Serializable {
     STUDENT, STAFF, SNACKBAR, PUROOM, OREUM1, OREUM3, UNKNOWN;
 
     @NonNull

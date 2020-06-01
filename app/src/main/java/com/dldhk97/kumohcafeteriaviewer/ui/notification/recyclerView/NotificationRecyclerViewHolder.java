@@ -69,7 +69,7 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
 
             // 스위치
             recycleritem_notification_switch.setChecked(notificationItem.isActivated());
-            recycleritem_notification_switch.setOnCheckedChangeListener(new OnSwitchCheckListener(notificationItem));
+            recycleritem_notification_switch.setOnCheckedChangeListener(new OnSwitchCheckListener(notificationItem, context));
 
             // 식당 드롭다운, 선택된 식당 찾아 설정
             int cafeteriaPos = 0;

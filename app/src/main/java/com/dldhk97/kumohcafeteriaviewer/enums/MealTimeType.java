@@ -2,7 +2,9 @@ package com.dldhk97.kumohcafeteriaviewer.enums;
 
 import androidx.annotation.NonNull;
 
-public enum MealTimeType {
+import java.io.Serializable;
+
+public enum MealTimeType implements Serializable {
     BREAKFAST, LUNCH, DINNER, ONECOURSE, UNKNOWN;
 
     @NonNull
