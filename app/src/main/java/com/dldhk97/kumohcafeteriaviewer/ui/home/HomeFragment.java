@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dldhk97.kumohcafeteriaviewer.R;
@@ -104,6 +105,16 @@ public class HomeFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        // ViewPager 기본 탭으로 설정한 것으로 선택
+        String default_cafeteria = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("default_cafeteria", "학생식당");
+        CafeteriaType defaultCafeteriaType = CafeteriaType.stringTo(default_cafeteria);
+        for(int i = 0 ; i < pages.size() ; i++){
+            if(pages.get(i).getCafeteriaType() == defaultCafeteriaType){
+                viewPager.setCurrentItem(i);
+                break;
+            }
+        }
     }
 
     private void initializeBottomSheet(View root) throws Exception {

@@ -2,7 +2,7 @@ package com.dldhk97.kumohcafeteriaviewer.data;
 
 public enum DatabaseInfo {
     DB_NAME("KumohCafeteriaViewer.db"),
-    DB_VERSION("3"),
+    DB_VERSION("4"),
 
     TABLE_FAVORITES("Favorites"),
     TABLE_FAVORITES_COLUMN_ID("_id"),

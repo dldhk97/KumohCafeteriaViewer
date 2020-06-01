@@ -34,8 +34,6 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        initPrefs(this);
-
     }
 
     // 뒤로가기 버튼 터치 시 홈으로 돌아가게 함.
@@ -119,6 +117,10 @@ public class SettingsActivity extends AppCompatActivity {
             MenuManager.getInstance().sync();
             NotificationItemManager.getInstance().sync();
             FavoriteManager.getInstance().sync();
+
+            // SharedPreference 초기화
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            prefs.edit().clear().commit();
         }
     }
 
@@ -126,9 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean ring = prefs.getBoolean("ring", false);
         boolean vibrate = prefs.getBoolean("vibrate", false);
-        boolean wakeup = prefs.getBoolean("wakeup", false);
         boolean favorite_only = prefs.getBoolean("favorite_only", false);
-        boolean no_notify_holiday = prefs.getBoolean("no_notify_holiday", false);
-        String default_cafeteria = prefs.getString("default_cafeteria", "알수없음");
+//        boolean no_notify_holiday = prefs.getBoolean("no_notify_holiday", false);
     }
 }

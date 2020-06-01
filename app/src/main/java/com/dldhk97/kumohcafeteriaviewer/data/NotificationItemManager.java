@@ -4,8 +4,11 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
+
+import androidx.preference.PreferenceManager;
 
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
@@ -80,7 +83,14 @@ public class NotificationItemManager {
 //        Intent intent1 = new Intent(BroadcastReceiver.ACTION_ALARM, Uri.parse(notificationItem.getId()));
         intent.putExtra("notificationItemID", notificationItem.getId());
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sender);
+
+        // WakeUp 할지 설정에서 설정값 가져옴.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean wakeupBool = prefs.getBoolean("wakeup", false);
+
+        int wakeup = wakeupBool ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC;
+
+        am.setRepeating(wakeup, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sender);
         return false;
     }
 
