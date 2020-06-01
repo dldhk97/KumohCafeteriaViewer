@@ -1,5 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 
@@ -10,11 +11,9 @@ import com.dldhk97.kumohcafeteriaviewer.model.NotificationItem;
 public class NotificationItemTitleWatcher implements TextWatcher {
 
     private final NotificationItem notificationItem;
-//    private final String orgName;
 
     public NotificationItemTitleWatcher(final NotificationItem notificationItem){
         this.notificationItem = notificationItem;
-//        this.orgName = notificationItem.getName();
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -23,7 +24,6 @@ import com.dldhk97.kumohcafeteriaviewer.ui.notification.PopupActivity;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.NotificationItemTitleWatcher;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnCafeteriaSelectedListener;
 import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnMealTimeSelectedListener;
-import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.listener.OnSwitchCheckListener;
 import com.dldhk97.kumohcafeteriaviewer.utility.TimeUtility;
 
 public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -67,10 +67,6 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
             recycleritem_notification_title.setText(notificationItem.getName());
             recycleritem_notification_title.addTextChangedListener(new NotificationItemTitleWatcher(notificationItem));
 
-            // 스위치
-            recycleritem_notification_switch.setChecked(notificationItem.isActivated());
-            recycleritem_notification_switch.setOnCheckedChangeListener(new OnSwitchCheckListener(notificationItem, context));
-
             // 식당 드롭다운, 선택된 식당 찾아 설정
             int cafeteriaPos = 0;
             String[] cafeteriaArr = CafeteriaType.getStringArray();
@@ -95,7 +91,7 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
             recycleritem_notification_mealtime.setSelection(mealTimePos);
             recycleritem_notification_mealtime.setOnItemSelectedListener(new OnMealTimeSelectedListener(notificationItem));
 
-            // 알람시간
+            // 알람시간 리스너 설정
             int hour = notificationItem.getHour();
             int min = notificationItem.getMin();
             String timeStr = TimeUtility.getInstance().hourMinToAMPM(hour, min);
@@ -110,8 +106,34 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
                 }
             });
 
-            // 삭제버튼
+            // 삭제버튼 리스너 설정
             recycleritem_notification_delete.setOnClickListener(this);
+
+            // 스위치 리스너 설정
+            recycleritem_notification_switch.setChecked(notificationItem.isActivated());
+            recycleritem_notification_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    // DB에 저장
+                    notificationItem.setActivated(b);
+                    NotificationItemManager.getInstance().updateItem(notificationItem);
+
+                    // 알림 세팅
+                    NotificationItemManager.getInstance().reloadNotification(notificationItem, context);
+
+                    if(b){
+                        UIHandler.getInstance().showToast(notificationItem.getName() + " 이(가) 설정되었습니다.");
+                        toggleViewEnabled(false);
+                    }
+                    else{
+                        toggleViewEnabled(true);
+                    }
+                }
+            });
+
+            // 활성화되있으면 뷰 잠금
+            toggleViewEnabled(!notificationItem.isActivated());
+
         }
         catch (Exception e){
             UIHandler.getInstance().showToast(e.getMessage());
@@ -122,7 +144,6 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
     }
 
     private final int NOTIFICATION_POPUP_REQUEST_CODE = 3;
-    private final int NOTIFICATION_POPUP_RESULT_CODE = 4;
 
     // 알림 삭제버튼
     @Override
@@ -137,5 +158,13 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
         }
         UIHandler.getInstance().showToast(toastMsg);
         adapter.notifyDataSetChanged();
+    }
+
+    private void toggleViewEnabled(boolean isEnabled){
+        recycleritem_notification_title.setEnabled(isEnabled);
+        recycleritem_notification_cafeteria.setEnabled(isEnabled);
+        recycleritem_notification_mealtime.setEnabled(isEnabled);
+        recycleritem_notification_time.setEnabled(isEnabled);
+        recycleritem_notification_delete.setEnabled(isEnabled);
     }
 }

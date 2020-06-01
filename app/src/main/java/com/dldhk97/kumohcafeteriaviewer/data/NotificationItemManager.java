@@ -43,7 +43,7 @@ public class NotificationItemManager {
     // -----------------------------------------------------------------------
 
     // 현재 등록된 알림 중 activated된 것만 알림 설정한다.
-    public boolean updateNotification(NotificationItem notificationItem, Context context){
+    public boolean reloadNotification(NotificationItem notificationItem, Context context){
         try{
             cancelNotification(context);            //일단 다 취소때린다.
 

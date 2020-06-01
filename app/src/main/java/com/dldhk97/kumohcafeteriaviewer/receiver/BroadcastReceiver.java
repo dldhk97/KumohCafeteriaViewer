@@ -28,9 +28,6 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-//        Log.d("aaaaa", "알림 받음");
-//        long x = Long.parseLong(intent.getData().getSchemeSpecificPart());
-
         // 알림정보 가져오기
         String notificationItemID = intent.getStringExtra("notificationItemID");
         if(notificationItemID == null){
@@ -46,7 +43,11 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
             Log.d("aaaaa", "notificationItem is null");
             return;
         }
-        String pushTitle = notificationItem.getCafeteriaType().toString() + " [" + notificationItem.getMealTimeType() + "]";
+        if(!notificationItem.isActivated()){
+            Log.d("aaaaa", "notificationItem is deactivated");
+            return;
+        }
+        String pushTitle = notificationItem.getCafeteriaType().toString() + " - " + notificationItem.getMealTimeType() + " [" + notificationItem.getHour() + ":" + notificationItem.getMin() + "]";
         String pushContent = null;
         try {
             Calendar today = DateUtility.remainOnlyDate(Calendar.getInstance());
