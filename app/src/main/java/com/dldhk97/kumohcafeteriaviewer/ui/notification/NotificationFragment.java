@@ -23,6 +23,7 @@ import com.dldhk97.kumohcafeteriaviewer.ui.notification.recyclerView.Notificatio
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class NotificationFragment extends Fragment implements View.OnClickListener {
 
@@ -70,13 +71,16 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             ArrayList<NotificationItem> arr = NotificationItemManager.getInstance().getCurrentItems();
             int nameOffset = arr != null ? arr.size() : 0;
 
+            // 알람 정보를 생성함.
             String name = "내 식사 알림 " + (nameOffset + 1);
             CafeteriaType cafeteriaType = CafeteriaType.STUDENT;
             MealTimeType mealTimeType = MealTimeType.BREAKFAST;
-            int hour = 7;
-            int min = 30;
+            Calendar now = Calendar.getInstance();
+            int hour = now.get(Calendar.HOUR);
+            int min = now.get(Calendar.MINUTE);
             boolean activated = false;
 
+            // 알람 객체 생성해서 추가
             NotificationItem newItem = new NotificationItem(name, cafeteriaType, mealTimeType, hour, min, activated);
             NotificationItemManager.getInstance().addItem(newItem);
             notificationRecyclerAdapter.notifyDataSetChanged();
