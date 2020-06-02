@@ -1,6 +1,8 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,9 @@ public class InnerFragment extends Fragment {
     private CafeteriaRecyclerAdapter cafeteriaRecyclerAdapter;
     private RecyclerView menu_inner_recyclerView;
     private HomeFragment parent;
+    private SwipeRefreshLayout menu_inner_swipeRefresh;
+
+    private boolean isBusy = false;
 
     public InnerFragment(CafeteriaType cafeteriaType, HomeFragment parent){
         this.cafeteriaType = cafeteriaType;
@@ -47,10 +52,9 @@ public class InnerFragment extends Fragment {
 
     public CafeteriaRecyclerAdapter getCafeteriaRecyclerAdapter(){return cafeteriaRecyclerAdapter;}
 
-//    public void setNewCafeteriaRecyclerAdapter(Context context){
-//        cafeteriaRecyclerAdapter = new CafeteriaRecyclerAdapter(context, currentMenus);
-//    }
-
+    public boolean isBusy() {
+        return isBusy;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class InnerFragment extends Fragment {
         updateMenus(currentDate, false);
 
         // 스와이프 리프레셔 등록
-        final SwipeRefreshLayout menu_inner_swipeRefresh = root.findViewById(R.id.menu_inner_swipeRefresh);
+        menu_inner_swipeRefresh = root.findViewById(R.id.menu_inner_swipeRefresh);
         menu_inner_swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -71,7 +75,7 @@ public class InnerFragment extends Fragment {
                     e.printStackTrace();
                     UIHandler.getInstance().showToast(e.getMessage());
                 }
-                menu_inner_swipeRefresh.setRefreshing(false);           // 리프레시 완료
+//                menu_inner_swipeRefresh.setRefreshing(false);           // 리프레시 완료
             }
         });
 
@@ -85,48 +89,103 @@ public class InnerFragment extends Fragment {
         return root;
     }
 
+
     // 날짜 변경 요청 시 호출됨. 리사이클러 뷰 내 항목 업데이트함.
     public void updateMenus(Calendar date, boolean isForceUpdate){
-        try {
-            // 날짜만 남긴다. 시간은 제외
-            currentDate = DateUtility.remainOnlyDate(date);
+        UpdateTask backgroundTask = new UpdateTask();
+        backgroundTask.setOnUpdateCompleteReceivedEvent(new UpdateCompleteListener());
+        backgroundTask.execute(new Pair<Calendar, Boolean>(date, isForceUpdate));
+        if(menu_inner_swipeRefresh != null)
+            menu_inner_swipeRefresh.setRefreshing(true);
+        isBusy = true;
+    }
 
-            // 주어진 날짜의 식단이 존재하지 않으면 파싱
-            weekMenus = MenuManager.getInstance().getWeekMenus(cafeteriaType, currentDate, isForceUpdate);
+    public void stopRrefreshing(){
+        if(menu_inner_swipeRefresh != null)
+            menu_inner_swipeRefresh.setRefreshing(false);
+    }
 
-            // 다시 주어진 날짜의 식단이 존재하는지 체크
-            if(isMenuExists(currentDate)){
-                // 있으면 메뉴 넣음.
-                currentMenus = weekMenus.get(currentDate).getMenus();
+    // -----------------------------------------------------------//
+
+    // Update 리스너. Update 끝나면 얘가 알려줌.
+    private class UpdateCompleteListener {
+        public void onUpdateComplete(boolean isSucceed) {
+            if(cafeteriaRecyclerAdapter != null){
+                cafeteriaRecyclerAdapter.notifyDataSetChanged();
             }
-            else{
-                // 없으면 없다는 메뉴를 임시로 만들어 넣음.
-                if(currentMenus != null){
-                    currentMenus.clear();
-                }
-                else{
-                    currentMenus = new ArrayList<>();
-                }
-
-                Menu emptyMenu = new Menu(currentDate, cafeteriaType, MealTimeType.UNKNOWN, false);
-                emptyMenu.addItem(new Item("식사정보 없음", ItemType.ETC));
-                currentMenus.add(emptyMenu);
-            }
-
-            if(cafeteriaRecyclerAdapter == null){
-                return;
-            }
-
-            cafeteriaRecyclerAdapter.updateData(currentMenus);
-            cafeteriaRecyclerAdapter.notifyDataSetChanged();
-
-        } catch (Exception e) {
-            UIHandler.getInstance().showToast(e.getMessage());
-            e.printStackTrace();
+            isBusy = false;
+            parent.requestStopRefreshing();
         }
     }
 
-    // 주어진 날짜의 식단이 존재하는지 체크
+    // 파싱 백그라운드에서 돌리게 함.
+    private class UpdateTask extends AsyncTask<Pair<Calendar, Boolean>, Integer, Integer > {
+        private UpdateCompleteListener updateCompleteListener;
+
+        @Override
+        protected Integer doInBackground(Pair<Calendar, Boolean>... pairs) {
+            try {
+                Calendar date = pairs[0].first;
+                boolean isForceUpdate = pairs[0].second.booleanValue();
+                // 날짜만 남긴다. 시간은 제외
+                currentDate = DateUtility.remainOnlyDate(date);
+
+                // 주어진 날짜의 식단이 존재하지 않으면 파싱
+                weekMenus = MenuManager.getInstance().getWeekMenus(cafeteriaType, currentDate, isForceUpdate);
+
+                // 다시 주어진 날짜의 식단이 존재하는지 체크
+                if(isMenuExists(currentDate)){
+                    // 있으면 메뉴 넣음.
+                    currentMenus = weekMenus.get(currentDate).getMenus();
+                }
+                else{
+                    // 없으면 없다는 메뉴를 임시로 만들어 넣음.
+                    if(currentMenus != null){
+                        currentMenus.clear();
+                    }
+                    else{
+                        currentMenus = new ArrayList<>();
+                    }
+
+                    Menu emptyMenu = new Menu(currentDate, cafeteriaType, MealTimeType.UNKNOWN, false);
+                    emptyMenu.addItem(new Item("식사정보 없음", ItemType.ETC));
+                    currentMenus.add(emptyMenu);
+                }
+
+                if(cafeteriaRecyclerAdapter == null){
+                    return null;
+                }
+
+                cafeteriaRecyclerAdapter.updateData(currentMenus);
+
+            } catch (Exception e) {
+                UIHandler.getInstance().showToast(e.getMessage());
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            updateCompleteListener.onUpdateComplete(true);
+        }
+
+        // 데이터 전달을 위한 리스너 설정
+        public void setOnUpdateCompleteReceivedEvent(UpdateCompleteListener listener){
+            updateCompleteListener = listener;
+        }
+    }
+
+    // --------------------------------//
+
+    // 이 프래그먼트 안에 주어진 날짜의 식단이 존재하는지 체크
     private boolean isMenuExists(Calendar date) throws Exception {
         // 날짜 특정해서 해당 날짜 메뉴 있으면 get
         if(weekMenus == null)

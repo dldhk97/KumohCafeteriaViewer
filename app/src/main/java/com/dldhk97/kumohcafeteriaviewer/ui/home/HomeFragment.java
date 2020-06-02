@@ -182,7 +182,8 @@ public class HomeFragment extends Fragment {
                 }
             }
             for(InnerFragment frag : pages){
-                frag.updateMenus(currentDate, isForceUpdate);
+                if(!frag.isBusy())
+                    frag.updateMenus(currentDate, isForceUpdate);
             }
         }
         catch(Exception e){
@@ -190,6 +191,22 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public void requestStopRefreshing(){
+        boolean isFragBusy = false;
+        for(InnerFragment frag : pages){
+            if(frag.isBusy()){
+                isFragBusy = true;
+                break;
+            }
+        }
+        if(!isFragBusy){
+            for(InnerFragment frag : pages){
+                frag.stopRrefreshing();
+            }
+        }
+    }
+
+    // BottomSheet의 표시되는 날짜 변경
     private void setBottomSheetNowDate(Calendar date){
         String dayOfWeek = DateUtility.getDayOfWeek(date);
         String dateStr = DateUtility.dateToString(date, '.');
