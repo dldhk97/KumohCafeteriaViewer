@@ -19,7 +19,13 @@ public class TimeUtility {
         }
         if(hour == 0)
             hour = 12;
-        String result = ampm + " " + hour + "시" + min + "분";
+        String hourStr = String.valueOf(hour);
+        String minStr = String.valueOf(min);
+        if(minStr.length() < 2){
+            minStr = "0" + minStr;
+        }
+
+        String result = ampm + " " + hourStr + "시 " + minStr + "분";
         return result;
     }
 
