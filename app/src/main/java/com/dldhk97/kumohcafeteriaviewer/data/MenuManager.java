@@ -119,6 +119,9 @@ public class MenuManager {
 
     public Calendar containsWeek(CafeteriaType cafeteriaType, Calendar date){
         TreeMap<Calendar, WeekMenus> weekMenusList = currentMenuMap.get(cafeteriaType);
+        if(weekMenusList == null)
+            return null;
+
 
         try{
             // 요청한 날짜가 포함된 주의 월요일(=시작일) 구하기
@@ -129,6 +132,9 @@ public class MenuManager {
                 startDate.add(Calendar.DATE, -1);
             }
             startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);       // 월요일 구하기
+
+            if(weekMenusList.keySet() == null)
+                return null;
 
             for(Calendar c : weekMenusList.keySet()) {
                 if(c.compareTo(startDate) == 0){

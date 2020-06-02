@@ -293,22 +293,40 @@ public class KCVWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent){
         String action = intent.getAction();
-        // 식사시간 클릭되었을 때 식사시간 변경한다!
         if (action != null) {
-            int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
+
+            // 식사시간 클릭되었을 때 식사시간 변경한다!
             if(action.equals(ACTION_MEALTIME_CHANGE)){
-                changeMealTime(context, id);
-                updateAppWidget(context, AppWidgetManager.getInstance(context), id); // 버튼이 클릭되면 새로고침 수행
+                changeMealTime(context, appWidgetId);
+                updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId); // 버튼이 클릭되면 새로고침 수행
 
                 return;
             }
+            // 새로고침은, 파싱 강제로 함.
             else if(action.equals(ACTION_REFRESH)){
-                updateAppWidget(context, AppWidgetManager.getInstance(context), id); // 버튼이 클릭되면 새로고침 수행
+                try{
+                    // 오늘 알아내기
+                    Calendar today = Calendar.getInstance();
+                    DateUtility.remainOnlyDate(today);
+
+                    // 위젯에 설정된 식당 알아내기
+                    ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
+                    CafeteriaType cafeteriaType = CafeteriaType.stringTo(loadedPrefs.get(0));
+
+                    // 파싱 후 업데이트
+                    MenuManager.getInstance().parseAndUpdate(cafeteriaType, today);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                finally {
+                    updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId); // 버튼이 클릭되면 새로고침 수행
+                }
                 return;
             }
         }
-
         super.onReceive(context, intent);
     }
 

@@ -175,12 +175,14 @@ public class HomeFragment extends Fragment {
     public void updateCurrentDateView(boolean isForceUpdate){
         try{
             setBottomSheetNowDate(currentDate);
+
             // 이번 날짜가 포함되있는지 체크하고, 포함안되있으면 네트워크 테스트
             if(MenuManager.getInstance().containsWeek(CafeteriaType.STUDENT, currentDate) == null){
                 if(NetworkStatus.checkStatus(this.getContext()) != NetworkStatusType.CONNECTED){
                     UIHandler.getInstance().showToast("금오공과대학교 홈페이지 연결에 실패했습니다!");
                 }
             }
+
             for(InnerFragment frag : pages){
                 if(!frag.isBusy())
                     frag.updateMenus(currentDate, isForceUpdate);
@@ -192,18 +194,20 @@ public class HomeFragment extends Fragment {
     }
 
     public void requestStopRefreshing(){
-        boolean isFragBusy = false;
-        for(InnerFragment frag : pages){
-            if(frag.isBusy()){
-                isFragBusy = true;
-                break;
-            }
-        }
-        if(!isFragBusy){
+        if(!isBusyFragExists()){
             for(InnerFragment frag : pages){
                 frag.stopRrefreshing();
             }
         }
+    }
+
+    private boolean isBusyFragExists(){
+        for(InnerFragment frag : pages){
+            if(frag.isBusy()){
+                return true;
+            }
+        }
+        return false;
     }
 
     // BottomSheet의 표시되는 날짜 변경

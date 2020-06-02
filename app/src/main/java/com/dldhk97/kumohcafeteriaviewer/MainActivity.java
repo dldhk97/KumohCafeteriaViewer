@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try{
-            // Navigation 구조에서 onActivityResult를 받기 위한 똥꼬쑈. Fragment 에서는 onActivityResult가 안되서 Activity에서 받아 호출해야댐.
+            // Navigation 구조에서 onActivityResult를 받기 위한 것. Fragment 에서는 onActivityResult가 안되서 Activity에서 받아 호출해야댐.
             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().getFragments().get(0);
             for(Fragment f : navHostFragment.getChildFragmentManager().getFragments()){
                 f.onActivityResult(requestCode, resultCode, data);      // 프래그먼트 모두에게 알려주는데, 어짜피 받는놈은 Code로 자기껀지 아닌지 분별함.

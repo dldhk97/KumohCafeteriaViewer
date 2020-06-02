@@ -118,7 +118,7 @@ public class InnerFragment extends Fragment {
         }
     }
 
-    // 파싱 백그라운드에서 돌리게 함.
+    // 데이터 가져오기 및 파싱 백그라운드에서 돌리게 함.
     private class UpdateTask extends AsyncTask<Pair<Calendar, Boolean>, Integer, Integer > {
         private UpdateCompleteListener updateCompleteListener;
 

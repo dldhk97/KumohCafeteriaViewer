@@ -84,6 +84,12 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             NotificationItem newItem = new NotificationItem(name, cafeteriaType, mealTimeType, hour, min, activated);
             NotificationItemManager.getInstance().addItem(newItem);
             notificationRecyclerAdapter.notifyDataSetChanged();
+
+            // 최하단으로 스크롤
+            int currentItemSize = NotificationItemManager.getInstance().getCurrentItems().size();
+            if(currentItemSize > 0){
+                notificationRecyclerView.smoothScrollToPosition(currentItemSize - 1);
+            }
         }
         catch (Exception e){
             UIHandler.getInstance().showToast(e.getMessage());

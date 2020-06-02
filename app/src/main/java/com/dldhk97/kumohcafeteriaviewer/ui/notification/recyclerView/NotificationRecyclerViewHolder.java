@@ -151,14 +151,10 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
     @Override
     public void onClick(View view) {
         boolean isSucceed = NotificationItemManager.getInstance().deleteItem(currentItem);
-        String toastMsg = "";
-        if(isSucceed){
-            toastMsg = currentItem.getName() + " 이(가) 삭제되었습니다.";
+        if(!isSucceed){
+            UIHandler.getInstance().showToast(currentItem.getName() + " 을(를) 삭제하는데 실패했습니다.");
         }
-        else{
-            toastMsg = currentItem.getName() + " 을(를) 삭제하는데 실패했습니다.";
-        }
-        UIHandler.getInstance().showToast(toastMsg);
+
         adapter.notifyDataSetChanged();
     }
 
