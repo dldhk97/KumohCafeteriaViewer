@@ -26,57 +26,101 @@ import com.dldhk97.kumohcafeteriaviewer.utility.DateUtility;
 import java.util.Calendar;
 
 public class BroadcastReceiver extends android.content.BroadcastReceiver {
-    public static String ACTION_ALARM = "com.dldhk97.kumohacfeteriaviewer.receiver.BroadcastReceiver";
+    public static String ACTION_USER_NOTIFICATION = "com.dldhk97.kumohacfeteriaviewer.receiver.BroadcastReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
-        NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if(intent.getAction().equals(ACTION_USER_NOTIFICATION)){
+            NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // 알림정보 가져오기
-        String notificationItemID = intent.getStringExtra("notificationItemID");
-        if(notificationItemID == null){
-            Log.d("aaaaa", "notificationItemID is null");
-            return;
+            // 알림 ID 가져오기
+            String notificationItemID = intent.getStringExtra("notificationItemID");
+            if(notificationItemID == null){
+                Log.d("aaaaa", "notificationItemID is null");
+                return;
+            }
+
+            DatabaseManager.getInstance().setContextIfNotExist(context);        // DB매니저가 인스턴스화되지 않으면 초기화. 이거안하면 어플 실행안됬을때 터짐.
+
+            // 알림 객체 가져오기
+            NotificationItem notificationItem = NotificationItemManager.getInstance().findItem(notificationItemID);
+            if(notificationItem == null){
+                Log.d("aaaaa", "notificationItem is null");
+                return;
+            }
+
+            // 설정 정보 가져오기
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+            // 알림 객체가 유효한지(deactivated 된지, 너무 늦게 알림발생했는지) 체크
+            if(!isNotificationItemValid(notificationItem, prefs)){
+                Log.d("aaaaa", "notificationItem is invalid");
+                return;
+            }
+
+            // 푸시 타이틀 및 내용 설정
+            String pushTitle = notificationItem.getCafeteriaType().toString() + " - " + notificationItem.getMealTimeType() + " [" + notificationItem.getHour() + ":" + notificationItem.getMin() + "]";
+
+            // 푸시컨텐츠가 없으면 알릴 필요 없다.
+            Menu menu = getMenuFromMenuManager(notificationItem);
+            if(menu == null) {
+                Log.d("aaaaa", "Menu is null");
+                return;
+            }
+
+            // 찜목록 체크. "찜목록만 알림 설정"이 꺼져있는 경우 그냥 true 반환함.
+            if(!isFavoriteIncluded(menu, prefs)){
+                Log.d("aaaaa", "notificationItem is invalid");
+                return;
+            }
+
+            // 알림 빌더 생성
+            boolean ring = prefs.getBoolean("ring", true);
+            boolean vibrate = prefs.getBoolean("vibrate", true);
+            String menuText = menu.toString();
+            String menuSummary = menuText.replace("\n",", ");;
+            NotificationCompat.Builder builder = buildNotification(context, pushTitle, menuSummary, menuText, ring, vibrate);
+
+            // 알림
+            notificationmanager.notify(1, builder.build());
         }
 
-        DatabaseManager.getInstance().setContextIfNotExist(context);        // DB매니저가 인스턴스화되지 않으면 초기화. 이거안하면 어플 실행안됬을때 터짐.
+    }
 
-        // 알림 객체 가져오기
-        NotificationItem notificationItem = NotificationItemManager.getInstance().findItem(notificationItemID);
-        if(notificationItem == null){
-            Log.d("aaaaa", "notificationItem is null");
-            return;
-        }
+    private static int validTimeMil = 600000;       // 10분
+    private boolean isNotificationItemValid(NotificationItem notificationItem, SharedPreferences prefs){
+        // 알림 아이템이 deactivated 인 경우
         if(!notificationItem.isActivated()){
             Log.d("aaaaa", "notificationItem is deactivated");
-            return;
+            return false;
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);       // 설정에서 식사 알림 관련 정보 빼온다.
-
-        // 알림이 10분 지나서 동작하면 그냥 무시함.
+        // 알림이 10분 지나서 동작하면 유효하지 않은 알림으로 처리.
         Calendar targetTime = Calendar.getInstance();
         targetTime.set(Calendar.HOUR_OF_DAY, notificationItem.getHour());
         targetTime.set(Calendar.MINUTE, notificationItem.getMin());
         targetTime.set(Calendar.SECOND, 0);
         targetTime.set(Calendar.MILLISECOND, 0);
         long diffMil = Calendar.getInstance().getTimeInMillis() - targetTime.getTimeInMillis();
-        if(diffMil >= 600000){
-            Log.d("aaaaa", "notificationItem is not exact time : " + diffMil);
-            return;
+        if(diffMil >= validTimeMil){
+            Log.d("aaaaa", "notificationItem time over : " + diffMil);
+            return false;
         }
 
-        // 주말이면 알리지 않음 체크
+        // 주말이면 알리지 않음 체크되있으면, 주말인지 검사함.
         boolean no_notify_holiday = prefs.getBoolean("no_notify_holiday", false);
         if(no_notify_holiday){
             int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
             if(dayOfWeek == 1 || dayOfWeek == 7){
-                Log.d("aaaaa", "notification canceled by holiday protocol. dayofWeek : " + dayOfWeek);
-                return;
+                Log.d("aaaaa", "today is not holiday. dayofWeek : " + dayOfWeek);
+                return false;
             }
         }
 
-        // 푸시 타이틀 및 내용 설정
-        String pushTitle = notificationItem.getCafeteriaType().toString() + " - " + notificationItem.getMealTimeType() + " [" + notificationItem.getHour() + ":" + notificationItem.getMin() + "]";
+        return true;
+    }
+
+    // 메뉴 매니저에서 메뉴 객체 가져오기
+    private Menu getMenuFromMenuManager(NotificationItem notificationItem){
         Menu menu = null;
         try {
             Calendar today = DateUtility.remainOnlyDate(Calendar.getInstance());
@@ -91,13 +135,11 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return menu;
+    }
 
-        // 푸시컨텐츠가 없으면 알릴 필요 없다.
-        if(menu == null){
-            Log.d("aaaaa", "Menu is null");
-            return;
-        }
-
+    // 찜목록 체크
+    private boolean isFavoriteIncluded(Menu menu, SharedPreferences prefs){
         // 찜목록만 알리는 경우 체크
         boolean favorite_only = prefs.getBoolean("favorite_only", false);
         if(favorite_only){
@@ -111,25 +153,25 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
                 }
                 if(!isFavoriteContains){
                     Log.d("aaaaa", "Favorite is not contained.");
-                    return;
+                    return false;
                 }
             }
             catch (Exception e){
                 e.printStackTrace();
             }
         }
+        return true;
+    }
 
-        // 알림 생성(DEFAULT_VIBRATE는 진동설정 커스텀가능할 때 고치면됨)
+    // 알림 생성
+    private NotificationCompat.Builder buildNotification(Context context, String contentTitle, String contentTextSummary, String contentText, boolean ring, boolean vibrate){
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.ic_menu_main).setTicker("HETT").setWhen(System.currentTimeMillis())
-                .setNumber(1).setContentTitle(pushTitle).setContentText(menu.toString().replace("\n",", "))
+                .setNumber(1).setContentTitle(contentTitle).setContentText(contentTextSummary)
                 .setContentIntent(pendingIntent).setAutoCancel(true)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(menu.toString()));
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
 
-        // 소리/진동 설정
-        boolean ring = prefs.getBoolean("ring", true);
-        boolean vibrate = prefs.getBoolean("vibrate", true);
         if(ring && vibrate){
             builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
             Log.d("aaaaa", "Notification ALL");
@@ -142,7 +184,6 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
             builder.setDefaults(Notification.DEFAULT_VIBRATE);
             Log.d("aaaaa", "Notification VIBRATION ONLY");
         }
-
-        notificationmanager.notify(1, builder.build());
+        return builder;
     }
 }

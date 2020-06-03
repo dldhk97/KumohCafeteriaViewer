@@ -62,7 +62,8 @@
 
     <!-- 설정:헤더 -->
     <string name="notification_header">식사 알림</string>
-    <string name="home_header">홈 설정</string>
+    <string name="home_header">홈</string>
+    <string name="widget_header">위젯</string>
     <string name="data_header">데이터</string>
 
     <!-- 설정:식사알림 -->
@@ -74,6 +75,10 @@
 
     <!-- 설정:홈 설정 -->
     <string name="default_cafeteria_title">기본 식당</string>
+
+    <!-- 설정:위젯 설정 -->
+    <string name="widget_automatic_change_mealtime_title">위젯 자동 식사시간 변경</string>
+    <string name="widget_automatic_change_mealtime_summary">작은 위젯이 시간에 맞게 조식/중식/석식으로 변경됩니다.</string>
 
     <!-- 설정:데이터 -->
     <string name="menus_data_reset_title">식단 데이터 초기화</string>

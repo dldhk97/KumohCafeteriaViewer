@@ -1,5 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -35,8 +36,8 @@ public class KCVWidget extends AppWidgetProvider {
     private static final String PREFS_NAME = "com.dldhk97.kumohcafeteriaviewer.KCVWidget";
     private static final String PREF_PREFIX_KEY = "KCVWidget_";
 
-    private static final String ACTION_MEALTIME_CHANGE = "ACTION_MEALTIME_CHANGE";
-    private static final String ACTION_REFRESH = "ACTION_REFRESH";
+    private static final String ACTION_WIDGET_MEALTIME_CHANGE = "ACTION_WIDGET_MEALTIME_CHANGE";
+    private static final String ACTION_WIDGET_FORCE_UPDATE = "ACTION_WIDGET_FORCE_UPDATE";
 
     private static final int ITEM_NAME_MAX_LENGTH = 10;     // 아이템이름이 n자리 이상이면 줄바꿈.
 
@@ -53,10 +54,23 @@ public class KCVWidget extends AppWidgetProvider {
 
         RemoteViews views;
 
-        // isBig인지 Sharedpreference에서 가져온다.
+        // Sharedpreference에서 정보 가져온다.
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String isBigStr = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "isBig", "false");
         boolean isBig = Boolean.parseBoolean(isBigStr);
+        boolean isAutomaticChangeMealtime = prefs.getBoolean("widget_automatic_change_mealtime", true);
+        long lastMealTimeChanged = prefs.getLong(PREF_PREFIX_KEY + appWidgetId + "lastMealTimeChanged", -1);
+
+        // 시간에 맞춰 mealTime 변경하기가 true 인 경우
+        if(isAutomaticChangeMealtime){
+            Calendar now = Calendar.getInstance();
+            // 수동으로 위젯 변경한지 10분 이상 지났으면, AutoChange 한다.
+            if(now.getTimeInMillis() - lastMealTimeChanged > 600000){
+                MealTimeType type = autoChangeMealTimeType(context, now);
+                if(type != null)
+                    mealTimeType = type;
+            }
+        }
 
         // 현재 오늘 메뉴목록 가져오기
         ArrayList<Menu> currentMenus = null;
@@ -79,13 +93,13 @@ public class KCVWidget extends AppWidgetProvider {
 
         // 위젯 식사시간 변경 이벤트
         Intent mealTimeChangeIntent = new Intent(context, KCVWidget.class);
-        mealTimeChangeIntent.setAction(ACTION_MEALTIME_CHANGE);
+        mealTimeChangeIntent.setAction(ACTION_WIDGET_MEALTIME_CHANGE);
         mealTimeChangeIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         PendingIntent mealTimeChangePending = PendingIntent.getBroadcast(context, appWidgetId, mealTimeChangeIntent, 0);
 
         // 위젯 리프레시 이벤트
         Intent refreshIntent = new Intent(context, KCVWidget.class);
-        refreshIntent.setAction(ACTION_REFRESH);
+        refreshIntent.setAction(ACTION_WIDGET_FORCE_UPDATE);
         refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         PendingIntent refreshPending = PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, 0);
 
@@ -169,6 +183,37 @@ public class KCVWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
+    // ---------------------------------------------------------------------------------
+
+    private static MealTimeType autoChangeMealTimeType(Context context, Calendar now){
+        int nowHour = now.get(Calendar.HOUR_OF_DAY);
+        int nowMin = now.get(Calendar.MINUTE);
+        String[] eatableTimes = context.getResources().getStringArray(R.array.eatableTime);
+
+        int hour = -1;
+        int min = -1;
+        MealTimeType type = null;
+        for(int index = 0; index < eatableTimes.length - 1 ; index++){
+            String[] splited =  eatableTimes[index].split("~")[1].split(":");
+            hour = Integer.parseInt(splited[0]);
+            min = Integer.parseInt(splited[1]);
+
+            if(nowHour < hour){
+                type = MealTimeType.getByIndex(index);
+                break;
+            }
+            else if(nowHour == hour){
+                if(nowMin <= min){
+                    type = MealTimeType.getByIndex(index);
+                    break;
+                }
+            }
+        }
+        if(type != null)
+            Log.d("aaaaa", "autoChangeMealTimeType : " + type.toString());
+        return type;
+    }
+
     // --------------------------------------------------------------
 
     private static void setForegroundColors(boolean isBig, boolean isBlack, RemoteViews views, int transparent){
@@ -232,9 +277,9 @@ public class KCVWidget extends AppWidgetProvider {
         else{
             views.setInt(R.id.widget_background, "setBackgroundColor", Color.parseColor(backgroundColor));
         }
-
-
     }
+
+    // ---------------------------------------------------------------------------------
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -266,10 +311,10 @@ public class KCVWidget extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
 
-        int minWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+//        int minWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
         int maxWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
-        int minHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-        int maxHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
+//        int minHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+//        int maxHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
         RemoteViews rv = null;
 
         // 크기에 따라 레이아웃 변경
@@ -297,35 +342,17 @@ public class KCVWidget extends AppWidgetProvider {
             int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
 
-            // 식사시간 클릭되었을 때 식사시간 변경한다!
-            if(action.equals(ACTION_MEALTIME_CHANGE)){
-                changeMealTime(context, appWidgetId);
-                updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId); // 버튼이 클릭되면 새로고침 수행
-
-                return;
+            switch (action){
+                case ACTION_WIDGET_MEALTIME_CHANGE:    // 식사시간 클릭되었을 때 식사시간 변경한다!
+                    changeMealTime(context, appWidgetId);
+                    break;
+                case ACTION_WIDGET_FORCE_UPDATE:
+                    forceUpdate(context, appWidgetId);
+                    break;
             }
+
             // 새로고침은, 파싱 강제로 함.
-            else if(action.equals(ACTION_REFRESH)){
-                try{
-                    // 오늘 알아내기
-                    Calendar today = Calendar.getInstance();
-                    DateUtility.remainOnlyDate(today);
-
-                    // 위젯에 설정된 식당 알아내기
-                    ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
-                    CafeteriaType cafeteriaType = CafeteriaType.stringTo(loadedPrefs.get(0));
-
-                    // 파싱 후 업데이트
-                    MenuManager.getInstance().parseAndUpdate(cafeteriaType, today);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                finally {
-                    updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId); // 버튼이 클릭되면 새로고침 수행
-                }
-                return;
-            }
+            updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId); // 위젯 새로고침 수행
         }
         super.onReceive(context, intent);
     }
@@ -337,6 +364,7 @@ public class KCVWidget extends AppWidgetProvider {
         ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
         String mealTimeTypeStr = loadedPrefs.get(3);
 
+        // 조식->중식->석식->일품요리->조식 순으로 변경
         MealTimeType mealTimeType = MealTimeType.stringTo(mealTimeTypeStr);
         switch (mealTimeType){
             case BREAKFAST:
@@ -356,10 +384,32 @@ public class KCVWidget extends AppWidgetProvider {
                 break;
         }
 
+        // 지금 시간 구하기
+        long now = Calendar.getInstance().getTimeInMillis();
+
         // mealTimeType 변경
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "mealTimeType", mealTimeType.toString());                // 식사시간 설정
+        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "mealTimeType", mealTimeType.toString());           // 식사시간 설정
+        prefs.putLong(PREF_PREFIX_KEY + appWidgetId + "lastMealTimeChanged", now);                          // 마지막으로 수동 변경한 시간 기록 (시간에 맞게 식사시간 변경하는 기능을 위함. 최근에 변경되었으면 업데이트 하지 않게.)
         prefs.apply();
+    }
+
+    private void forceUpdate(Context context, int appWidgetId){
+        try{
+            // 오늘 알아내기
+            Calendar today = Calendar.getInstance();
+            DateUtility.remainOnlyDate(today);
+
+            // 위젯에 설정된 식당 알아내기
+            ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
+            CafeteriaType cafeteriaType = CafeteriaType.stringTo(loadedPrefs.get(0));
+
+            // 파싱 후 업데이트
+            MenuManager.getInstance().parseAndUpdate(cafeteriaType, today);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
 

@@ -123,12 +123,4 @@ public class SettingsActivity extends AppCompatActivity {
             prefs.edit().clear().commit();
         }
     }
-
-    private void initPrefs(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean ring = prefs.getBoolean("ring", false);
-        boolean vibrate = prefs.getBoolean("vibrate", false);
-        boolean favorite_only = prefs.getBoolean("favorite_only", false);
-//        boolean no_notify_holiday = prefs.getBoolean("no_notify_holiday", false);
-    }
 }

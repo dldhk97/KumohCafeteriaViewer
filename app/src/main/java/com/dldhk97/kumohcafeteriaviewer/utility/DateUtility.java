@@ -46,4 +46,13 @@ public class DateUtility {
                 return "알 수 없음";
         }
     }
+
+    public static Calendar milToCalendar(long mil){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mil);
+        int mYear = calendar.get(Calendar.YEAR);
+        int mMonth = calendar.get(Calendar.MONTH);
+        int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        return calendar;
+    }
 }

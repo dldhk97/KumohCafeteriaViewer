@@ -4,11 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
-
-import androidx.preference.PreferenceManager;
 
 import com.dldhk97.kumohcafeteriaviewer.UIHandler;
 import com.dldhk97.kumohcafeteriaviewer.enums.CafeteriaType;
@@ -67,30 +64,35 @@ public class NotificationItemManager {
 
     // 하나의 알림을 설정한다.
     private boolean setNotification(NotificationItem notificationItem, Context context){
-        // 시간 설정
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, notificationItem.getHour());
-        calendar.set(Calendar.MINUTE, notificationItem.getMin());
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
 
-        Log.d("aaaaa", "알림 예약됨 : " +  DateUtility.dateToString(calendar, '.') + ", " + notificationItem.getHour() + " : " + notificationItem.getMin() +
-                ", id : " + notificationItem.getId());
+        try{
+            // 시간 설정
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, notificationItem.getHour());
+            calendar.set(Calendar.MINUTE, notificationItem.getMin());
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
 
-        //알람 예약
-        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(null, Uri.parse(notificationItem.getId()), context, BroadcastReceiver.class);
-//        Intent intent1 = new Intent(BroadcastReceiver.ACTION_ALARM, Uri.parse(notificationItem.getId()));
-        intent.putExtra("notificationItemID", notificationItem.getId());
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
+            //알람 예약
+            AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+             Intent intent = new Intent(BroadcastReceiver.ACTION_USER_NOTIFICATION, Uri.parse(notificationItem.getId()), context, BroadcastReceiver.class);
+//            Intent intent = new Intent(BroadcastReceiver.ACTION_ALARM);
+            intent.putExtra("notificationItemID", notificationItem.getId());
+            PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-        // WakeUp 할지 설정에서 설정값 가져옴.
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean wakeupBool = prefs.getBoolean("wakeup", false);
+            int wakeup = AlarmManager.RTC_WAKEUP ;
 
-        int wakeup = wakeupBool ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC;
+            am.setRepeating(wakeup, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sender);
 
-        am.setRepeating(wakeup, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, sender);
+            Log.d("aaaaa", "알림 예약됨 : " +  DateUtility.dateToString(calendar, '.') + ", " + notificationItem.getHour() + " : " + notificationItem.getMin() +
+                    ", id : " + notificationItem.getId());
+
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         return false;
     }
 
