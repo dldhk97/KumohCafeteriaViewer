@@ -201,7 +201,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private boolean isBusyFragExists(){
+    public boolean isBusyFragExists(){
         for(InnerFragment frag : pages){
             if(frag.isBusy()){
                 return true;

@@ -86,6 +86,12 @@ public class InnerFragment extends Fragment {
         cafeteriaRecyclerAdapter = new CafeteriaRecyclerAdapter(container.getContext(), currentMenus);
         menu_inner_recyclerView.setAdapter(cafeteriaRecyclerAdapter);
 
+        // 생성되었는데 리프레시중인 이너프래그먼트가 있다면, 얘도 리프레시 상태로 바꿈. 그래서 리프레시 중복으로 일어나지 않게 함.
+        // 리프레시중인 이너프레그먼트는 다끝나면 홈프래그먼트(parent)에게 알려주고, 모든 이너에게 stopRefreshing하게 알림.
+        if(parent.isBusyFragExists()){
+            menu_inner_swipeRefresh.setRefreshing(true);
+        }
+
         return root;
     }
 
