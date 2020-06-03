@@ -1,6 +1,5 @@
 package com.dldhk97.kumohcafeteriaviewer;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -209,8 +208,12 @@ public class KCVWidget extends AppWidgetProvider {
                 }
             }
         }
-        if(type != null)
-            Log.d("aaaaa", "autoChangeMealTimeType : " + type.toString());
+
+        // 석식 시간 지났으면 조식으로 설정해버림.
+        if(type == null)
+            type = MealTimeType.BREAKFAST;
+
+        Log.d("aaaaa", "autoChangeMealTimeType : " + type.toString());
         return type;
     }
 
