@@ -224,5 +224,24 @@ public class HomeFragment extends Fragment {
 //            f.setNewCafeteriaRecyclerAdapter(this.getContext());
         }
     }
+
+    public void showHelp(){
+        String msg =
+            "식단은 금오공과대학교 홈페이지에서 불러옵니다.\n" +
+            "한번 불러온 식단은 로컬에 저장되어 이후에는 " +
+            "네트워크에 연결되어 있지 않더라도 조회가 가능합니다.\n\n" +
+            "식단을 아래로 당겨 새로고침하면 식단을 새로 불러옵니다.\n" +
+            "식단이 정상적으로 표시되지 않는 경우 시도해주세요.\n\n" +
+            "위젯은 3시간마다 갱신되며 식단 클릭 시 어플 실행, 식사시간 클릭 시 식사시간 변경, 식당 클릭 시 정보 갱신이 됩니다.\n\n" +
+            "[식사 시간]\n";
+
+        String[] arr = getContext().getResources().getStringArray(R.array.eatableTime);
+        msg += "조식 : " + arr[0] + "\n";
+        msg += "중식 : " + arr[1] + "\n";
+        msg += "석식 : " + arr[2] + "\n";
+        msg += "토요일 : " + arr[3] + "\n";
+        msg += "일요일, 공휴일 : 휴무";
+        UIHandler.getInstance().showAlert("식단표 도움말",  msg);
+    }
 }
 

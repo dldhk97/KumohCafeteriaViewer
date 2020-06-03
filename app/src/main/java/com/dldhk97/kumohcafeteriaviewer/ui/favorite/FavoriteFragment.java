@@ -97,4 +97,15 @@ public class FavoriteFragment extends Fragment implements View.OnClickListener{
             e.printStackTrace();
         }
     }
+
+    public void showHelp(){
+        String msg =
+            "찜목록에 음식을 추가하면 식단표에서 하트표시가 추가됩니다.\n\n" +
+            "알림 기능과 연동하여 찜목록이 포함된 경우만 알릴 수도 있습니다.\n" +
+            "해당 기능은 설정에서 \'찜 메뉴가 포함된 식단만 알림\' 기능을 활성화하면 작동합니다.\n\n" +
+            "찜 추가는 식단표 화면에서 식단을 클릭한 후 음식을 롱 터치하여 추가할 수 있습니다.\n" +
+            "또한 하단의 + 버튼으로 수동 추가도 가능합니다.";
+
+        UIHandler.getInstance().showAlert("찜목록 도움말", msg);
+    }
 }

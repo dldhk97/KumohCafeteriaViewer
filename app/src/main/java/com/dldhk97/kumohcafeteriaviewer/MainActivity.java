@@ -8,6 +8,9 @@ import android.view.MenuItem;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
 import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
+import com.dldhk97.kumohcafeteriaviewer.ui.favorite.FavoriteFragment;
+import com.dldhk97.kumohcafeteriaviewer.ui.home.HomeFragment;
+import com.dldhk97.kumohcafeteriaviewer.ui.notification.NotificationFragment;
 import com.dldhk97.kumohcafeteriaviewer.utility.NetworkStatus;
 import com.google.android.material.navigation.NavigationView;
 
@@ -91,9 +94,31 @@ public class MainActivity extends AppCompatActivity {
     // 메뉴 클릭 시 동작
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.action_settings){
-            Intent intent = new Intent(this, SettingsActivity.class);
-            this.startActivity(intent);
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.action_help:
+                Fragment navHostFragment = getSupportFragmentManager().getFragments().get(0);
+                for(Fragment f : navHostFragment.getChildFragmentManager().getFragments()){
+                    if(f.isVisible()){
+                        if(f.getClass() == HomeFragment.class){
+                            HomeFragment hf = (HomeFragment)f;
+                            hf.showHelp();
+                        }
+                        else if(f.getClass() == FavoriteFragment.class){
+                            FavoriteFragment ff = (FavoriteFragment)f;
+                            ff.showHelp();
+                        }
+                        else if(f.getClass() == NotificationFragment.class){
+                            NotificationFragment nf = (NotificationFragment)f;
+                            nf.showHelp();
+                        }
+                        break;
+                    }
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

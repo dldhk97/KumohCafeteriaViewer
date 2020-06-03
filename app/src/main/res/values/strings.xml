@@ -10,7 +10,10 @@
     <string name="nav_header_title">금오공과대학교 식단 뷰어</string>
     <string name="nav_header_subtitle">dldhk97@naver.com</string>
     <string name="nav_header_desc">네비게이션 헤더</string>
+
+    <!-- 메뉴 -->
     <string name="action_settings">설정</string>
+    <string name="action_help">도움말</string>
 
     <string name="menu_home">식단표</string>
     <string name="menu_notification">식사 알림</string>

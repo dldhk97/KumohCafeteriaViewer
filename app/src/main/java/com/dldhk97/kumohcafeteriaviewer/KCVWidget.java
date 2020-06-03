@@ -209,11 +209,9 @@ public class KCVWidget extends AppWidgetProvider {
             }
         }
 
-        // 석식 시간 지났으면 조식으로 설정해버림.
-        if(type == null)
-            type = MealTimeType.BREAKFAST;
+        if(type != null)
+            Log.d("aaaaa", "autoChangeMealTimeType : " + type.toString());
 
-        Log.d("aaaaa", "autoChangeMealTimeType : " + type.toString());
         return type;
     }
 

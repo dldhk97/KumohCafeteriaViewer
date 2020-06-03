@@ -118,4 +118,16 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
     }
+
+    public void showHelp(){
+        String msg =
+            "식사 알림을 등록하면 원하는 시간에 식단 알림을 받아볼 수 있습니다.\n\n" +
+            "알림의 추가는 하단의 + 버튼을 통해 수 있습니다.\n" +
+            "알림의 삭제는 알림을 먼저 해제한 후 휴지통 버튼을 터치하면 됩니다.\n\n" +
+            "우측 상단 설정에서 소리, 진동, 찜 메뉴가 포함된 식단만 알림, " +
+            "주말에는 알리지 않음과 같은 추가적인 설정을 할 수 있습니다.";
+
+
+        UIHandler.getInstance().showAlert("식사 알림 도움말", msg);
+    }
 }
