@@ -59,17 +59,31 @@ public class MenuManager {
     }
 
 
+    // 로컬에 있는지 찾아서 반환, 없거나 강제업데이트면 파싱 후 반환
     public WeekMenus getWeekMenus(CafeteriaType cafeteriaType, Calendar date, boolean isForceUpdate) throws Exception{
-        // 로컬에 있는지 찾아서 반환
+
         WeekMenus result = null;
         try{
             result = find(cafeteriaType, date);
+
+            // 로컬에 없거나 강제 업데이트면
             if(result == null || isForceUpdate){
-                // 없으면 업데이트하는데, 인터넷 연결안되있으면 걍 null 반환
                 try{
+                    // 인터넷 연결안되있으면 null 반환
                     if(NetworkStatus.getCurrentStatus() != NetworkStatusType.CONNECTED){
                         return null;
                     }
+
+                    // isForceUpdate 로 넘어왔는데, 기존에도 값이 있으면 기존값은 삭제하자.
+                    if(result != null && isForceUpdate){
+                        for(DayMenus dm : result.getDayMenuList()){
+                            for(Menu m : dm.getMenus()){
+                                deleteMenu(m);
+                            }
+                        }
+                    }
+
+                    // 파싱 후 업데이트
                     parseAndUpdate(cafeteriaType, date);
                 }
                 catch (Exception e){
@@ -82,7 +96,6 @@ public class MenuManager {
         }catch (Exception e){
             e.printStackTrace();
         }
-
 
         return result;
     }
@@ -346,6 +359,20 @@ public class MenuManager {
         sync();
 
         return isSucceed;
+    }
+
+    private boolean deleteMenu(Menu menu){
+        try{
+            for (Item i : menu.getItems()){
+                deleteItem(menu, i);
+            }
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private boolean deleteItem(Menu menu, Item item){

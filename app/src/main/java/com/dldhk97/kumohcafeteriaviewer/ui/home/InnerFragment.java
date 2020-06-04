@@ -2,6 +2,7 @@ package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,6 @@ public class InnerFragment extends Fragment {
                     e.printStackTrace();
                     UIHandler.getInstance().showToast(e.getMessage());
                 }
-//                menu_inner_swipeRefresh.setRefreshing(false);           // 리프레시 완료
             }
         });
 

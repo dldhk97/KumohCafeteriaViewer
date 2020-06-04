@@ -71,6 +71,11 @@ public class CafeteriaRecyclerViewHolder extends RecyclerView.ViewHolder impleme
         for(Item item : menu.getItems()){
             Item isFavorite = FavoriteManager.getInstance().findItem(item.getItemName());
             String favoriteEmoji = isFavorite != null ? "♥ " : "";
+
+            // 기숙사 식단 3칸으로 만들어놨을때 맨 아래에 등록된 메뉴가 없습니다 생기는거 픽스.
+            if(cnt > 0 && item.getItemName().contains("등록된 메뉴가 없습니다."))     //
+                continue;
+
             foodsStr.append(favoriteEmoji + item.getItemName() + "\n");
             if(cnt++ > 7){
                 foodsStr.append("...");

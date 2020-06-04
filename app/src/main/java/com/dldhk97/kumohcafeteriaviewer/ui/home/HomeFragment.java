@@ -192,6 +192,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // 이너프래그먼트 각각이 업데이트완료되면 호출됨.
     public void requestStopRefreshing(){
         if(!isBusyFragExists()){
             for(InnerFragment frag : pages){
@@ -200,6 +201,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // 이너프래그먼트 중 업데이트중인 객체가 있으면 true
     public boolean isBusyFragExists(){
         for(InnerFragment frag : pages){
             if(frag.isBusy()){

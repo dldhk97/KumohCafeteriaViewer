@@ -24,13 +24,13 @@ import java.util.Calendar;
 
 public class ParserThread implements Runnable{
     private static final int TIMEOUT = 2000;
-    private String url;
-    private CafeteriaType cafeteriaType;
+    private final String url;
+    private final CafeteriaType cafeteriaType;
     private final int TRY_CNT = 1;
 
     private IParseCompleteListener parseCompleteListener;
 
-    public ParserThread(String url, CafeteriaType cafeteriaType){
+    public ParserThread(final String url, final CafeteriaType cafeteriaType){
         this.url = url;
         this.cafeteriaType = cafeteriaType;
     }
@@ -142,6 +142,8 @@ public class ParserThread implements Runnable{
 
     private void addMenu(WeekMenus weekMenus, Menu menu){
         Calendar currentMenuDate = menu.getDate();
+
+        // 추가하려는 식단의 날짜의 DayMenu 가 있으면
         if(weekMenus.contains(currentMenuDate)){
             DayMenus dm = weekMenus.get(currentMenuDate);
 
@@ -151,13 +153,14 @@ public class ParserThread implements Runnable{
             dm.getMenus().add(menu);
         }
         else{
+            // DayMenu가 포함안되있으면 추가한다.
             DayMenus dm = new DayMenus(currentMenuDate, menu.getCafeteriaType());
             dm.getMenus().add(menu);
             weekMenus.add(dm);
         }
     }
 
-
+    // ----------------------------------------------------
 
     // 데이터 전달을 위한 리스너 설정
     public void setOnParseCompleteReceivedEvent(IParseCompleteListener listener){
