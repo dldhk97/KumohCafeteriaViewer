@@ -221,9 +221,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        for(InnerFragment f : pages){
-//            f.setNewCafeteriaRecyclerAdapter(this.getContext());
-        }
     }
 
     public void showHelp(){

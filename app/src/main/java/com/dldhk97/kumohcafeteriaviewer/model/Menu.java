@@ -57,6 +57,10 @@ public class Menu implements Serializable {
         items.add(item);
     }
 
+    public void removeItem(Item item){
+        items.remove(item);
+    }
+
     public Item getItem(int index) throws Exception{
         return items.get(index);
     }

@@ -162,6 +162,19 @@ public class InnerFragment extends Fragment {
                     return null;
                 }
 
+                // 기숙사 식단 3칸으로 만들어놨을때 맨 아래에 '등록된 메뉴가 없습니다' 생기는거 임시 픽스.
+                // 파싱할때 빈 칸이 있어서 '등록된 메뉴가 없습니다' 생기고, sync 할 때 DB에 넣었다 빼면서 병합됨.
+                for(Menu m : currentMenus){
+                    if(m.getItems().size() > 1){
+                        for(Item i : m.getItems()){
+                            if(i.getItemName().contains("등록된 메뉴가 없습니다.")){
+                                m.removeItem(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 cafeteriaRecyclerAdapter.updateData(currentMenus);
 
             } catch (Exception e) {
