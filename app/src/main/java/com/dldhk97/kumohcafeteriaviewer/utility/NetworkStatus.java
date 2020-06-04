@@ -74,12 +74,17 @@ public class NetworkStatus {
         return false;
     }
 
+    private static String TEST_URL = "https://kumoh.ac.kr/ko/restaurant01.do?";
+    private static int TIMEOUT = 1000;
+
     private static class NetworkCheckTask extends AsyncTask {
 
         @Override
         protected Boolean doInBackground(Object[] objects) {
-            final Connection connection = Jsoup.connect("https://kumoh.ac.kr/");
-            connection.timeout(1000);
+            SSLConnect ssl = new SSLConnect();
+            ssl.postHttps(TEST_URL,  TIMEOUT, TIMEOUT);
+            final Connection connection = Jsoup.connect(TEST_URL);
+            connection.timeout(TIMEOUT);
 
             // n번까지 파싱 시도해보고 안되면 실패
             int tryCnt = 2;
@@ -90,7 +95,7 @@ public class NetworkStatus {
                         return true;
                 }
                 catch (Exception e){
-                    Log.d("[ParseThread.run]\n","connection.get()\n" + e.getMessage());
+                    Log.d("aaaaa","connection.get()\n" + e.getMessage());
                     if(tryCnt <= 0){
                         return false;
                     }

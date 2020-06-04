@@ -1,7 +1,6 @@
 package com.dldhk97.kumohcafeteriaviewer.ui.home;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,7 +121,7 @@ public class HomeFragment extends Fragment {
         bottom_sheet_nowdate = root.findViewById(R.id.bottom_sheet_currentDate);
 
         // 선택된 날짜 텍스트뷰 설정
-        setBottomSheetNowDate(currentDate);
+        setBottomSheetDate(currentDate);
         bottom_sheet_nowdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,10 +173,10 @@ public class HomeFragment extends Fragment {
     // 선택한 날짜가 변경되었을 때
     public void updateCurrentDateView(boolean isForceUpdate){
         try{
-            setBottomSheetNowDate(currentDate);
+            setBottomSheetDate(currentDate);
 
             // 이번 날짜가 포함되있는지 체크하고, 포함안되있으면 네트워크 테스트
-            if(MenuManager.getInstance().containsWeek(CafeteriaType.STUDENT, currentDate) == null){
+            if(MenuManager.getInstance().containsWeek(CafeteriaType.STUDENT, currentDate) == null || isForceUpdate){
                 if(NetworkStatus.checkStatus(this.getContext()) != NetworkStatusType.CONNECTED){
                     UIHandler.getInstance().showToast("금오공과대학교 홈페이지 연결에 실패했습니다!");
                 }
@@ -211,7 +210,7 @@ public class HomeFragment extends Fragment {
     }
 
     // BottomSheet의 표시되는 날짜 변경
-    private void setBottomSheetNowDate(Calendar date){
+    private void setBottomSheetDate(Calendar date){
         String dayOfWeek = DateUtility.getDayOfWeek(date);
         String dateStr = DateUtility.dateToString(date, '.');
         bottom_sheet_nowdate.setText(dateStr + "(" + dayOfWeek + ")");
