@@ -82,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // 알림 재설정
-        NotificationItemManager.getInstance().reloadNotification(this);
-
     }
 
     // 메뉴 생성
