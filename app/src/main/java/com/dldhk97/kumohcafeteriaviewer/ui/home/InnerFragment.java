@@ -70,6 +70,7 @@ public class InnerFragment extends Fragment {
             @Override
             public void onRefresh() {
                 try{
+                    UIHandler.getInstance().showToast("홈페이지에서 새로 데이터를 가져옵니다.");
                     parent.updateCurrentDateView(true);     // 모든 페이지 리프레시
                 }
                 catch (Exception e){

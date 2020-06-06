@@ -36,6 +36,7 @@ public class HomeFragment extends Fragment {
 
     TextView bottom_sheet_nowdate;
     DatePicker bottom_sheet_datepicker;
+    BottomSheetBehavior sheetBehavior;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -117,14 +118,18 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeBottomSheet(View root) throws Exception {
-        final BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(root.findViewById(R.id.bottomSheet));
+        sheetBehavior = BottomSheetBehavior.from(root.findViewById(R.id.bottomSheet));
         bottom_sheet_nowdate = root.findViewById(R.id.bottom_sheet_currentDate);
 
-        // 선택된 날짜 텍스트뷰 설정
-        setBottomSheetDate(currentDate);
+        // 선택된 날짜 텍스트뷰 설정. 클릭하면 Expand 하게함.
+        setBottomNowDate(currentDate);
         bottom_sheet_nowdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isBusyFragExists()){
+                    notifyImBusy();
+                    return;
+                }
                 if(sheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
                     sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
@@ -141,14 +146,22 @@ public class HomeFragment extends Fragment {
             public void onDateChanged(DatePicker datePicker, int year, int month, int day_of_month) {
                 String s = String.valueOf(year) + "." + String.valueOf(month + 1) + "." + String.valueOf(day_of_month);
                 try {
-                    currentDate = DateUtility.stringToDate(s);
+                    if(!isBusyFragExists()){
+                        currentDate  = DateUtility.stringToDate(s);
+                        updateCurrentDateView(false);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                updateCurrentDateView(false);
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
+
+        // 달력 일주일 이후의 날짜는 선택 못하게 함.
+        Calendar futureMax = Calendar.getInstance();
+        futureMax.add(Calendar.WEEK_OF_MONTH, 1);
+        bottom_sheet_datepicker.setMaxDate(futureMax.getTimeInMillis());
 
         // 좌우 버튼 설정
         final ImageButton bottom_sheet_date_left = root.findViewById(R.id.bottom_sheet_date_left);
@@ -157,6 +170,10 @@ public class HomeFragment extends Fragment {
         bottom_sheet_date_left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isBusyFragExists()){
+                    notifyImBusy();
+                    return;
+                }
                 currentDate.add(Calendar.DATE, -1);
                 bottom_sheet_datepicker.updateDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
             }
@@ -164,6 +181,10 @@ public class HomeFragment extends Fragment {
         bottom_sheet_date_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isBusyFragExists()){
+                    notifyImBusy();
+                    return;
+                }
                 currentDate.add(Calendar.DATE, 1);
                 bottom_sheet_datepicker.updateDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
             }
@@ -173,7 +194,15 @@ public class HomeFragment extends Fragment {
     // 선택한 날짜가 변경되었을 때
     public void updateCurrentDateView(boolean isForceUpdate){
         try{
-            setBottomSheetDate(currentDate);
+            // 바쁜 프래그가 있으면 전환하지 않음.
+            if(isBusyFragExists()){
+                notifyImBusy();
+                return;
+            }
+
+            // NowDate 표시 텍스트뷰 설정
+            setBottomNowDate(currentDate);
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
             // 이번 날짜가 포함되있는지 체크하고, 포함안되있으면 네트워크 테스트
             if(MenuManager.getInstance().containsWeek(CafeteriaType.STUDENT, currentDate) == null || isForceUpdate){
@@ -211,8 +240,16 @@ public class HomeFragment extends Fragment {
         return false;
     }
 
+    private void notifyImBusy(){
+        if(sheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED){
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+
+        UIHandler.getInstance().showToast("새로고침 중입니다...\n잠시만 기다려주세요...");
+    }
+
     // BottomSheet의 표시되는 날짜 변경
-    private void setBottomSheetDate(Calendar date){
+    private void setBottomNowDate(Calendar date){
         String dayOfWeek = DateUtility.getDayOfWeek(date);
         String dateStr = DateUtility.dateToString(date, '.');
         bottom_sheet_nowdate.setText(dateStr + "(" + dayOfWeek + ")");
