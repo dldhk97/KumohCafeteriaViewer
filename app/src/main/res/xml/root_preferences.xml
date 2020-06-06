@@ -39,7 +39,8 @@
 
         <SwitchPreferenceCompat
             app:key="widget_automatic_change_mealtime"
-            app:summary="@string/widget_automatic_change_mealtime_summary"
+            app:summaryOn="@string/widget_automatic_change_mealtime_summaryOn"
+            app:summaryOff="@string/widget_automatic_change_mealtime_summaryOff"
             app:title="@string/widget_automatic_change_mealtime_title"
             app:defaultValue="true"/>
 

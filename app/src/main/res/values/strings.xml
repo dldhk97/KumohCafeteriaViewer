@@ -81,7 +81,8 @@
 
     <!-- 설정:위젯 설정 -->
     <string name="widget_automatic_change_mealtime_title">위젯 자동 식사시간 변경</string>
-    <string name="widget_automatic_change_mealtime_summary">작은 위젯이 시간에 맞게 조식/중식/석식으로 변경됩니다.</string>
+    <string name="widget_automatic_change_mealtime_summaryOn">작은 위젯이 시간에 맞게 조식/중식/석식으로 변경됩니다.</string>
+    <string name="widget_automatic_change_mealtime_summaryOff">작은 위젯의 식사시간을 터치 했을 때만 변경됩니다.</string>
 
     <!-- 설정:데이터 -->
     <string name="menus_data_reset_title">식단 데이터 초기화</string>

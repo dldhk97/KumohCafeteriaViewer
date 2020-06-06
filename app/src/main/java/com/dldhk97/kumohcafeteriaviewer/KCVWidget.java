@@ -60,8 +60,8 @@ public class KCVWidget extends AppWidgetProvider {
         boolean isAutomaticChangeMealtime = prefs.getBoolean("widget_automatic_change_mealtime", true);
         long lastMealTimeChanged = prefs.getLong(PREF_PREFIX_KEY + appWidgetId + "lastMealTimeChanged", -1);
 
-        // 시간에 맞춰 mealTime 변경하기가 true 인 경우
-        if(isAutomaticChangeMealtime){
+        // 시간에 맞춰 mealTime 변경하기가 true 인 경우, 분식당이 아니면(분식당은 일품요리 고정)
+        if(isAutomaticChangeMealtime && cafeteriaType != CafeteriaType.SNACKBAR){
             Calendar now = Calendar.getInstance();
             // 수동으로 위젯 변경한지 10분 이상 지났으면, AutoChange 한다.
             if(now.getTimeInMillis() - lastMealTimeChanged > 600000){
@@ -312,10 +312,7 @@ public class KCVWidget extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
 
-//        int minWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
         int maxWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
-//        int minHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-//        int maxHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
         RemoteViews rv = null;
 
         // 크기에 따라 레이아웃 변경
@@ -363,29 +360,39 @@ public class KCVWidget extends AppWidgetProvider {
     private void changeMealTime(Context context, int appWidgetId){
         // 현재 mealTimeType 가져오기
         ArrayList<String> loadedPrefs = KCVWidgetConfigureActivity.loadPrefs(context, appWidgetId);
+        String cafeteriaTypeStr = loadedPrefs.get(0);
         String mealTimeTypeStr = loadedPrefs.get(3);
 
-        // 조식->중식->석식->일품요리->조식 순으로 변경
+        // 현재 MealTimeType 얻어내기
         MealTimeType mealTimeType = MealTimeType.stringTo(mealTimeTypeStr);
-        switch (mealTimeType){
-            case BREAKFAST:
-                mealTimeType = MealTimeType.LUNCH;
-                break;
-            case LUNCH:
-                mealTimeType = MealTimeType.DINNER;
-                break;
-            case DINNER:
-                mealTimeType = MealTimeType.ONECOURSE;
-                break;
-            case ONECOURSE:
-                mealTimeType = MealTimeType.BREAKFAST;
-                break;
-            default:
-                mealTimeType = MealTimeType.BREAKFAST;
-                break;
+
+        // 분식당은 무조건 일품요리
+        CafeteriaType cafeteriaType = CafeteriaType.stringTo(cafeteriaTypeStr);
+        if(cafeteriaType == CafeteriaType.SNACKBAR){
+            mealTimeType = MealTimeType.ONECOURSE;
+        }
+        else{
+            // 조식->중식->석식->일품요리->조식 순으로 변경
+            switch (mealTimeType){
+                case BREAKFAST:
+                    mealTimeType = MealTimeType.LUNCH;
+                    break;
+                case LUNCH:
+                    mealTimeType = MealTimeType.DINNER;
+                    break;
+                case DINNER:
+                    mealTimeType = MealTimeType.ONECOURSE;
+                    break;
+                case ONECOURSE:
+                    mealTimeType = MealTimeType.BREAKFAST;
+                    break;
+                default:
+                    mealTimeType = MealTimeType.BREAKFAST;
+                    break;
+            }
         }
 
-        // 지금 시간 구하기
+        // 지금 시간 구하기(마지막으로 수동 변경한 시간 기록)
         long now = Calendar.getInstance().getTimeInMillis();
 
         // mealTimeType 변경
