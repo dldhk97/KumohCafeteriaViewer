@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dldhk97.kumohcafeteriaviewer.data.DatabaseManager;
+import com.dldhk97.kumohcafeteriaviewer.data.NotificationItemManager;
 import com.dldhk97.kumohcafeteriaviewer.enums.NetworkStatusType;
 import com.dldhk97.kumohcafeteriaviewer.ui.favorite.FavoriteFragment;
 import com.dldhk97.kumohcafeteriaviewer.ui.home.HomeFragment;
@@ -80,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
             UIHandler.getInstance().showToast(e.getMessage());
             e.printStackTrace();
         }
+
+        // 알림 재설정
+        NotificationItemManager.getInstance().reloadNotification(this);
 
     }
 

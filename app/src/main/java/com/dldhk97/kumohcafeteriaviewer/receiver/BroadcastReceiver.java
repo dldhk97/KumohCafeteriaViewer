@@ -100,6 +100,9 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
         targetTime.set(Calendar.MINUTE, notificationItem.getMin());
         targetTime.set(Calendar.SECOND, 0);
         targetTime.set(Calendar.MILLISECOND, 0);
+
+        Calendar now = Calendar.getInstance();
+        
         long diffMil = Calendar.getInstance().getTimeInMillis() - targetTime.getTimeInMillis();
         if(diffMil >= validTimeMil){
             Log.d("aaaaa", "notificationItem time over : " + diffMil);

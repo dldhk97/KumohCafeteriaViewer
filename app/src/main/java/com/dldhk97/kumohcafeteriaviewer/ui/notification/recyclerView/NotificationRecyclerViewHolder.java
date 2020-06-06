@@ -121,7 +121,7 @@ public class NotificationRecyclerViewHolder extends RecyclerView.ViewHolder impl
                     NotificationItemManager.getInstance().updateItem(notificationItem);
 
                     // 알림 세팅
-                    NotificationItemManager.getInstance().reloadNotification(notificationItem, context);
+                    NotificationItemManager.getInstance().reloadNotification(context);
 
                     if(b){
                         UIHandler.getInstance().showToast(notificationItem.getName() + " 이(가) 설정되었습니다.");

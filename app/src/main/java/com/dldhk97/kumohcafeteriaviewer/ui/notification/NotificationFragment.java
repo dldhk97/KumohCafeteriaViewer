@@ -76,7 +76,7 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
             CafeteriaType cafeteriaType = CafeteriaType.STUDENT;
             MealTimeType mealTimeType = MealTimeType.BREAKFAST;
             Calendar now = Calendar.getInstance();
-            int hour = now.get(Calendar.HOUR);
+            int hour = now.get(Calendar.HOUR_OF_DAY);
             int min = now.get(Calendar.MINUTE);
             boolean activated = false;
 
