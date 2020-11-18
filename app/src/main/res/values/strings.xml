@@ -1,14 +1,13 @@
 <resources>
     <!-- 정보 -->
     <string name="app_name">금오식단뷰어</string>
-    <string name="developer_name">20161185-지명근</string>
 
     <!-- 디자인 -->
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">금오공과대학교 식단 뷰어</string>
-    <string name="nav_header_subtitle">dldhk97@naver.com</string>
+    <string name="nav_header_subtitle">dldhk97@gmail.com</string>
     <string name="nav_header_desc">네비게이션 헤더</string>
 
     <!-- 메뉴 -->
