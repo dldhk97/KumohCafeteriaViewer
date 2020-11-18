@@ -75,7 +75,7 @@ public class NetworkStatus {
     }
 
     private static String TEST_URL = "https://kumoh.ac.kr/ko/restaurant01.do?";
-    private static int TIMEOUT = 1000;
+    private static int TIMEOUT = 10000;
 
     private static class NetworkCheckTask extends AsyncTask {
 
