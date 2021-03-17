@@ -39,11 +39,11 @@ public enum CafeteriaType implements Serializable {
             case SNACKBAR:
                 return "https://kumoh.ac.kr/ko/restaurant04.do?";
             case PUROOM:
-                return "http://dorm.kumoh.ac.kr/dorm/restaurant_menu01.do?";
+                return "https://dorm.kumoh.ac.kr/dorm/restaurant_menu01.do?";
             case OREUM1:
-                return "http://dorm.kumoh.ac.kr/dorm/restaurant_menu02.do?";
+                return "https://dorm.kumoh.ac.kr/dorm/restaurant_menu02.do?";
             case OREUM3:
-                return "http://dorm.kumoh.ac.kr/dorm/restaurant_menu03.do?";
+                return "https://dorm.kumoh.ac.kr/dorm/restaurant_menu03.do?";
             case UNKNOWN:
                 return "알수없음";
             default:
