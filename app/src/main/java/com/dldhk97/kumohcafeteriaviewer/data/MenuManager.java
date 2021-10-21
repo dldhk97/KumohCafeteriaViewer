@@ -363,31 +363,19 @@ public class MenuManager {
 
     private boolean deleteMenu(Menu menu){
         try{
-            for (Item i : menu.getItems()){
-                deleteItem(menu, i);
-            }
-            return true;
+            String where = DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString() + " = '" + menu.getDateAsString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA.toString() + " = '" + menu.getCafeteriaType().toString() + "' AND " +
+                DatabaseInfo.TABLE_MENUS_COLUMN_MEALTIMETYPE.toString() + " = '" + menu.getMealTimeType().toString() + "'";
+
+            boolean isSucceed = DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_MENUS.toString(), where);
+            sync();
+            return isSucceed;
         }
         catch (Exception e){
             e.printStackTrace();
         }
-
         return false;
     }
-
-    private boolean deleteItem(Menu menu, Item item){
-
-        String where = DatabaseInfo.TABLE_MENUS_COLUMN_DATE.toString() + " = '" + menu.getDateAsString() + "' AND " +
-                DatabaseInfo.TABLE_MENUS_COLUMN_CAFETERIA.toString() + " = '" + menu.getCafeteriaType().toString() + "' AND " +
-                DatabaseInfo.TABLE_MENUS_COLUMN_MEALTIMETYPE.toString() + " = '" + menu.getMealTimeType().toString() + "' AND " +
-                DatabaseInfo.TABLE_MENUS_COLUMN_ITEMNAME.toString() + " = '" + item.getItemName() + "' AND " +
-                DatabaseInfo.TABLE_MENUS_COLUMN_ITEMTYPE.toString() + " = '" + item.getItemType().toString() + "'";
-
-        Boolean isSucceed = DatabaseManager.getInstance().deleteRow(DatabaseInfo.TABLE_MENUS.toString(), where);
-        sync();
-        return isSucceed;
-    }
-
 
     private ArrayList<String> getAllColumnsWithoutID(){
         ArrayList<String> columns = new ArrayList<String>() {{
